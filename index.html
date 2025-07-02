@@ -15,7 +15,7 @@
       --card-bg: #ffffff; /* Kart arka planı beyaz */
       --button-hover-bg: #ffe0b3; /* Buton hover için açık turuncu */
       --card-border: #4682b4; /* Kart kenarlığı için çelik mavisi */
-      --btn-font: 1.6em;
+      --btn-font: 1.6em; /* Buton font büyüklüğü */
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -133,6 +133,20 @@
     .hide { display: none !important; }
 
     /* Test Modu Stilleri */
+    #testArea { /* 'test' idi, isim çakışmasını önlemek için 'testArea' yaptım */
+      display: none; /* Başlangıçta gizli */
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding-top: 30px;
+    }
+    h2 { /* Test başlığı için stil */
+        color: var(--primary);
+        font-size: 2.2em;
+        margin-bottom: 25px;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
     .question-box {
       width: 90vw; max-width: 360px; min-height: 110px;
       border: 5px solid var(--primary); border-radius: 18px;
@@ -169,11 +183,12 @@
       background: var(--wrong); border-color: var(--wrong); color: #fff;
     }
     .answer-btn.disabled { pointer-events: none; opacity: .8; }
-    #scoreDisplay {
+    #scoreDisplay { /* 'score' idi, isim çakışmasını önlemek için 'scoreDisplay' yaptım */
       font-size: 1.6em; color: var(--primary);
       margin-bottom: 20px; font-weight: 700;
     }
 
+    /* Duyarlı Tasarım (Responsive Design) */
     @media (max-width: 600px) {
       body { padding: 10px; }
       h1 { font-size: 2.2em; margin-bottom: 20px; }
@@ -207,7 +222,7 @@
   <div class="controls" id="cardControls">
     <button id="prevBtn">Önceki</button>
     <button id="nextBtn">Sonraki</button>
-    <button id="testBtn">Teste Geç</button>
+    <button id="testBtn">Teste Başla</button>
   </div>
 
   <div id="testArea" class="hide">
@@ -219,86 +234,77 @@
   </div>
 
   <script>
-    const words = [
-      {en:"Hello", tr:"Merhaba"}, {en:"Goodbye", tr:"Hoşça kal"},
-      {en:"Please", tr:"Lütfen"}, {en:"Thank you", tr:"Teşekkür ederim"},
-      {en:"Sorry", tr:"Özür dilerim"}, {en:"Yes", tr:"Evet"},
-      {en:"No", tr:"Hayır"}, {en:"Welcome", tr:"Hoş geldin"},
-      {en:"Excuse me", tr:"Afedersiniz"}, {en:"OK", tr:"Tamam"},
-      {en:"Mother", tr:"Anne"}, {en:"Father", tr:"Baba"},
-      {en:"Sister", tr:"Kız kardeş"}, {en:"Brother", tr:"Erkek kardeş"},
-      {en:"Friend", tr:"Arkadaş"}, {en:"Baby", tr:"Bebek"},
-      {en:"Girl", tr:"Kız"}, {en:"Boy", tr:"Erkek"},
-      {en:"Family", tr:"Aile"}, {en:"People", tr:"İnsanlar"},
-      {en:"House", tr:"Ev"}, {en:"Room", tr:"Oda"},
-      {en:"Bed", tr:"Yatak"}, {en:"Table", tr:"Masa"},
-      {en:"Chair", tr:"Sandalye"}, {en:"Door", tr:"Kapı"},
-      {en:"Window", tr:"Pencere"}, {en:"TV", tr:"Televizyon"},
-      {en:"Lamp", tr:"Lamba"}, {en:"Carpet", tr:"Halı"},
-      {en:"School", tr:"Okul"}, {en:"Teacher", tr:"Öğretmen"},
-      {en:"Student", tr:"Öğrenci"}, {en:"Book", tr:"Kitap"},
-      {en:"Pen", tr:"Tükenmez kalem"}, {en:"Pencil", tr:"Kurşun kalem"},
-      {en:"Bag", tr:"Çanta"}, {en:"Ruler", tr:"Cetvel"},
-      {en:"Eraser", tr:"Silgi"}, {en:"Board", tr:"Tahta"},
-      {en:"Dog", tr:"Köpek"}, {en:"Cat", tr:"Kedi"},
-      {en:"Bird", tr:"Kuş"}, {en:"Fish", tr:"Balık"},
-      {en:"Cow", tr:"İnek"}, {en:"Horse", tr:"At"},
-      {en:"Duck", tr:"Ördek"}, {en:"Lion", tr:"Aslan"},
-      {en:"Elephant", tr:"Fil"}, {en:"Monkey", tr:"Maymun"},
-      {en:"Apple", tr:"Elma"}, {en:"Banana", tr:"Muz"},
-      {en:"Bread", tr:"Ekmek"}, {en:"Water", tr:"Su"},
-      {en:"Milk", tr:"Süt"}, {en:"Egg", tr:"Yumurta"},
-      {en:"Cheese", tr:"Peynir"}, {en:"Meat", tr:"Et"},
-      {en:"Rice", tr:"Pirinç"}, {en:"Cake", tr:"Kek"},
-      {en:"Red", tr:"Kırmızı"}, {en:"Blue", tr:"Mavi"},
-      {en:"Green", tr:"Yeşil"}, {en:"Yellow", tr:"Sarı"},
-      {en:"Black", tr:"Siyah"}, {en:"White", tr:"Beyaz"},
-      {en:"Orange", tr:"Turuncu"}, {en:"Pink", tr:"Pembe"},
-      {en:"Brown", tr:"Kahverengi"}, {en:"Purple", tr:"Mor"},
-      {en:"One", tr:"Bir"}, {en:"Two", tr:"İki"},
-      {en:"Three", tr:"Üç"}, {en:"Four", tr:"Dört"},
-      {en:"Five", tr:"Beş"}, {en:"Day", tr:"Gün"},
-      {en:"Night", tr:"Gece"}, {en:"Morning", tr:"Sabah"},
-      {en:"Evening", tr:"Akşam"}, {en:"Today", tr:"Bugün"},
-      {en:"Shirt", tr:"Gömlek"}, {en:"Pants", tr:"Pantolon"},
-      {en:"Dress", tr:"Elbise"}, {en:"Skirt", tr:"Etek"},
-      {en:"Shoes", tr:"Ayakkabı"}, {en:"Socks", tr:"Çorap"},
-      {en:"Hat", tr:"Şapka"}, {en:"Jacket", tr:"Ceket"},
-      {en:"Coat", tr:"Kaban"}, {en:"T-shirt", tr:"Tişört"},
-      {en:"Head", tr:"Kafa"}, {en:"Hair", tr:"Saç"},
-      {en:"Eye", tr:"Göz"}, {en:"Nose", tr:"Burun"},
-      {en:"Mouth", tr:"Ağız"}, {en:"Ear", tr:"Kulak"},
-      {en:"Hand", tr:"El"}, {en:"Arm", tr:"Kol"},
-      {en:"Leg", tr:"Bacak"}, {en:"Foot", tr:"Ayak"}
+    const wordList = [
+      ["Apple", "Elma"], ["Dog", "Köpek"], ["Cat", "Kedi"], ["House", "Ev"], ["Car", "Araba"],
+      ["Book", "Kitap"], ["Chair", "Sandalye"], ["Table", "Masa"], ["Pen", "Kalem"], ["Sun", "Güneş"],
+      ["Moon", "Ay"], ["Water", "Su"], ["Fish", "Balık"], ["Bird", "Kuş"], ["Tree", "Ağaç"],
+      ["Flower", "Çiçek"], ["Computer", "Bilgisayar"], ["Phone", "Telefon"], ["Clock", "Saat"], ["Door", "Kapı"],
+      ["Window", "Pencere"], ["Lamp", "Lamba"], ["Bed", "Yatak"], ["Ball", "Top"], ["Hat", "Şapka"],
+      ["Shirt", "Gömlek"], ["Shoe", "Ayakkabı"], ["Socks", "Çorap"], ["Milk", "Süt"], ["Cheese", "Peynir"],
+      ["Bread", "Ekmek"], ["Rice", "Pirinç"], ["Cake", "Kek"], ["Banana", "Muz"], ["Orange", "Portakal"],
+      ["Strawberry", "Çilek"], ["Grapes", "Üzüm"], ["Egg", "Yumurta"], ["Meat", "Et"], ["Soup", "Çorba"],
+      ["Bus", "Otobüs"], ["Train", "Tren"], ["Plane", "Uçak"], ["Bike", "Bisiklet"], ["Truck", "Kamyon"],
+      ["School", "Okul"], ["Teacher", "Öğretmen"], ["Student", "Öğrenci"], ["Board", "Tahta"], ["Eraser", "Silgi"],
+      ["Mother", "Anne"], ["Father", "Baba"], ["Sister", "Kız kardeş"], ["Brother", "Erkek kardeş"], ["Baby", "Bebek"],
+      ["Friend", "Arkadaş"], ["Boy", "Erkek"], ["Girl", "Kız"], ["Family", "Aile"], ["People", "İnsanlar"],
+      ["Head", "Kafa"], ["Eye", "Göz"], ["Nose", "Burun"], ["Mouth", "Ağız"], ["Ear", "Kulak"],
+      ["Hand", "El"], ["Arm", "Kol"], ["Leg", "Bacak"], ["Foot", "Ayak"], ["Hair", "Saç"],
+      ["Red", "Kırmızı"], ["Blue", "Mavi"], ["Green", "Yeşil"], ["Yellow", "Sarı"], ["Black", "Siyah"],
+      ["White", "Beyaz"], ["Pink", "Pembe"], ["Orange", "Turuncu"], ["Purple", "Mor"], ["Brown", "Kahverengi"],
+      ["One", "Bir"], ["Two", "İki"], ["Three", "Üç"], ["Four", "Dört"], ["Five", "Beş"],
+      ["Day", "Gün"], ["Night", "Gece"], ["Morning", "Sabah"], ["Evening", "Akşam"], ["Today", "Bugün"],
+      ["OK", "Tamam"], ["Welcome", "Hoş geldin"], ["Please", "Lütfen"], ["Thank you", "Teşekkür ederim"], ["Sorry", "Özür dilerim"],
+      ["Yes", "Evet"], ["No", "Hayır"], ["Excuse me", "Afedersiniz"], ["Hello", "Merhaba"], ["Goodbye", "Hoşça kal"]
     ];
+
+    // wordList'i resim URL'leri ile zenginleştirme
+    const words = wordList.map(([en, tr]) => ({
+      en,
+      tr,
+      // Unsplash'ten 'cartoon' ve 'illustration' anahtar kelimeleriyle çocuklara uygun görseller çekiyoruz
+      img: `https://source.unsplash.com/random/400x300/?${encodeURIComponent(en.toLowerCase())},cartoon,illustration,child`
+    }));
 
     let currentIndex = 0, quiz = [], qIndex = 0, score = 0, questionIsEnglish;
 
     // Yeni DOM element referansları
-    const cardContainer = document.getElementById('cardContainer');
+    const cardContainer = document.getElementById('cardContainer'); // Kartın dış kapsayıcısı
     const cardImage     = document.getElementById('cardImage');
-    const cardTextEn    = document.getElementById('cardTextEn');
-    const cardTextTr    = document.getElementById('cardTextTr'); // Türkçe anlamı için
+    const cardTextEn    = document.getElementById('cardTextEn'); // İngilizce metin için
+    const cardTextTr    = document.getElementById('cardTextTr'); // Türkçe metin için
     const prevBtn       = document.getElementById('prevBtn');
     const nextBtn       = document.getElementById('nextBtn');
     const testBtn       = document.getElementById('testBtn');
     const cardControls  = document.getElementById('cardControls');
-    const testArea      = document.getElementById('testArea');
+    const testArea      = document.getElementById('testArea'); // Test bölümü
     const questionBox   = document.getElementById('question');
     const answersBox    = document.getElementById('answers');
-    const scoreDisplay  = document.getElementById('scoreDisplay');
+    const scoreDisplay  = document.getElementById('scoreDisplay'); // Skor gösterimi
     const backBtn       = document.getElementById('backToCardsBtn');
     const body          = document.body;
 
-    // Her kelime için görsel URL'i oluşturma ve kelime objesine ekleme
-    const processedWords = words.map(word => ({
-      ...word,
-      // Unsplash'ten daha iyi sonuçlar için 'random' ve 'concept' anahtar kelimesi
-      img: `https://source.unsplash.com/random/400x300/?${encodeURIComponent(word.en.toLowerCase())},cartoon,illustration,concept`
-    }));
+    // Kart çevirme işlevselliği
+    cardContainer.addEventListener('click', () => {
+        cardContainer.querySelector('.card-inner').classList.toggle('flipped');
+        // Kart çevrildiğinde eğer konuşma varsa durdur (isteğe bağlı)
+        if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+        }
+    });
 
+    // Kelimeyi sesli okuma fonksiyonu
+    function pronounce(text, lang = "en-US") {
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+      }
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang;
+      speechSynthesis.speak(u);
+    }
+
+    // Kartı render etme (gösterme) fonksiyonu
     function renderCard() {
-      const w = processedWords[currentIndex]; // processedWords'u kullanıyoruz
+      const w = words[currentIndex];
 
       // Kart çevrilmişse ön yüze dönmesini sağla
       cardContainer.classList.remove('flipped');
@@ -308,8 +314,7 @@
 
       // Resim yüklenemediğinde veya hata verdiğinde alternatif metin gösterimi
       cardImage.onerror = () => {
-        cardImage.classList.add('hidden'); // Resmi gizle (CSS ile display: none)
-        cardImage.style.display = 'none'; // Direkt gizle
+        cardImage.style.display = 'none'; // Resmi gizle
         cardTextEn.style.fontSize = '4em'; // İngilizce metni büyüt
         cardTextEn.textContent = w.en + " (Resim Yüklenemedi)"; // Hata mesajı ekle
         console.warn(`Resim yüklenemedi: ${w.img} - Kelime: ${w.en}`);
@@ -317,133 +322,163 @@
 
       // Resim başarıyla yüklendiğinde eski haline getir
       cardImage.onload = () => {
-        cardImage.classList.remove('hidden'); // Resmi göster
-        cardImage.style.display = 'block'; // Direkt göster
+        cardImage.style.display = 'block'; // Resmi göster
         cardTextEn.style.fontSize = '3em'; // İngilizce metin boyutunu normale döndür
         cardTextEn.textContent = w.en; // Hata mesajını kaldır
       };
 
       // Resim URL'sini ata ve yüklemeyi tetikle
-      // Eğer bir önceki resim de yüklenememişse, onerror tekrar tetiklenmeyebilir.
-      // Bu yüzden src'yi her zaman yenilemek iyi bir uygulama.
+      // Aynı URL bile olsa, onerror'un yeniden tetiklenmesi için src'yi tekrar atamak iyidir.
       cardImage.src = w.img;
+      pronounce(w.en); // Yeni kelime yüklendiğinde otomatik oku
     }
 
-    // Kartın tıklanma olayı (çevirme için)
-    cardContainer.onclick = () => {
-      cardContainer.classList.toggle('flipped');
-    };
-
-
+    // Önceki kelime butonu
     prevBtn.onclick = () => {
-      currentIndex = (currentIndex - 1 + processedWords.length) % processedWords.length;
+      currentIndex = (currentIndex - 1 + words.length) % words.length;
       renderCard();
     };
 
+    // Sonraki kelime butonu
     nextBtn.onclick = () => {
-      currentIndex = (currentIndex + 1) % processedWords.length;
+      currentIndex = (currentIndex + 1) % words.length;
       renderCard();
     };
 
-    testBtn.onclick = () => {
-      quiz = shuffle([...processedWords]).slice(0,20); // processedWords'u kullanıyoruz
-      qIndex = 0; score = 0;
-      cardControls.classList.add('hide');
-      cardContainer.classList.add('hide'); // Kartı gizle
-      testArea.classList.remove('hide');
-      loadQuestion(); updateScore();
+    // Teste Başla butonu
+    startTestBtn.onclick = () => {
+      cardContainer.classList.add("hide"); // Kartı gizle
+      cardControls.classList.add("hide"); // Kontrolleri gizle
+      testArea.classList.remove("hide"); // Test bölümünü göster
+      initTest();
     };
 
+    // Kartlara Dön butonu (Testten çıkış)
     backBtn.onclick = () => {
-      testArea.classList.add('hide');
-      cardControls.classList.remove('hide');
-      cardContainer.classList.remove('hide'); // Kartı göster
-      renderCard();
-      body.style.backgroundColor = 'var(--bg)';
+      testArea.classList.add("hide"); // Test bölümünü gizle
+      cardContainer.classList.remove("hide"); // Kartı göster
+      cardControls.classList.remove("hide"); // Kontrolleri göster
+      renderCard(); // Kartı yeniden render et
+      body.style.backgroundColor = 'var(--bg)'; // Arka plan rengini normale döndür
     };
 
+    // Test fonksiyonları
+    let quiz = [],
+      qIndex = 0, // Soru indeksi
+      score = 0; // Skor
+
+    function initTest() {
+      const quizSize = Math.min(words.length, 20); // Maksimum 20 soru veya mevcut kelime sayısı kadar
+      quiz = shuffle([...words]).slice(0, quizSize); // Kelimeleri karıştır ve test için seç
+      qIndex = 0;
+      score = 0;
+      loadQuestion();
+      updateScore();
+    }
+
+    // Ses efekti çalma fonksiyonu
+    function playSound(type) {
+      if (!window.audioCtx) window.audioCtx = new (AudioContext || window.webkitAudioContext)();
+      const ctx = window.audioCtx;
+      const o = ctx.createOscillator(),
+        g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.frequency.value = type === 'correct' ? 220 : 880; // Doğru cevapta kalın, yanlış cevapta ince ses
+      g.gain.setValueAtTime(0.5, ctx.currentTime);
+      o.start();
+      o.stop(ctx.currentTime + 0.2);
+    }
+
+    // Bir sonraki soruyu yükleme
     function loadQuestion() {
-      clearFeedback();
-      answersBox.innerHTML = '';
+      clearFeedback(); // Önceki sorudan kalan renk geri bildirimini temizle
+      answersBox.innerHTML = ""; // Cevap butonlarını temizle
+
       if (qIndex >= quiz.length) {
         questionBox.textContent = `Test tamamlandı! Puan: ${score}/${quiz.length}`;
-        scoreDisplay.textContent = '';
+        scoreDisplay.textContent = ""; // Skor bilgisini temizle
         return;
       }
+
       updateScore();
-      questionIsEnglish = Math.random() < 0.5; // Sorunun İngilizce mi Türkçe mi olacağını rastgele seç
-      const correct = quiz[qIndex];
-      questionBox.textContent = questionIsEnglish ? correct.en : correct.tr;
+      questionIsEnglish = Math.random() < 0.5; // Soruyu rastgele İngilizce veya Türkçe yap
+      const correctWord = quiz[qIndex];
+      questionBox.textContent = questionIsEnglish ? correctWord.en : correctWord.tr;
+      pronounce(questionIsEnglish ? correctWord.en : correctWord.tr); // Soruyu sesli oku
 
-      const opts = [correct];
-      const availableWordsForOptions = processedWords.filter(word => word.en !== correct.en); // Doğru kelimeyi seçeneklerden çıkar
+      let options = [correctWord];
+      const availableWordsForOptions = words.filter(word => word.en !== correctWord.en); // Doğru kelimeyi seçeneklerden ele
 
-      while (opts.length < 4 && availableWordsForOptions.length > 0) {
+      while (options.length < 4 && availableWordsForOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableWordsForOptions.length);
         const randomWord = availableWordsForOptions[randomIndex];
-        if (!opts.some(opt => opt.en === randomWord.en)) { // Aynı kelimenin birden fazla kez eklenmesini engelle
-            opts.push(randomWord);
-            availableWordsForOptions.splice(randomIndex, 1); // Seçilen kelimeyi tekrar seçmemek için kaldır
+        // Seçeneklerde aynı kelime olmasın diye kontrol
+        if (!options.some(opt => opt.en === randomWord.en)) {
+            options.push(randomWord);
+            availableWordsForOptions.splice(randomIndex, 1);
         }
       }
-      shuffle(opts).forEach((opt, i) => {
-        const btn = document.createElement('button');
+      shuffle(options).forEach((opt, i) => { // Seçenekleri karıştır
+        const btn = document.createElement("button");
         btn.className = 'answer-btn';
-        btn.innerHTML = `<span class="letter">${String.fromCharCode(65+i)}</span>` +
-                        (questionIsEnglish ? opt.tr : opt.en); // Sorunun diline göre cevap metnini ayarla
-        btn.onclick = () => selectAnswer(btn, opt, correct);
+        // Sorunun diline göre cevabın metnini belirle
+        btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + i)}</span>` +
+                        (questionIsEnglish ? opt.tr : opt.en);
+        btn.onclick = () => selectAnswer(btn, opt, correctWord);
         answersBox.appendChild(btn);
       });
     }
 
-    function selectAnswer(btn, sel, corr) {
-      playSound(sel === corr ? 'correct' : 'wrong');
-      body.style.backgroundColor = sel === corr ? 'var(--correct)' : 'var(--wrong)';
-      if (sel === corr) { btn.classList.add('correct'); score++; }
-      else {
-        btn.classList.add('wrong');
-        Array.from(answersBox.children).forEach(b => {
-          // Doğru cevabı bul ve işaretle
-          const correctText = questionIsEnglish ? corr.tr : corr.en;
-          if (b.textContent.includes(correctText) && !b.classList.contains('wrong')) {
-            b.classList.add('correct');
+    // Cevap seçme işlevi
+    function selectAnswer(selectedButton, selectedOption, correctWord) {
+      // Tüm butonları devre dışı bırak
+      Array.from(answersBox.children).forEach(button => {
+        button.disabled = true;
+        button.classList.add('disabled');
+      });
+
+      selectedButton.classList.add(selectedOption === correctWord ? "correct" : "wrong");
+      playSound(selectedOption === correctWord);
+      body.style.backgroundColor = selectedOption === correctWord ? 'var(--correct)' : 'var(--wrong)';
+
+      if (selectedOption === correctWord) {
+        score++;
+      } else {
+        // Yanlış cevapta doğru olanı da işaretle
+        Array.from(answersBox.children).forEach(button => {
+          const correctText = questionIsEnglish ? correctWord.tr : correctWord.en;
+          if (button.textContent.includes(correctText) && !button.classList.contains('wrong')) {
+            button.classList.add('correct');
           }
         });
       }
-      // Tüm cevap butonlarını devre dışı bırak
-      Array.from(answersBox.children).forEach(b => {
-        b.disabled = true;
-        b.classList.add('disabled');
-      });
+      
       updateScore();
+      qIndex++; // Bir sonraki soruya geç
       setTimeout(() => {
-        qIndex++; loadQuestion(); body.style.backgroundColor = 'var(--bg)';
-      }, 1500);
+        loadQuestion(); // Yeni soruyu yükle
+        body.style.backgroundColor = 'var(--bg)'; // Arka plan rengini normale döndür
+      }, 1500); // 1.5 saniye sonra
     }
 
+    // Skoru güncelleme
     function updateScore() {
-      // Test tamamlandığında veya kelime sayısı 0 olduğunda soru sayısını gösterme
-      if (qIndex >= quiz.length || quiz.length === 0) {
+      if (qIndex >= quiz.length && quiz.length > 0) { // Test tamamlandığında
         scoreDisplay.textContent = `Puan: ${score}/${quiz.length}`;
-      } else {
-        scoreDisplay.textContent = `Puan: ${score}/${quiz.length}  Soru: ${qIndex + 1}/${quiz.length}`;
+      } else if (quiz.length === 0) { // Kelime listesi boşsa veya test başlamadıysa
+        scoreDisplay.textContent = `Puan: 0/0 | Soru: 0/0`;
+      } else { // Test devam ediyorsa
+        scoreDisplay.textContent = `Puan: ${score}/${quiz.length} | Soru: ${qIndex + 1}/${quiz.length}`;
       }
     }
 
-    function playSound(type) {
-      if (!window.audioCtx) window.audioCtx = new (AudioContext||webkitAudioContext)();
-      const ctx = window.audioCtx;
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = type==='correct' ? 220 : 880; // Doğru: Kalın (220 Hz), Yanlış: İnce (880 Hz)
-      g.gain.setValueAtTime(0.3, ctx.currentTime);
-      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.3);
-    }
-
+    // Arka plan rengi geri bildirimini temizleme
     function clearFeedback() {
       body.style.backgroundColor = 'var(--bg)';
     }
 
+    // Diziyi karıştırma fonksiyonu (Fisher-Yates)
     function shuffle(arr) {
       for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -455,6 +490,5 @@
     // Sayfa yüklendiğinde ilk kartı göster
     window.addEventListener('DOMContentLoaded', renderCard);
   </script>
-
 </body>
 </html>
