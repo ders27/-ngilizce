@@ -1,187 +1,111 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Çocuklar için İngilizce Kelime Kartları & Test</title>
-<style>
-  :root {
-    --primary: #6a0dad;
-    --accent: #ffa500;
-    --bg: #f4f0ff;
-    --text: #333;
-    --correct: #28a745;
-    --wrong: #dc3545;
-    --btn-font: 1.6em;
-  }
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    margin: 0;
-    padding: 20px 10px;
-    text-align: center;
-    transition: background-color 0.4s ease;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  h1 {
-    color: var(--primary);
-    font-size: 2.4em;
-    margin-bottom: 20px;
-  }
-  .card {
-    width: 90vw;
-    max-width: 360px;
-    height: 260px;
-    border: 5px solid var(--primary);
-    border-radius: 18px;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-    padding: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  .card img {
-    width: 90px;
-    height: 90px;
-    object-fit: contain;
-    margin-bottom: 12px;
-  }
-  .card .text {
-    font-size: 2.4em;
-    color: var(--primary);
-    font-weight: 700;
-  }
-  .controls, .test-controls {
-    margin-top: 20px;
-  }
-  button {
-    font-size: var(--btn-font);
-    padding: 12px 28px;
-    margin: 8px 6px;
-    border-radius: 12px;
-    border: none;
-    background: var(--accent);
-    color: white;
-    cursor: pointer;
-    transition: transform 0.15s ease;
-    user-select: none;
-  }
-  button:hover:not(.disabled) {
-    transform: scale(1.05);
-  }
-  .hide {
-    display: none !important;
-  }
-  .question-box {
-    width: 90vw;
-    max-width: 360px;
-    min-height: 110px;
-    margin: 0 auto 20px;
-    border: 5px solid var(--primary);
-    border-radius: 18px;
-    background: white;
-    font-size: 2em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
-    font-weight: 700;
-  }
-  .answers {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 24px;
-    align-items: center;
-    width: 90vw;
-    max-width: 360px;
-  }
-  .answer-btn {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 24px 16px 56px;
-    font-weight: 700;
-    font-size: 1.5em;
-    width: 100%;
-    max-width: 360px;
-    text-align: left;
-    user-select: none;
-    border: 4px solid var(--primary);
-    border-radius: 14px;
-    background: white;
-    cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
-  }
-  .answer-btn span.letter {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 42px;
-    height: 42px;
-    line-height: 42px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    text-align: center;
-    font-size: 1.4em;
-    font-weight: 900;
-    user-select: none;
-  }
-  .answer-btn.correct {
-    background-color: var(--correct);
-    border-color: var(--correct);
-    color: white;
-  }
-  .answer-btn.wrong {
-    background-color: var(--wrong);
-    border-color: var(--wrong);
-    color: white;
-  }
-  .answer-btn.disabled {
-    cursor: default;
-    pointer-events: none;
-  }
-  #scoreDisplay {
-    font-size: 1.6em;
-    margin-top: 12px;
-    color: var(--primary);
-    font-weight: 700;
-  }
-
-  /* Responsive */
-  @media (min-width: 600px) {
-    body {
-      padding: 40px 0;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Çocuklar için İngilizce Kelime Kartları & Test</title>
+  <style>
+    :root {
+      --primary: #6a0dad;
+      --accent: #ffa500;
+      --bg: #f4f0ff;
+      --text: #333;
+      --correct: #28a745;
+      --wrong: #dc3545;
+      --btn-font: 1.6em;
     }
-  }
-</style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg); color: var(--text);
+      margin: 0; padding: 20px 10px;
+      text-align: center; transition: background-color 0.4s ease;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh;
+    }
+    h1 { color: var(--primary); font-size: 2.4em; margin-bottom: 20px; }
+    .card {
+      width: 90vw; max-width: 360px; height: 260px;
+      border: 5px solid var(--primary); border-radius: 18px;
+      background: white; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      user-select: none; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .card .emoji {
+      font-size: 90px; margin-bottom: 12px; user-select: none;
+    }
+    .card .text {
+      font-size: 2.4em; color: var(--primary); font-weight: 700;
+    }
+    .controls, .test-controls { margin-top: 20px; }
+    button {
+      font-size: var(--btn-font); padding: 12px 28px;
+      margin: 8px 6px; border: none; border-radius: 12px;
+      background: var(--accent); color: white; cursor: pointer;
+      transition: transform 0.15s ease; user-select: none;
+    }
+    button:hover:not(:disabled) { transform: scale(1.05); }
+    button:disabled { opacity: 0.6; cursor: default; }
+    .hide { display: none !important; }
+    .question-box {
+      width: 90vw; max-width: 360px; min-height: 110px;
+      margin: 0 auto 20px; border: 5px solid var(--primary);
+      border-radius: 18px; background: white; font-size: 2em;
+      display: flex; justify-content: center; align-items: center;
+      padding: 20px; font-weight: 700; box-sizing: border-box;
+    }
+    .answers {
+      display: flex; flex-direction: column; gap: 14px;
+      margin-bottom: 24px; align-items: center;
+      width: 90vw; max-width: 360px;
+    }
+    .answer-btn {
+      position: relative; display: flex; align-items: center;
+      gap: 16px; padding: 16px 24px 16px 56px;
+      font-weight: 700; font-size: 1.5em; width: 100%;
+      max-width: 360px; text-align: left; user-select: none;
+      border: 4px solid var(--primary); border-radius: 14px;
+      background: white; transition: background-color .3s, border-color .3s;
+      cursor: pointer;
+    }
+    .answer-btn span.letter {
+      position: absolute; left: 18px; top: 50%;
+      transform: translateY(-50%); width: 42px; height: 42px;
+      line-height: 42px; border-radius: 50%;
+      background: var(--primary); color: white; text-align: center;
+      font-size: 1.4em; font-weight: 900; user-select: none;
+    }
+    .answer-btn.correct {
+      background-color: var(--correct);
+      border-color: var(--correct);
+      color: white;
+    }
+    .answer-btn.wrong {
+      background-color: var(--wrong);
+      border-color: var(--wrong);
+      color: white;
+    }
+    .answer-btn.disabled {
+      pointer-events: none; cursor: default; opacity: 0.8;
+    }
+    #scoreDisplay {
+      font-size: 1.6em; margin-top: 12px;
+      color: var(--primary); font-weight: 700;
+    }
+    @media (min-width: 600px) {
+      body { padding: 40px 0; }
+    }
+  </style>
 </head>
 <body>
 
   <h1>İngilizce Kelime Kartları</h1>
 
-  <!-- Öğrenme Modu Kartı -->
+  <!-- Öğrenme Modu -->
   <div class="card" id="card">
-    <img id="cardImg" src="" alt="Kelime Görseli">
+    <div class="emoji" id="cardEmoji">😀</div>
     <div class="text" id="cardText">Yükleniyor...</div>
   </div>
-
-  <!-- Öğrenme Modu Kontrolleri -->
   <div class="controls" id="cardControls">
     <button id="prevBtn">Önceki</button>
     <button id="nextBtn">Sonraki</button>
@@ -197,207 +121,177 @@
     <button id="backToCardsBtn">Kartlara Geri Dön</button>
   </div>
 
-<script>
-  // Kelimeler (Emoji ile)
-  const words = [
-    {"en":"Hello","tr":"Merhaba","emoji":"👋"},
-    {"en":"Goodbye","tr":"Hoşça kal","emoji":"👋"},
-    {"en":"Please","tr":"Lütfen","emoji":"🙏"},
-    {"en":"Thank you","tr":"Teşekkür ederim","emoji":"🙏"},
-    {"en":"Sorry","tr":"Özür dilerim","emoji":"😔"},
-    {"en":"Yes","tr":"Evet","emoji":"👍"},
-    {"en":"No","tr":"Hayır","emoji":"👎"},
-    {"en":"Welcome","tr":"Hoş geldin","emoji":"🤗"},
-    {"en":"Excuse me","tr":"Afedersiniz","emoji":"🙇"},
-    {"en":"OK","tr":"Tamam","emoji":"👌"},
+  <script>
+    const words = [
+      {"en":"Hello","tr":"Merhaba","emoji":"👋"}, {"en":"Goodbye","tr":"Hoşça kal","emoji":"👋"},
+      {"en":"Please","tr":"Lütfen","emoji":"🙏"}, {"en":"Thank you","tr":"Teşekkür ederim","emoji":"🙏"},
+      {"en":"Sorry","tr":"Özür dilerim","emoji":"😔"},{"en":"Yes","tr":"Evet","emoji":"👍"},
+      {"en":"No","tr":"Hayır","emoji":"👎"},{"en":"Welcome","tr":"Hoş geldin","emoji":"🤗"},
+      {"en":"Excuse me","tr":"Afedersiniz","emoji":"🙇"},{"en":"OK","tr":"Tamam","emoji":"👌"},
+      {"en":"Mother","tr":"Anne","emoji":"👩‍👧"},{"en":"Father","tr":"Baba","emoji":"👨‍👧"},
+      {"en":"Sister","tr":"Kız kardeş","emoji":"👧"},{"en":"Brother","tr":"Erkek kardeş","emoji":"👦"},
+      {"en":"Friend","tr":"Arkadaş","emoji":"🤝"},{"en":"Baby","tr":"Bebek","emoji":"👶"},
+      {"en":"Girl","tr":"Kız","emoji":"👧"},{"en":"Boy","tr":"Erkek","emoji":"👦"},
+      {"en":"Family","tr":"Aile","emoji":"👨‍👩‍👧‍👦"},{"en":"People","tr":"İnsanlar","emoji":"🧑‍🤝‍🧑"},
+      {"en":"House","tr":"Ev","emoji":"🏠"},{"en":"Room","tr":"Oda","emoji":"🚪"},
+      {"en":"Bed","tr":"Yatak","emoji":"🛏️"},{"en":"Table","tr":"Masa","emoji":"🪑"},
+      {"en":"Chair","tr":"Sandalye","emoji":"🪑"},{"en":"Door","tr":"Kapı","emoji":"🚪"},
+      {"en":"Window","tr":"Pencere","emoji":"🪟"},{"en":"TV","tr":"Televizyon","emoji":"📺"},
+      {"en":"Lamp","tr":"Lamba","emoji":"💡"},{"en":"Carpet","tr":"Halı","emoji":"🧶"},
+      {"en":"School","tr":"Okul","emoji":"🏫"},{"en":"Teacher","tr":"Öğretmen","emoji":"👩‍🏫"},
+      {"en":"Student","tr":"Öğrenci","emoji":"🧑‍🎓"},{"en":"Book","tr":"Kitap","emoji":"📚"},
+      {"en":"Pen","tr":"Tükenmez kalem","emoji":"🖊️"},{"en":"Pencil","tr":"Kurşun kalem","emoji":"✏️"},
+      {"en":"Bag","tr":"Çanta","emoji":"🎒"},{"en":"Ruler","tr":"Cetvel","emoji":"📏"},
+      {"en":"Eraser","tr":"Silgi","emoji":"🩹"},{"en":"Board","tr":"Tahta","emoji":"🪧"},
+      {"en":"Dog","tr":"Köpek","emoji":"🐶"},{"en":"Cat","tr":"Kedi","emoji":"🐱"},
+      {"en":"Bird","tr":"Kuş","emoji":"🐦"},{"en":"Fish","tr":"Balık","emoji":"🐟"},
+      {"en":"Cow","tr":"İnek","emoji":"🐄"},{"en":"Horse","tr":"At","emoji":"🐎"},
+      {"en":"Duck","tr":"Ördek","emoji":"🦆"},{"en":"Lion","tr":"Aslan","emoji":"🦁"},
+      {"en":"Elephant","tr":"Fil","emoji":"🐘"},{"en":"Monkey","tr":"Maymun","emoji":"🐒"},
+      {"en":"Apple","tr":"Elma","emoji":"🍎"},{"en":"Banana","tr":"Muz","emoji":"🍌"},
+      {"en":"Bread","tr":"Ekmek","emoji":"🍞"},{"en":"Water","tr":"Su","emoji":"💧"},
+      {"en":"Milk","tr":"Süt","emoji":"🥛"},{"en":"Egg","tr":"Yumurta","emoji":"🥚"},
+      {"en":"Cheese","tr":"Peynir","emoji":"🧀"},{"en":"Meat","tr":"Et","emoji":"🍖"},
+      {"en":"Rice","tr":"Pirinç","emoji":"🍚"},{"en":"Cake","tr":"Kek","emoji":"🍰"},
+      {"en":"Red","tr":"Kırmızı","emoji":"🔴"},{"en":"Blue","tr":"Mavi","emoji":"🔵"},
+      {"en":"Green","tr":"Yeşil","emoji":"🟢"},{"en":"Yellow","tr":"Sarı","emoji":"🟡"},
+      {"en":"Black","tr":"Siyah","emoji":"⚫"},{"en":"White","tr":"Beyaz","emoji":"⚪"},
+      {"en":"Orange","tr":"Turuncu","emoji":"🟠"},{"en":"Pink","tr":"Pembe","emoji":"🌸"},
+      {"en":"Brown","tr":"Kahverengi","emoji":"🟤"},{"en":"Purple","tr":"Mor","emoji":"🟣"},
+      {"en":"One","tr":"Bir","emoji":"1️⃣"},{"en":"Two","tr":"İki","emoji":"2️⃣"},
+      {"en":"Three","tr":"Üç","emoji":"3️⃣"},{"en":"Four","tr":"Dört","emoji":"4️⃣"},
+      {"en":"Five","tr":"Beş","emoji":"5️⃣"},{"en":"Day","tr":"Gün","emoji":"☀️"},
+      {"en":"Night","tr":"Gece","emoji":"🌙"},{"en":"Morning","tr":"Sabah","emoji":"🌅"},
+      {"en":"Evening","tr":"Akşam","emoji":"🌇"},{"en":"Today","tr":"Bugün","emoji":"📅"},
+      {"en":"Shirt","tr":"Gömlek","emoji":"👕"},{"en":"Pants","tr":"Pantolon","emoji":"👖"},
+      {"en":"Dress","tr":"Elbise","emoji":"👗"},{"en":"Skirt","tr":"Etek","emoji":"👚"},
+      {"en":"Shoes","tr":"Ayakkabı","emoji":"👟"},{"en":"Socks","tr":"Çorap","emoji":"🧦"},
+      {"en":"Hat","tr":"Şapka","emoji":"🎩"},{"en":"Jacket","tr":"Ceket","emoji":"🧥"},
+      {"en":"Coat","tr":"Kaban","emoji":"🧥"},{"en":"T-shirt","tr":"Tişört","emoji":"👕"},
+      {"en":"Head","tr":"Kafa","emoji":"🧑‍🦲"},{"en":"Hair","tr":"Saç","emoji":"💇‍♂️"},
+      {"en":"Eye","tr":"Göz","emoji":"👁️"},{"en":"Nose","tr":"Burun","emoji":"👃"},
+      {"en":"Mouth","tr":"Ağız","emoji":"👄"},{"en":"Ear","tr":"Kulak","emoji":"👂"},
+      {"en":"Hand","tr":"El","emoji":"✋"},{"en":"Arm","tr":"Kol","emoji":"💪"},
+      {"en":"Leg","tr":"Bacak","emoji":"🦵"},{"en":"Foot","tr":"Ayak","emoji":"🦶"}
+    ];
 
-    {"en":"Mother","tr":"Anne","emoji":"👩‍👧"},
-    {"en":"Father","tr":"Baba","emoji":"👨‍👧"},
-    {"en":"Sister","tr":"Kız kardeş","emoji":"👧"},
-    {"en":"Brother","tr":"Erkek kardeş","emoji":"👦"},
-    {"en":"Friend","tr":"Arkadaş","emoji":"🤝"},
-    {"en":"Baby","tr":"Bebek","emoji":"👶"},
-    {"en":"Girl","tr":"Kız","emoji":"👧"},
-    {"en":"Boy","tr":"Erkek","emoji":"👦"},
-    {"en":"Family","tr":"Aile","emoji":"👨‍👩‍👧‍👦"},
-    {"en":"People","tr":"İnsanlar","emoji":"🧑‍🤝‍🧑"},
+    let currentIndex = 0, quiz = [], qIndex = 0, score = 0;
+    let questionIsEnglish;
 
-    {"en":"House","tr":"Ev","emoji":"🏠"},
-    {"en":"Room","tr":"Oda","emoji":"🚪"},
-    {"en":"Bed","tr":"Yatak","emoji":"🛏️"},
-    {"en":"Table","tr":"Masa","emoji":"🪑"},
-    {"en":"Chair","tr":"Sandalye","emoji":"🪑"},
-    {"en":"Door","tr":"Kapı","emoji":"🚪"},
-    {"en":"Window","tr":"Pencere","emoji":"🪟"},
-    {"en":"TV","tr":"Televizyon","emoji":"📺"},
-    {"en":"Lamp","tr":"Lamba","emoji":"💡"},
-    {"en":"Carpet","tr":"Halı","emoji":"🧶"},
+    const cardEmoji = document.getElementById('cardEmoji');
+    const cardText  = document.getElementById('cardText');
+    const prevBtn   = document.getElementById('prevBtn');
+    const nextBtn   = document.getElementById('nextBtn');
+    const testBtn   = document.getElementById('testBtn');
+    const cardControls = document.getElementById('cardControls');
+    const testArea     = document.getElementById('testArea');
+    const questionBox  = document.getElementById('question');
+    const answersBox   = document.getElementById('answers');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const backBtn      = document.getElementById('backToCardsBtn');
+    const body         = document.body;
 
-    {"en":"School","tr":"Okul","emoji":"🏫"},
-    {"en":"Teacher","tr":"Öğretmen","emoji":"👩‍🏫"},
-    {"en":"Student","tr":"Öğrenci","emoji":"🧑‍🎓"},
-    {"en":"Book","tr":"Kitap","emoji":"📚"},
-    {"en":"Pen","tr":"Tükenmez kalem","emoji":"🖊️"},
-    {"en":"Pencil","tr":"Kurşun kalem","emoji":"✏️"},
-    {"en":"Bag","tr":"Çanta","emoji":"🎒"},
-    {"en":"Ruler","tr":"Cetvel","emoji":"📏"},
-    {"en":"Eraser","tr":"Silgi","emoji":"🩹"},
-    {"en":"Board","tr":"Tahta","emoji":"🪧"},
-
-    {"en":"Dog","tr":"Köpek","emoji":"🐶"},
-    {"en":"Cat","tr":"Kedi","emoji":"🐱"},
-    {"en":"Bird","tr":"Kuş","emoji":"🐦"},
-    {"en":"Fish","tr":"Balık","emoji":"🐟"},
-    {"en":"Cow","tr":"İnek","emoji":"🐄"},
-    {"en":"Horse","tr":"At","emoji":"🐎"},
-    {"en":"Duck","tr":"Ördek","emoji":"🦆"},
-    {"en":"Lion","tr":"Aslan","emoji":"🦁"},
-    {"en":"Elephant","tr":"Fil","emoji":"🐘"},
-    {"en":"Monkey","tr":"Maymun","emoji":"🐒"},
-
-    {"en":"Apple","tr":"Elma","emoji":"🍎"},
-    {"en":"Banana","tr":"Muz","emoji":"🍌"},
-    {"en":"Bread","tr":"Ekmek","emoji":"🍞"},
-    {"en":"Water","tr":"Su","emoji":"💧"},
-    {"en":"Milk","tr":"Süt","emoji":"🥛"},
-    {"en":"Egg","tr":"Yumurta","emoji":"🥚"},
-    {"en":"Cheese","tr":"Peynir","emoji":"🧀"},
-    {"en":"Meat","tr":"Et","emoji":"🍖"},
-    {"en":"Rice","tr":"Pirinç","emoji":"🍚"},
-    {"en":"Cake","tr":"Kek","emoji":"🍰"},
-
-    {"en":"Red","tr":"Kırmızı","emoji":"🔴"},
-    {"en":"Blue","tr":"Mavi","emoji":"🔵"},
-    {"en":"Green","tr":"Yeşil","emoji":"🟢"},
-    {"en":"Yellow","tr":"Sarı","emoji":"🟡"},
-    {"en":"Black","tr":"Siyah","emoji":"⚫"},
-    {"en":"White","tr":"Beyaz","emoji":"⚪"},
-    {"en":"Orange","tr":"Turuncu","emoji":"🟠"},
-    {"en":"Pink","tr":"Pembe","emoji":"🌸"},
-    {"en":"Brown","tr":"Kahverengi","emoji":"🟤"},
-    {"en":"Purple","tr":"Mor","emoji":"🟣"},
-
-    {"en":"One","tr":"Bir","emoji":"1️⃣"},
-    {"en":"Two","tr":"İki","emoji":"2️⃣"},
-    {"en":"Three","tr":"Üç","emoji":"3️⃣"},
-    {"en":"Four","tr":"Dört","emoji":"4️⃣"},
-    {"en":"Five","tr":"Beş","emoji":"5️⃣"},
-    {"en":"Day","tr":"Gün","emoji":"☀️"},
-    {"en":"Night","tr":"Gece","emoji":"🌙"},
-    {"en":"Morning","tr":"Sabah","emoji":"🌅"},
-    {"en":"Evening","tr":"Akşam","emoji":"🌇"},
-    {"en":"Today","tr":"Bugün","emoji":"📅"},
-
-    {"en":"Shirt","tr":"Gömlek","emoji":"👕"},
-    {"en":"Pants","tr":"Pantolon","emoji":"👖"},
-    {"en":"Dress","tr":"Elbise","emoji":"👗"},
-    {"en":"Skirt","tr":"Etek","emoji":"👚"},
-    {"en":"Shoes","tr":"Ayakkabı","emoji":"👟"},
-    {"en":"Socks","tr":"Çorap","emoji":"🧦"},
-    {"en":"Hat","tr":"Şapka","emoji":"🎩"},
-    {"en":"Jacket","tr":"Ceket","emoji":"🧥"},
-    {"en":"Coat","tr":"Kaban","emoji":"🧥"},
-    {"en":"T-shirt","tr":"Tişört","emoji":"👕"},
-
-    {"en":"Head","tr":"Kafa","emoji":"🧑‍🦲"},
-    {"en":"Hair","tr":"Saç","emoji":"💇‍♂️"},
-    {"en":"Eye","tr":"Göz","emoji":"👁️"},
-    {"en":"Nose","tr":"Burun","emoji":"👃"},
-    {"en":"Mouth","tr":"Ağız","emoji":"👄"},
-    {"en":"Ear","tr":"Kulak","emoji":"👂"},
-    {"en":"Hand","tr":"El","emoji":"✋"},
-    {"en":"Arm","tr":"Kol","emoji":"💪"},
-    {"en":"Leg","tr":"Bacak","emoji":"🦵"},
-    {"en":"Foot","tr":"Ayak","emoji":"🦶"},
-  ];
-
-  let currentIndex = 0;
-  let quiz = [], qIndex = 0, score = 0;
-  let questionIsEnglish = true; // testte soru dili (rastgele)
-
-  // Öğrenme modu elemanları
-  const cardImg = document.getElementById('cardImg');
-  const cardText = document.getElementById('cardText');
-  const card = document.getElementById('card');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const testBtn = document.getElementById('testBtn');
-  const cardControls = document.getElementById('cardControls');
-  const testArea = document.getElementById('testArea');
-  const questionBox = document.getElementById('question');
-  const answersBox = document.getElementById('answers');
-  const scoreDisplay = document.getElementById('scoreDisplay');
-  const backBtn = document.getElementById('backToCardsBtn');
-  const body = document.body;
-
-  function renderCard() {
-    const w = words[currentIndex];
-    cardImg.textContent = w.emoji;
-    cardText.textContent = w.en;
-    // Emoji görseli yerine emoji karakteri kullandım
-    cardImg.style.fontSize = '90px';
-    cardImg.style.userSelect = 'none';
-  }
-
-  prevBtn.onclick = () => {
-    currentIndex = (currentIndex - 1 + words.length) % words.length;
-    renderCard();
-  };
-  nextBtn.onclick = () => {
-    currentIndex = (currentIndex + 1) % words.length;
-    renderCard();
-    speak(words[currentIndex].en);
-  };
-  card.onclick = () => {
-    // Kart tıklanınca dil değiştirir
-    if (cardText.textContent === words[currentIndex].en) cardText.textContent = words[currentIndex].tr;
-    else cardText.textContent = words[currentIndex].en;
-  };
-
-  testBtn.onclick = () => {
-    quiz = words.slice().sort(() => Math.random() - 0.5).slice(0, 20);
-    qIndex = 0;
-    score = 0;
-    cardControls.classList.add('hide');
-    testArea.classList.remove('hide');
-    body.style.backgroundColor = 'var(--bg)';
-    loadQuestion();
-    updateScore();
-  };
-
-  backBtn.onclick = () => {
-    testArea.classList.add('hide');
-    cardControls.classList.remove('hide');
-    renderCard();
-  };
-
-  function updateScore() {
-    scoreDisplay.textContent = `Puan: ${score} / ${quiz.length}   Soru: ${qIndex + 1} / ${quiz.length}`;
-  }
-
-  function speak(text) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US';
-    speechSynthesis.speak(u);
-  }
-
-  function loadQuestion() {
-    clearFeedback();
-    answersBox.innerHTML = '';
-    if (qIndex >= quiz.length) {
-      questionBox.textContent = "Test tamamlandı!";
-      answersBox.innerHTML = '';
-      return;
+    function renderCard() {
+      const w = words[currentIndex];
+      cardEmoji.textContent = w.emoji;
+      cardText.textContent  = w.en;
     }
-    updateScore();
+    prevBtn.onclick = () => { currentIndex = (currentIndex-1+words.length)%words.length; renderCard(); };
+    nextBtn.onclick = () => { currentIndex = (currentIndex+1)%words.length; renderCard(); };
+    cardText.onclick = () => {
+      const w = words[currentIndex];
+      cardText.textContent = cardText.textContent === w.en ? w.tr : w.en;
+    };
 
-    // Soru dili rastgele belirleniyor
-    questionIsEnglish = Math.random() < 0.5;
+    testBtn.onclick = () => {
+      quiz = shuffle(words).slice(0,20);
+      qIndex = 0; score = 0;
+      cardControls.classList.add('hide');
+      testArea.classList.remove('hide');
+      loadQuestion(); updateScore();
+    };
+    backBtn.onclick = () => {
+      testArea.classList.add('hide');
+      cardControls.classList.remove('hide');
+      renderCard();
+      body.style.backgroundColor = 'var(--bg)';
+    };
 
-    const correct = quiz[qIndex];
-    questionBox.textContent = questionIsEnglish ? correct.en : correct.tr;
+    function loadQuestion() {
+      clearFeedback();
+      answersBox.innerHTML = '';
+      if (qIndex >= quiz.length) {
+        questionBox.textContent = `Test tamamlandı! Puan: ${score}/${quiz.length}`;
+        scoreDisplay.textContent = '';
+        return;
+      }
+      updateScore();
+      questionIsEnglish = Math.random() < 0.5;
+      const correct = quiz[qIndex];
+      questionBox.textContent = questionIsEnglish ? correct.en : correct.tr;
 
-    // Şıklar: Doğru cevabı ve 3 yanlış seçeneği alıyoruz
-    const options = [correct];
-    while (options.length < 4) {
-      const r = words[Math.floor(Math.random() * words.length)];
+      const opts = [correct];
+      while (opts.length < 4) {
+        const r = words[Math.floor(Math.random()*words.length)];
+        if (!opts.includes(r)) opts.push(r);
+      }
+      shuffle(opts).forEach((opt,i) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.innerHTML = `<span class="letter">${String.fromCharCode(65+i)}</span>` +
+                        (questionIsEnglish ? opt.tr : opt.en);
+        btn.onclick = () => selectAnswer(btn, opt, correct);
+        answersBox.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(btn, selected, correct) {
+      playSound(selected===correct ? 'correct' : 'wrong');
+      body.style.backgroundColor = selected===correct ? 'var(--correct)' : 'var(--wrong)';
+      if (selected===correct) { btn.classList.add('correct'); score++; }
+      else {
+        btn.classList.add('wrong');
+        Array.from(answersBox.children).forEach(b => {
+          if (b.textContent.includes(questionIsEnglish ? correct.tr : correct.en))
+            b.classList.add('correct');
+        });
+      }
+      Array.from(answersBox.children).forEach(b => {
+        b.disabled = true; b.classList.add('disabled');
+      });
+      updateScore();
+      setTimeout(() => {
+        qIndex++; loadQuestion(); body.style.backgroundColor = 'var(--bg)';
+      }, 1500);
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = `Puan: ${score}/${quiz.length}  Soru: ${qIndex+1}/${quiz.length}`;
+    }
+
+    function playSound(type) {
+      if (!window.audioCtx) window.audioCtx = new (AudioContext||webkitAudioContext)();
+      const ctx = window.audioCtx;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      if (type==='correct') { o.frequency.value=800; }
+      else                 { o.frequency.value=250; }
+      g.gain.setValueAtTime(0.3,ctx.currentTime);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.3);
+    }
+
+    function clearFeedback() { body.style.backgroundColor = 'var(--bg)'; }
+
+    function shuffle(a) {
+      for (let i=a.length-1;i>0;i--) {
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
+    window.addEventListener('DOMContentLoaded', renderCard);
+  </script>
+
+</body>
+</html>
