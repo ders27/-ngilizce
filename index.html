@@ -12,8 +12,8 @@
     .card .text { font-size:2em; margin-top:10px; }
     .controls, .test-controls { margin-top:15px; }
     button { padding:10px 20px; font-size:1em; border:none; border-radius:8px; background:var(--accent); color:#fff; margin:5px; cursor:pointer; }
-    .question { margin:20px auto; padding:15px; font-size:1.5em; border:3px solid var(--primary); border-radius:10px; background:#fff; max-width:300px; }
-    .answers button { display:block; margin:10px auto; padding:12px; font-size:1.2em; border-radius:8px; width:280px; background:#fff; border:2px solid var(--primary); cursor:pointer; transition:background .2s; text-align:left; }
+    .question { margin:20px auto; padding:15px; font-size:1.5em; border:3px solid var(--primary); border-radius:10px; background:#fff; max-width:300px; color: var(--text); }
+    .answers button { display:block; margin:10px auto; padding:12px; font-size:1.2em; border-radius:8px; width:280px; background:#eee; border:2px solid var(--primary); cursor:pointer; transition:background .2s; text-align:left; color: var(--text); font-weight: bold; }
     .correct { background:var(--correct)!important; color:#fff; }
     .wrong { background:var(--wrong)!important; color:#fff; }
     #score { font-size:1.2em; margin-top:10px; }
@@ -59,7 +59,7 @@
       ["Hair","Saç"],["Eye","Göz"],["Nose","Burun"],["Mouth","Ağız"],["Ear","Kulak"],
       ["Hand","El"],["Arm","Kol"],["Leg","Bacak"],["Foot","Ayak"]
     ];
-    const words = wordList.map(([en,tr])=>({en,tr,img:`https://via.placeholder.com/150?text=${encodeURIComponent(en)}`}));
+    const words = wordList.map(([en,tr])=>({en,tr,img:`https://api.dicebear.com/7.x/icons/svg?seed=${encodeURIComponent(en)}`}));
 
     let idx = 0;
     const cardImg = document.getElementById('cardImg'),
