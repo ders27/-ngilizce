@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Çocuklar için İngilizce Kelime Kartları & Test</title>
+  <title>İngilizce Kelime Kartları & Test</title>
   <style>
     :root {
       --primary: #6a0dad;
@@ -49,188 +49,296 @@
       align-items: center;
       user-select: none;
       padding: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
       margin-bottom: 25px;
-      transition: opacity 0.3s ease;
     }
-    .card img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      margin-bottom: 15px;
-      pointer-events: none;
+    .card .emoji {
+      font-size: 4.5em;
+      margin-bottom: 10px;
     }
-    .card .text {
-      font-size: 2.8em;
+    .card .word-en {
+      font-size: 2.6em;
       font-weight: 700;
       color: var(--primary);
-      user-select: none;
+    }
+    .card .word-tr {
+      font-size: 1.8em;
+      margin-top: 6px;
+      color: #555;
+      user-select: text;
     }
     .controls, .test-controls {
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
     button {
       font-size: var(--btn-font);
-      padding: 15px 30px;
-      border-radius: 14px;
+      padding: 14px 28px;
+      border-radius: 12px;
       border: none;
       background: var(--accent);
       color: white;
       cursor: pointer;
-      font-weight: 700;
       user-select: none;
-      box-shadow: 0 3px 7px rgba(0,0,0,0.15);
-      transition: transform 0.15s ease, background-color 0.3s ease;
-      min-width: 120px;
+      transition: transform 0.15s ease;
+      min-width: 140px;
     }
     button:hover:not(:disabled) {
-      background-color: #e59400;
-      transform: scale(1.08);
+      transform: scale(1.05);
     }
     button:disabled {
+      background: #aaa;
       cursor: default;
-      opacity: 0.6;
-      background-color: #bbb;
       transform: none;
     }
     .hide {
-      display: none !important;
+      display: none;
     }
     .question-box {
       width: 90vw;
       max-width: 360px;
-      min-height: 110px;
-      border: 5px solid var(--primary);
-      border-radius: 18px;
+      min-height: 120px;
+      margin: 0 auto 20px;
+      border: 4px solid var(--primary);
+      border-radius: 15px;
       background: white;
-      font-size: 1.9em;
-      font-weight: 700;
+      font-size: 2em;
+      font-weight: 600;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       user-select: none;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
     .answers {
-      width: 90vw;
-      max-width: 360px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       margin-bottom: 20px;
+      align-items: center;
     }
     .answer-btn {
       position: relative;
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 18px 24px 18px 60px;
+      gap: 14px;
+      padding: 16px 20px 16px 50px;
       font-weight: 700;
-      font-size: 1.6em;
-      border-radius: 14px;
-      border: 4px solid var(--primary);
-      background: white;
-      color: var(--primary);
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 1.7em;
+      width: 90vw;
+      max-width: 340px;
       text-align: left;
+      user-select: none;
+      border: 3px solid var(--primary);
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
     }
     .answer-btn span.letter {
       position: absolute;
-      left: 18px;
+      left: 15px;
       top: 50%;
       transform: translateY(-50%);
-      width: 42px;
-      height: 42px;
-      line-height: 42px;
+      width: 38px;
+      height: 38px;
+      line-height: 38px;
       border-radius: 50%;
       background: var(--primary);
       color: white;
+      text-align: center;
       font-size: 1.4em;
-      font-weight: 900;
+      font-weight: 700;
       user-select: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
     .answer-btn.correct {
       background-color: var(--correct);
       border-color: var(--correct);
       color: white;
-      cursor: default;
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(40,167,69,0.8);
     }
     .answer-btn.wrong {
       background-color: var(--wrong);
       border-color: var(--wrong);
       color: white;
-      cursor: default;
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(220,53,69,0.8);
     }
     .answer-btn.disabled {
-      pointer-events: none;
       cursor: default;
-      opacity: 0.8;
+      pointer-events: none;
     }
     #scoreDisplay {
       font-size: 1.5em;
+      margin-top: 10px;
       color: var(--primary);
-      margin-bottom: 20px;
+      font-weight: 600;
       user-select: none;
     }
-    @media (min-width: 500px) {
-      body {
-        padding: 40px 0;
+
+    @media (min-width: 600px) {
+      button {
+        min-width: 160px;
+      }
+      .answer-btn {
+        font-size: 1.9em;
+        max-width: 400px;
+      }
+      .question-box {
+        font-size: 2.4em;
+        max-width: 400px;
       }
     }
   </style>
 </head>
 <body>
-
   <h1>İngilizce Kelime Kartları</h1>
 
-  <section id="learningMode">
-    <div class="card" id="card" role="region" aria-label="Kelime Kartı">
-      <img id="cardImg" src="" alt="Kelime Görseli" aria-hidden="true" />
-      <div class="text" id="cardText" aria-live="polite" aria-atomic="true">Yükleniyor...</div>
-    </div>
-    <div class="controls" id="cardControls">
-      <button id="prevBtn" aria-label="Önceki kelime">Önceki</button>
-      <button id="nextBtn" aria-label="Sonraki kelime">Sonraki</button>
-      <button id="testBtn" aria-label="Test moduna geç">Teste Geç</button>
-    </div>
-  </section>
+  <!-- Öğrenme modu -->
+  <div class="card" id="card">
+    <div class="emoji" id="cardEmoji">🍎</div>
+    <div class="word-en" id="cardWordEn">Apple</div>
+    <div class="word-tr" id="cardWordTr">Elma</div>
+  </div>
 
-  <section id="testMode" class="hide" aria-live="polite" aria-atomic="true">
+  <div class="controls" id="cardControls">
+    <button id="prevBtn">Önceki</button>
+    <button id="nextBtn">Sonraki</button>
+    <button id="testBtn">Teste Geç</button>
+  </div>
+
+  <!-- Test modu -->
+  <div id="testArea" class="hide">
     <h2>20 Soruluk Kelime Testi</h2>
-    <div class="question-box" id="question" role="heading" aria-level="3">Hazırlanıyor...</div>
-    <div class="answers" id="answers" role="list"></div>
-    <div id="scoreDisplay" aria-live="polite" aria-atomic="true">Puan: 0</div>
-    <button id="backToCardsBtn" aria-label="Kartlara geri dön">Kartlara Geri Dön</button>
-  </section>
+    <div class="question-box" id="question">Hazırlanıyor...</div>
+    <div class="answers" id="answers"></div>
+    <div id="scoreDisplay">Puan: 0</div>
+    <button id="backToCardsBtn">Kartlara Geri Dön</button>
+  </div>
 
   <script>
-    // Kelimeler (OpenMoji tarzı emojilerle desteklenmiş)
+    // 100 kelime listesi (emoji ile)
     const words = [
-      {en:"Apple", tr:"Elma", img:"https://openmoji.org/data/color/svg/1F34E.svg", emoji:"🍎"},
-      {en:"Dog", tr:"Köpek", img:"https://openmoji.org/data/color/svg/1F436.svg", emoji:"🐶"},
-      {en:"Cat", tr:"Kedi", img:"https://openmoji.org/data/color/svg/1F431.svg", emoji:"🐱"},
-      {en:"Foot", tr:"Ayak", img:"https://openmoji.org/data/color/svg/1F9B6.svg", emoji:"🦶"},
-      {en:"Star", tr:"Yıldız", img:"https://openmoji.org/data/color/svg/2B50.svg", emoji:"⭐️"},
-      {en:"Sun", tr:"Güneş", img:"https://openmoji.org/data/color/svg/2600.svg", emoji:"☀️"},
-      {en:"Moon", tr:"Ay", img:"https://openmoji.org/data/color/svg/1F319.svg", emoji:"🌙"},
-      {en:"Book", tr:"Kitap", img:"https://openmoji.org/data/color/svg/1F4D6.svg", emoji:"📖"},
-      {en:"Car", tr:"Araba", img:"https://openmoji.org/data/color/svg/1F697.svg", emoji:"🚗"},
-      {en:"Fish", tr:"Balık", img:"https://openmoji.org/data/color/svg/1F41F.svg", emoji:"🐟"}
-      // İstersen kelime listesine ekleme yapabilirsin.
+      // Temel ifadeler
+      {en:"Hello", tr:"Merhaba", emoji:"👋"},
+      {en:"Goodbye", tr:"Hoşça kal", emoji:"👋"},
+      {en:"Please", tr:"Lütfen", emoji:"🙏"},
+      {en:"Thank you", tr:"Teşekkür ederim", emoji:"🙏"},
+      {en:"Sorry", tr:"Özür dilerim", emoji:"😔"},
+      {en:"Yes", tr:"Evet", emoji:"👍"},
+      {en:"No", tr:"Hayır", emoji:"✋"},
+      {en:"Welcome", tr:"Hoş geldin", emoji:"🤗"},
+      {en:"Excuse me", tr:"Afedersiniz", emoji:"🙏"},
+      {en:"OK", tr:"Tamam", emoji:"👌"},
+
+      // Aile ve İnsanlar
+      {en:"Mother", tr:"Anne", emoji:"👩‍🦰"},
+      {en:"Father", tr:"Baba", emoji:"👨‍🦰"},
+      {en:"Sister", tr:"Kız kardeş", emoji:"👧"},
+      {en:"Brother", tr:"Erkek kardeş", emoji:"👦"},
+      {en:"Friend", tr:"Arkadaş", emoji:"🤝"},
+      {en:"Baby", tr:"Bebek", emoji:"👶"},
+      {en:"Girl", tr:"Kız", emoji:"👧"},
+      {en:"Boy", tr:"Erkek", emoji:"👦"},
+      {en:"Family", tr:"Aile", emoji:"👪"},
+      {en:"People", tr:"İnsanlar", emoji:"🧑"},
+
+      // Ev ve Eşyalar
+      {en:"House", tr:"Ev", emoji:"🏠"},
+      {en:"Room", tr:"Oda", emoji:"🚪"},
+      {en:"Bed", tr:"Yatak", emoji:"🛏️"},
+      {en:"Table", tr:"Masa", emoji:"🛋️"},
+      {en:"Chair", tr:"Sandalye", emoji:"🪑"},
+      {en:"Door", tr:"Kapı", emoji:"🚪"},
+      {en:"Window", tr:"Pencere", emoji:"🪟"},
+      {en:"TV", tr:"Televizyon", emoji:"📺"},
+      {en:"Lamp", tr:"Lamba", emoji:"💡"},
+      {en:"Carpet", tr:"Halı", emoji:"🧶"},
+
+      // Okul ve Eşyalar
+      {en:"School", tr:"Okul", emoji:"🏫"},
+      {en:"Teacher", tr:"Öğretmen", emoji:"👩‍🏫"},
+      {en:"Student", tr:"Öğrenci", emoji:"👨‍🎓"},
+      {en:"Book", tr:"Kitap", emoji:"📚"},
+      {en:"Pen", tr:"Tükenmez kalem", emoji:"🖊️"},
+      {en:"Pencil", tr:"Kurşun kalem", emoji:"✏️"},
+      {en:"Bag", tr:"Çanta", emoji:"🎒"},
+      {en:"Ruler", tr:"Cetvel", emoji:"📏"},
+      {en:"Eraser", tr:"Silgi", emoji:"🩹"},
+      {en:"Board", tr:"Tahta", emoji:"📋"},
+
+      // Hayvanlar
+      {en:"Dog", tr:"Köpek", emoji:"🐶"},
+      {en:"Cat", tr:"Kedi", emoji:"🐱"},
+      {en:"Bird", tr:"Kuş", emoji:"🐦"},
+      {en:"Fish", tr:"Balık", emoji:"🐟"},
+      {en:"Cow", tr:"İnek", emoji:"🐄"},
+      {en:"Horse", tr:"At", emoji:"🐴"},
+      {en:"Duck", tr:"Ördek", emoji:"🦆"},
+      {en:"Lion", tr:"Aslan", emoji:"🦁"},
+      {en:"Elephant", tr:"Fil", emoji:"🐘"},
+      {en:"Monkey", tr:"Maymun", emoji:"🐒"},
+
+      // Yiyecek ve İçecekler
+      {en:"Apple", tr:"Elma", emoji:"🍎"},
+      {en:"Banana", tr:"Muz", emoji:"🍌"},
+      {en:"Bread", tr:"Ekmek", emoji:"🍞"},
+      {en:"Water", tr:"Su", emoji:"💧"},
+      {en:"Milk", tr:"Süt", emoji:"🥛"},
+      {en:"Egg", tr:"Yumurta", emoji:"🥚"},
+      {en:"Cheese", tr:"Peynir", emoji:"🧀"},
+      {en:"Meat", tr:"Et", emoji:"🥩"},
+      {en:"Rice", tr:"Pirinç", emoji:"🍚"},
+      {en:"Cake", tr:"Kek", emoji:"🍰"},
+
+      // Renkler
+      {en:"Red", tr:"Kırmızı", emoji:"🔴"},
+      {en:"Blue", tr:"Mavi", emoji:"🔵"},
+      {en:"Green", tr:"Yeşil", emoji:"🟢"},
+      {en:"Yellow", tr:"Sarı", emoji:"🟡"},
+      {en:"Black", tr:"Siyah", emoji:"⚫"},
+      {en:"White", tr:"Beyaz", emoji:"⚪"},
+      {en:"Orange", tr:"Turuncu", emoji:"🟠"},
+      {en:"Pink", tr:"Pembe", emoji:"🌸"},
+      {en:"Brown", tr:"Kahverengi", emoji:"🟤"},
+      {en:"Purple", tr:"Mor", emoji:"🟣"},
+
+      // Zaman ve Sayılar
+      {en:"One", tr:"Bir", emoji:"1️⃣"},
+      {en:"Two", tr:"İki", emoji:"2️⃣"},
+      {en:"Three", tr:"Üç", emoji:"3️⃣"},
+      {en:"Four", tr:"Dört", emoji:"4️⃣"},
+      {en:"Five", tr:"Beş", emoji:"5️⃣"},
+      {en:"Day", tr:"Gün", emoji:"📅"},
+      {en:"Night", tr:"Gece", emoji:"🌙"},
+      {en:"Morning", tr:"Sabah", emoji:"🌅"},
+      {en:"Evening", tr:"Akşam", emoji:"🌆"},
+      {en:"Today", tr:"Bugün", emoji:"📅"},
+
+      // Giysiler
+      {en:"Shirt", tr:"Gömlek", emoji:"👕"},
+      {en:"Pants", tr:"Pantolon", emoji:"👖"},
+      {en:"Dress", tr:"Elbise", emoji:"👗"},
+      {en:"Skirt", tr:"Etek", emoji:"👗"},
+      {en:"Shoes", tr:"Ayakkabı", emoji:"👟"},
+      {en:"Socks", tr:"Çorap", emoji:"🧦"},
+      {en:"Hat", tr:"Şapka", emoji:"🎩"},
+      {en:"Jacket", tr:"Ceket", emoji:"🧥"},
+      {en:"Coat", tr:"Kaban", emoji:"🧥"},
+      {en:"T-shirt", tr:"Tişört", emoji:"👕"},
+
+      // Vücut Bölümleri
+      {en:"Head", tr:"Kafa", emoji:"🧑‍🦰"},
+      {en:"Hair", tr:"Saç", emoji:"💇‍♂️"},
+      {en:"Eye", tr:"Göz", emoji:"👁️"},
+      {en:"Nose", tr:"Burun", emoji:"👃"},
+      {en:"Mouth", tr:"Ağız", emoji:"👄"},
+      {en:"Ear", tr:"Kulak", emoji:"👂"},
+      {en:"Hand", tr:"El", emoji:"✋"},
+      {en:"Arm", tr:"Kol", emoji:"💪"},
+      {en:"Leg", tr:"Bacak", emoji:"🦵"},
+      {en:"Foot", tr:"Ayak", emoji:"🦶"},
     ];
 
     let currentIndex = 0;
@@ -239,200 +347,68 @@
     let score = 0;
 
     // DOM elemanları
-    const cardImg = document.getElementById('cardImg');
-    const cardText = document.getElementById('cardText');
+    const cardEmoji = document.getElementById('cardEmoji');
+    const cardWordEn = document.getElementById('cardWordEn');
+    const cardWordTr = document.getElementById('cardWordTr');
     const card = document.getElementById('card');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const testBtn = document.getElementById('testBtn');
     const cardControls = document.getElementById('cardControls');
-    const learningMode = document.getElementById('learningMode');
-    const testMode = document.getElementById('testMode');
+    const testArea = document.getElementById('testArea');
     const questionBox = document.getElementById('question');
     const answersBox = document.getElementById('answers');
     const scoreDisplay = document.getElementById('scoreDisplay');
     const backBtn = document.getElementById('backToCardsBtn');
     const body = document.body;
 
-    // Kart gösterimi
+    // Öğrenme modunda kartı güncelle
     function renderCard() {
       const w = words[currentIndex];
-      // Emoji ile kelimeyi destekle
-      cardImg.src = w.img;
-      cardImg.alt = `${w.en} kelimesinin görseli`; 
-      cardText.textContent = w.en + " " + w.emoji;
+      cardEmoji.textContent = w.emoji;
+      cardWordEn.textContent = w.en;
+      cardWordTr.textContent = w.tr;
     }
 
+    // Önceki kart
     prevBtn.onclick = () => {
       currentIndex = (currentIndex - 1 + words.length) % words.length;
       renderCard();
       speak(words[currentIndex].en);
     };
 
+    // Sonraki kart
     nextBtn.onclick = () => {
       currentIndex = (currentIndex + 1) % words.length;
       renderCard();
       speak(words[currentIndex].en);
     };
 
+    // Kart üzerine tıklayınca İngilizce / Türkçe arasında geçiş (opsiyonel)
     card.onclick = () => {
-      // İngilizce/Türkçe toggle
-      const currentWord = words[currentIndex];
-      if (cardText.textContent.startsWith(currentWord.en)) {
-        cardText.textContent = currentWord.tr + " " + currentWord.emoji;
+      if(cardWordEn.style.display !== "none"){
+        cardWordEn.style.display = "none";
+        cardWordTr.style.display = "block";
       } else {
-        cardText.textContent = currentWord.en + " " + currentWord.emoji;
+        cardWordEn.style.display = "block";
+        cardWordTr.style.display = "none";
       }
     };
 
-    // Konuşma (İngilizce kelime telaffuzu)
-    function speak(text) {
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
-        speechSynthesis.cancel(); // Öncekini iptal et
-        speechSynthesis.speak(utterance);
-      }
-    }
-
-    // Teste geçiş
+    // Test moduna geçiş
     testBtn.onclick = () => {
-      quiz = shuffle(words).slice(0, 20);
+      quiz = words.slice().sort(() => Math.random() - 0.5).slice(0,20);
       qIndex = 0;
       score = 0;
-      learningMode.classList.add('hide');
-      testMode.classList.remove('hide');
+      cardControls.classList.add('hide');
+      card.classList.add('hide');  // kart öğrenme modunu gizle
+      testArea.classList.remove('hide');
       body.style.backgroundColor = 'var(--bg)';
       loadQuestion();
       updateScore();
     };
 
-    // Kartlara geri dön
+    // Test modundan öğrenme moduna dönüş
     backBtn.onclick = () => {
-      testMode.classList.add('hide');
-      learningMode.classList.remove('hide');
-      renderCard();
-      body.style.backgroundColor = 'var(--bg)';
-    };
-
-    // Soru ve şıkları yükle
-    function loadQuestion() {
-      clearFeedback();
-      answersBox.innerHTML = '';
-      if (qIndex >= quiz.length) {
-        questionBox.textContent = "Test tamamlandı! Puanınız: " + score + " / " + quiz.length;
-        scoreDisplay.textContent = "";
-        return;
-      }
-      updateScore();
-      const correct = quiz[qIndex];
-      questionBox.textContent = correct.tr;
-
-      // 4 seçenek: 1 doğru, 3 yanlış
-      let options = [correct];
-      while (options.length < 4) {
-        const rand = words[Math.floor(Math.random() * words.length)];
-        if (!options.includes(rand)) options.push(rand);
-      }
-      options = shuffle(options);
-
-      // Butonları oluştur
-      options.forEach((opt, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + i)}</span>${opt.en} ${opt.emoji}`;
-        btn.onclick = () => selectAnswer(btn, opt, correct);
-        answersBox.appendChild(btn);
-      });
-    }
-
-    // Cevap seçme işlemi
-    let feedbackTimeout;
-    function selectAnswer(btn, selected, correct) {
-      // Sesli geri bildirim
-      playSound(selected === correct ? 'correct' : 'wrong');
-
-      // Arka plan rengi
-      body.style.backgroundColor = selected === correct ? 'var(--correct)' : 'var(--wrong)';
-
-      // Buton renkleri
-      if (selected === correct) {
-        btn.classList.add('correct');
-        score++;
-      } else {
-        btn.classList.add('wrong');
-        // Doğru cevabı göster
-        Array.from(answersBox.children).forEach(b => {
-          if (b.textContent.includes(correct.en)) b.classList.add('correct');
-        });
-      }
-      // Tüm butonları devre dışı bırak
-      Array.from(answersBox.children).forEach(b => {
-        b.disabled = true;
-        b.classList.add('disabled');
-      });
-
-      updateScore();
-
-      // Sonraki soruya geç
-      feedbackTimeout = setTimeout(() => {
-        body.style.backgroundColor = 'var(--bg)';
-        qIndex++;
-        loadQuestion();
-      }, 1500);
-    }
-
-    // Skoru güncelle
-    function updateScore() {
-      scoreDisplay.textContent = `Puan: ${score} / ${quiz.length}   Soru: ${qIndex + 1} / ${quiz.length}`;
-    }
-
-    // Rastgele karıştırma fonksiyonu (Fisher-Yates)
-    function shuffle(arr) {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    // Ses oynatma (doğru ve yanlış için kısa uyarılar)
-    function playSound(type) {
-      // AudioContext tek seferde oluşturulmalı (mobil uyumluluk için)
-      if (!window.audioCtx) {
-        window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      const ctx = window.audioCtx;
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
-
-      if (type === 'correct') {
-        oscillator.frequency.value = 800; // neşeli ding tonu
-        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.3);
-      } else {
-        oscillator.frequency.value = 250; // buzzer tonu
-        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.3);
-      }
-    }
-
-    // Temizleme
-    function clearFeedback() {
-      clearTimeout(feedbackTimeout);
-      body.style.backgroundColor = 'var(--bg)';
-    }
-
-    // Sayfa yüklendiğinde öğrenme modunu göster
-    window.addEventListener('DOMContentLoaded', () => {
-      renderCard();
-    });
-  </script>
-
-</body>
-</html>
+      testArea.classList.add('hide');
+      cardControls.classList.remove('hide');
