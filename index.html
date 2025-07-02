@@ -4,74 +4,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kelime Kartları ve Test</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f0ff;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      color: #6a0dad;
-    }
-    .card {
-      width: 320px;
-      margin: 20px auto;
-      border: 4px solid #6a0dad;
-      border-radius: 12px;
-      background: white;
-      padding: 10px;
-      display: none;
-    }
-    .card img {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-    }
-    .card .text {
-      font-size: 2em;
-      margin-top: 10px;
-    }
-    .controls, .test-controls {
-      margin-top: 15px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
-      border-radius: 8px;
-      background: #6a0dad;
-      color: white;
-      margin: 5px;
-      cursor: pointer;
-    }
-    .question {
-      margin: 20px auto;
-      padding: 15px;
-      font-size: 1.5em;
-      border: 3px solid #6a0dad;
-      border-radius: 10px;
-      background: white;
-      max-width: 300px;
-    }
-    .answers button {
-      display: block;
-      margin: 10px auto;
-      padding: 12px;
-      font-size: 1.2em;
-      border-radius: 8px;
-      width: 280px;
-      background: white;
-      border: 2px solid #6a0dad;
-      cursor: pointer;
-    }
-    .correct {
-      background-color: #28a745 !important;
-      color: white;
-    }
-    .wrong {
-      background-color: #dc3545 !important;
-      color: white;
-    }
+    :root { --primary:#6a0dad; --accent:#ffa500; --bg:#f4f0ff; --text:#333; --correct:#28a745; --wrong:#dc3545; }
+    body { font-family:Arial,sans-serif; background:var(--bg); color:var(--text); text-align:center; padding:20px; transition:background-color .3s; }
+    h1 { color:var(--primary); font-size:2em; }
+    .card { width:320px; margin:20px auto; border:4px solid var(--primary); border-radius:12px; background:#fff; padding:10px; display:flex; flex-direction:column; align-items:center; }
+    .card img { width:80px; height:80px; object-fit:contain; }
+    .card .text { font-size:2em; margin-top:10px; }
+    .controls, .test-controls { margin-top:15px; }
+    button { padding:10px 20px; font-size:1em; border:none; border-radius:8px; background:var(--accent); color:#fff; margin:5px; cursor:pointer; }
+    .question { margin:20px auto; padding:15px; font-size:1.5em; border:3px solid var(--primary); border-radius:10px; background:#fff; max-width:300px; }
+    .answers button { display:block; margin:10px auto; padding:12px; font-size:1.2em; border-radius:8px; width:280px; background:#fff; border:2px solid var(--primary); cursor:pointer; transition:background .2s; }
+    .correct { background:var(--correct)!important; color:#fff; }
+    .wrong { background:var(--wrong)!important; color:#fff; }
+    #score { font-size:1.2em; margin-top:10px; }
   </style>
 </head>
 <body>
@@ -81,127 +26,129 @@
     <div class="text" id="cardText">Yükleniyor...</div>
   </div>
   <div class="controls">
-    <button id="showCard">Kartları Göster</button>
-    <button id="nextWord">Sonraki</button>
+    <button id="prevBtn">Önceki Kelime</button>
+    <button id="nextBtn">Sonraki Kelime</button>
     <button id="startTest">Teste Başla</button>
   </div>  <div id="test" style="display:none">
-    <div class="question" id="question">Soru</div>
+    <div class="question" id="question">Soru metni</div>
     <div class="answers" id="answers"></div>
-    <div id="score">Puan: 0</div>
+    <div id="score">Puan: 0 / 0  Soru: 0 / 0</div>
     <div class="test-controls">
       <button id="exitTest">Kartlara Dön</button>
     </div>
   </div>  <script>
-    const words = [
-      {en: "Apple", tr: "Elma", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/120px-Red_Apple.jpg"},
-      {en: "Dog", tr: "Köpek", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Golde33443.jpg/120px-Golde33443.jpg"},
-      {en: "Cat", tr: "Kedi", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/81_INF_DIV_SSI.jpg/120px-81_INF_DIV_SSI.jpg"},
-      {en: "Foot", tr: "Ayak", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Foot_icon.png/120px-Foot_icon.png"}
+    // 100 temel kelime ve img URL'leri placeholderla otomatik oluşturuluyor
+    const wordList = [
+      ["Hello","Merhaba"],["Goodbye","Hoşça kal"],["Please","Lütfen"],["Thank you","Teşekkür ederim"],["Sorry","Özür dilerim"],
+      ["Yes","Evet"],["No","Hayır"],["Welcome","Hoş geldin"],["Excuse me","Afedersiniz"],["OK","Tamam"],
+      ["Mother","Anne"],["Father","Baba"],["Sister","Kız kardeş"],["Brother","Erkek kardeş"],["Friend","Arkadaş"],
+      ["Baby","Bebek"],["Girl","Kız"],["Boy","Erkek"],["Family","Aile"],["People","İnsanlar"],
+      ["House","Ev"],["Room","Oda"],["Bed","Yatak"],["Table","Masa"],["Chair","Sandalye"],
+      ["Door","Kapı"],["Window","Pencere"],["TV","Televizyon"],["Lamp","Lamba"],["Carpet","Halı"],
+      ["School","Okul"],["Teacher","Öğretmen"],["Student","Öğrenci"],["Book","Kitap"],["Pen","Tükenmez kalem"],
+      ["Pencil","Kurşun kalem"],["Bag","Çanta"],["Ruler","Cetvel"],["Eraser","Silgi"],["Board","Tahta"],
+      ["Dog","Köpek"],["Cat","Kedi"],["Bird","Kuş"],["Fish","Balık"],["Cow","İnek"],["Horse","At"],
+      ["Duck","Ördek"],["Lion","Aslan"],["Elephant","Fil"],["Monkey","Maymun"],["Apple","Elma"],
+      ["Banana","Muz"],["Bread","Ekmek"],["Water","Su"],["Milk","Süt"],["Egg","Yumurta"],
+      ["Cheese","Peynir"],["Meat","Et"],["Rice","Pirinç"],["Cake","Kek"],["Red","Kırmızı"],
+      ["Blue","Mavi"],["Green","Yeşil"],["Yellow","Sarı"],["Black","Siyah"],["White","Beyaz"],
+      ["Orange","Turuncu"],["Pink","Pembe"],["Brown","Kahverengi"],["Purple","Mor"],["One","Bir"],
+      ["Two","İki"],["Three","Üç"],["Four","Dört"],["Five","Beş"],["Day","Gün"],
+      ["Night","Gece"],["Morning","Sabah"],["Evening","Akşam"],["Today","Bugün"],["Shirt","Gömlek"],
+      ["Pants","Pantolon"],["Dress","Elbise"],["Skirt","Etek"],["Shoes","Ayakkabı"],["Socks","Çorap"],
+      ["Hat","Şapka"],["Jacket","Ceket"],["Coat","Kaban"],["T-shirt","Tişört"],["Head","Kafa"],
+      ["Hair","Saç"],["Eye","Göz"],["Nose","Burun"],["Mouth","Ağız"],["Ear","Kulak"],
+      ["Hand","El"],["Arm","Kol"],["Leg","Bacak"],["Foot","Ayak"]
     ];
+    const words = wordList.map(([en,tr])=>({en,tr,img:`https://via.placeholder.com/80?text=${encodeURIComponent(en)}`}));
 
-    let index = 0;
-    let showingEnglish = true;
-    const card = document.getElementById('card');
-    const cardImg = document.getElementById('cardImg');
-    const cardText = document.getElementById('cardText');
-    const showCardBtn = document.getElementById('showCard');
-    const nextWordBtn = document.getElementById('nextWord');
-    const testArea = document.getElementById('test');
-    const questionBox = document.getElementById('question');
-    const answersBox = document.getElementById('answers');
-    const startTestBtn = document.getElementById('startTest');
-    const scoreBox = document.getElementById('score');
-    const exitTestBtn = document.getElementById('exitTest');
+    let idx = 0;
+    const cardImg = document.getElementById('cardImg'),
+          cardText = document.getElementById('cardText'),
+          prevBtn  = document.getElementById('prevBtn'),
+          nextBtn  = document.getElementById('nextBtn'),
+          startTestBtn = document.getElementById('startTest'),
+          cardEl = document.getElementById('card'),
+          controlsEl = document.querySelector('.controls'),
+          testEl = document.getElementById('test'),
+          questionBox = document.getElementById('question'),
+          answersBox = document.getElementById('answers'),
+          scoreBox = document.getElementById('score'),
+          exitTestBtn = document.getElementById('exitTest');
 
-    function showCard() {
-      const word = words[index];
-      cardImg.src = word.img;
-      cardText.textContent = showingEnglish ? word.en : word.tr;
-      card.style.display = 'block';
+    function pronounce(text) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      speechSynthesis.speak(u);
     }
 
-    showCardBtn.onclick = () => {
-      showingEnglish = !showingEnglish;
-      showCard();
-    };
+    function renderCard() {
+      const w = words[idx];
+      cardImg.src = w.img;
+      cardText.textContent = w.en;
+      pronounce(w.en);
+    }
 
-    nextWordBtn.onclick = () => {
-      index = (index + 1) % words.length;
-      showingEnglish = true;
-      showCard();
-    };
+    prevBtn.onclick = () => { idx = (idx-1+words.length)%words.length; renderCard(); };
+    nextBtn.onclick = () => { idx = (idx+1)%words.length; renderCard(); };
 
     startTestBtn.onclick = () => {
-      card.style.display = 'none';
-      testArea.style.display = 'block';
-      startTest();
+      controlsEl.style.display = 'none';
+      testEl.style.display = 'block';
+      initTest();
     };
-
     exitTestBtn.onclick = () => {
-      testArea.style.display = 'none';
-      card.style.display = 'block';
-      index = 0;
-      showCard();
+      testEl.style.display = 'none';
+      controlsEl.style.display = 'block';
+      renderCard();
     };
 
-    function playSound(correct) {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      oscillator.connect(gain);
-      gain.connect(audioCtx.destination);
-      oscillator.type = 'sine';
-      oscillator.frequency.value = correct ? 700 : 200;
-      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.5);
+    // TEST
+    let quiz = [], q = 0, score = 0;
+    function initTest() {
+      quiz = words.slice().sort(()=>Math.random()-0.5).slice(0,20);
+      q = 0; score = 0;
+      nextQ();
     }
-
-    function startTest() {
-      let currentQuestion = 0;
-      let score = 0;
-      const shuffled = [...words].sort(() => Math.random() - 0.5);
-
-      function askQuestion() {
-        if (currentQuestion >= shuffled.length) {
-          questionBox.textContent = 'Test Bitti!';
-          answersBox.innerHTML = '';
-          return;
-        }
-        const correct = shuffled[currentQuestion];
-        questionBox.textContent = correct.tr;
-        const options = [correct];
-        while (options.length < 4) {
-          const random = words[Math.floor(Math.random() * words.length)];
-          if (!options.includes(random)) options.push(random);
-        }
-        const shuffledOptions = options.sort(() => Math.random() - 0.5);
-        answersBox.innerHTML = '';
-        shuffledOptions.forEach((opt) => {
-          const btn = document.createElement('button');
-          btn.textContent = opt.en;
-          btn.onclick = () => {
-            if (opt === correct) {
-              btn.classList.add('correct');
-              playSound(true);
-              score++;
-            } else {
-              btn.classList.add('wrong');
-              playSound(false);
-            }
-            Array.from(answersBox.children).forEach(b => b.disabled = true);
-            setTimeout(() => {
-              currentQuestion++;
-              scoreBox.textContent = `Puan: ${score}`;
-              askQuestion();
-            }, 1200);
-          };
-          answersBox.appendChild(btn);
-        });
+    function playTone(correct) {
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = correct ? 880 : 220;
+      g.gain.setValueAtTime(0.5,ctx.currentTime);
+      o.start(); o.stop(ctx.currentTime+0.2);
+    }
+    function nextQ() {
+      answersBox.innerHTML = '';
+      if (q>=quiz.length) {
+        questionBox.textContent = 'Test tamamlandı!';
+        scoreBox.textContent = `Puan: ${score}/${quiz.length}`;
+        return;
       }
-      askQuestion();
+      const w = quiz[q];
+      questionBox.textContent = w.en;
+      scoreBox.textContent = `Puan: ${score}/${quiz.length} Soru: ${q+1}/${quiz.length}`;
+      let opts = [w];
+      while(opts.length<4) {
+        const r = words[Math.floor(Math.random()*words.length)];
+        if(!opts.includes(r)) opts.push(r);
+      }
+      opts.sort(()=>Math.random()-0.5);
+      opts.forEach(o=>{
+        const btn = document.createElement('button');
+        btn.textContent = o.tr;
+        btn.onclick = ()=>{
+          btn.classList.add(o===w?'correct':'wrong');
+          playTone(o===w);
+          if(o===w) score++;
+          q++;
+          setTimeout(nextQ,500);
+        };
+        answersBox.appendChild(btn);
+      });
     }
 
-    showCard();
+    // İlk kart göster
+    renderCard();
   </script></body>
 </html>
