@@ -1,22 +1,100 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kelime Kartları ve Test</title>
   <style>
-    :root { --primary:#6a0dad; --accent:#ffa500; --bg:#f4f0ff; --text:#333; --correct:#28a745; --wrong:#dc3545; }
-    body { font-family:Arial,sans-serif; background:var(--bg); color:var(--text); text-align:center; padding:20px; transition:background-color .3s; }
-    h1 { color:var(--primary); font-size:2em; }
-    .card { width:320px; margin:20px auto; border:4px solid var(--primary); border-radius:12px; background:#fff; padding:10px; display:flex; flex-direction:column; align-items:center; }
-    .card img { width:150px; height:150px; object-fit:contain; margin-bottom:10px; }
-    .card .text { font-size:2em; margin-top:10px; }
-    .controls, .test-controls { margin-top:15px; }
-    button { padding:10px 20px; font-size:1em; border:none; border-radius:8px; background:var(--accent); color:#fff; margin:5px; cursor:pointer; }
-    .question { margin:20px auto; padding:15px; font-size:1.5em; border:3px solid var(--primary); border-radius:10px; background:#fff; max-width:300px; color: var(--text); }
-    .answers button { display:block; margin:10px auto; padding:12px; font-size:1.2em; border-radius:8px; width:280px; background:#eee; border:2px solid var(--primary); cursor:pointer; transition:background .2s; text-align:left; color: var(--text); font-weight: bold; }
-    .correct { background:var(--correct)!important; color:#fff; }
-    .wrong { background:var(--wrong)!important; color:#fff; }
-    #score { font-size:1.2em; margin-top:10px; }
+    :root {
+      --primary: #6a0dad;
+      --accent: #ffa500;
+      --bg: #f4f0ff;
+      --text: #333;
+      --correct: #28a745;
+      --wrong: #dc3545;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: var(--primary);
+      font-size: 2em;
+    }
+    .card {
+      width: 320px;
+      margin: 20px auto;
+      border: 4px solid var(--primary);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .card .text {
+      font-size: 2em;
+      margin-top: 10px;
+    }
+    .controls button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      margin: 5px;
+      cursor: pointer;
+    }
+    #test {
+      display: none;
+    }
+    .question {
+      margin: 20px auto;
+      padding: 15px;
+      font-size: 1.5em;
+      border: 3px solid var(--primary);
+      border-radius: 10px;
+      background: #fff;
+      max-width: 300px;
+    }
+    .answers button {
+      display: block;
+      margin: 10px auto;
+      padding: 12px;
+      font-size: 1.2em;
+      border-radius: 8px;
+      width: 280px;
+      background: #eee;
+      border: 2px solid var(--primary);
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: left;
+      color: var(--text);
+      font-weight: bold;
+    }
+    .answers button.correct {
+      background: var(--correct) !important;
+      color: #fff;
+    }
+    .answers button.wrong {
+      background: var(--wrong) !important;
+      color: #fff;
+    }
+    #score {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -29,55 +107,64 @@
     <button id="prevBtn">Önceki Kelime</button>
     <button id="nextBtn">Sonraki Kelime</button>
     <button id="startTest">Teste Başla</button>
-  </div>  <div id="test" style="display:none">
-    <div class="question" id="question">Soru metni</div>
+  </div>
+
+  <div id="test">
+    <div class="question" id="question">Soru</div>
     <div class="answers" id="answers"></div>
-    <div id="score">Puan: 0 / 0  Soru: 0 / 0</div>
-    <div class="test-controls">
+    <div id="score">Puan: 0 / 0 | Soru: 0 / 0</div>
+    <div class="controls">
       <button id="exitTest">Kartlara Dön</button>
     </div>
-  </div>  <script>
+  </div>
+
+  <script>
     const wordList = [
-      ["Hello","Merhaba"],["Goodbye","Hoşça kal"],["Please","Lütfen"],["Thank you","Teşekkür ederim"],["Sorry","Özür dilerim"],
-      ["Yes","Evet"],["No","Hayır"],["Welcome","Hoş geldin"],["Excuse me","Afedersiniz"],["OK","Tamam"],
-      ["Mother","Anne"],["Father","Baba"],["Sister","Kız kardeş"],["Brother","Erkek kardeş"],["Friend","Arkadaş"],
-      ["Baby","Bebek"],["Girl","Kız"],["Boy","Erkek"],["Family","Aile"],["People","İnsanlar"],
-      ["House","Ev"],["Room","Oda"],["Bed","Yatak"],["Table","Masa"],["Chair","Sandalye"],
-      ["Door","Kapı"],["Window","Pencere"],["TV","Televizyon"],["Lamp","Lamba"],["Carpet","Halı"],
-      ["School","Okul"],["Teacher","Öğretmen"],["Student","Öğrenci"],["Book","Kitap"],["Pen","Tükenmez kalem"],
-      ["Pencil","Kurşun kalem"],["Bag","Çanta"],["Ruler","Cetvel"],["Eraser","Silgi"],["Board","Tahta"],
-      ["Dog","Köpek"],["Cat","Kedi"],["Bird","Kuş"],["Fish","Balık"],["Cow","İnek"],["Horse","At"],
-      ["Duck","Ördek"],["Lion","Aslan"],["Elephant","Fil"],["Monkey","Maymun"],["Apple","Elma"],
-      ["Banana","Muz"],["Bread","Ekmek"],["Water","Su"],["Milk","Süt"],["Egg","Yumurta"],
-      ["Cheese","Peynir"],["Meat","Et"],["Rice","Pirinç"],["Cake","Kek"],["Red","Kırmızı"],
-      ["Blue","Mavi"],["Green","Yeşil"],["Yellow","Sarı"],["Black","Siyah"],["White","Beyaz"],
-      ["Orange","Turuncu"],["Pink","Pembe"],["Brown","Kahverengi"],["Purple","Mor"],["One","Bir"],
-      ["Two","İki"],["Three","Üç"],["Four","Dört"],["Five","Beş"],["Day","Gün"],
-      ["Night","Gece"],["Morning","Sabah"],["Evening","Akşam"],["Today","Bugün"],["Shirt","Gömlek"],
-      ["Pants","Pantolon"],["Dress","Elbise"],["Skirt","Etek"],["Shoes","Ayakkabı"],["Socks","Çorap"],
-      ["Hat","Şapka"],["Jacket","Ceket"],["Coat","Kaban"],["T-shirt","Tişört"],["Head","Kafa"],
-      ["Hair","Saç"],["Eye","Göz"],["Nose","Burun"],["Mouth","Ağız"],["Ear","Kulak"],
-      ["Hand","El"],["Arm","Kol"],["Leg","Bacak"],["Foot","Ayak"]
+      ["Apple", "Elma"], ["Dog", "Köpek"], ["Cat", "Kedi"], ["House", "Ev"], ["Car", "Araba"],
+      ["Book", "Kitap"], ["Chair", "Sandalye"], ["Table", "Masa"], ["Pen", "Kalem"], ["Sun", "Güneş"],
+      ["Moon", "Ay"], ["Water", "Su"], ["Fish", "Balık"], ["Bird", "Kuş"], ["Tree", "Ağaç"],
+      ["Flower", "Çiçek"], ["Computer", "Bilgisayar"], ["Phone", "Telefon"], ["Clock", "Saat"], ["Door", "Kapı"],
+      ["Window", "Pencere"], ["Lamp", "Lamba"], ["Bed", "Yatak"], ["Ball", "Top"], ["Hat", "Şapka"],
+      ["Shirt", "Gömlek"], ["Shoe", "Ayakkabı"], ["Socks", "Çorap"], ["Milk", "Süt"], ["Cheese", "Peynir"],
+      ["Bread", "Ekmek"], ["Rice", "Pirinç"], ["Cake", "Kek"], ["Banana", "Muz"], ["Orange", "Portakal"],
+      ["Strawberry", "Çilek"], ["Grapes", "Üzüm"], ["Egg", "Yumurta"], ["Meat", "Et"], ["Soup", "Çorba"],
+      ["Bus", "Otobüs"], ["Train", "Tren"], ["Plane", "Uçak"], ["Bike", "Bisiklet"], ["Truck", "Kamyon"],
+      ["School", "Okul"], ["Teacher", "Öğretmen"], ["Student", "Öğrenci"], ["Board", "Tahta"], ["Eraser", "Silgi"],
+      ["Mother", "Anne"], ["Father", "Baba"], ["Sister", "Kız kardeş"], ["Brother", "Erkek kardeş"], ["Baby", "Bebek"],
+      ["Friend", "Arkadaş"], ["Boy", "Erkek"], ["Girl", "Kız"], ["Family", "Aile"], ["People", "İnsanlar"],
+      ["Head", "Kafa"], ["Eye", "Göz"], ["Nose", "Burun"], ["Mouth", "Ağız"], ["Ear", "Kulak"],
+      ["Hand", "El"], ["Arm", "Kol"], ["Leg", "Bacak"], ["Foot", "Ayak"], ["Hair", "Saç"],
+      ["Red", "Kırmızı"], ["Blue", "Mavi"], ["Green", "Yeşil"], ["Yellow", "Sarı"], ["Black", "Siyah"],
+      ["White", "Beyaz"], ["Pink", "Pembe"], ["Orange", "Turuncu"], ["Purple", "Mor"], ["Brown", "Kahverengi"],
+      ["One", "Bir"], ["Two", "İki"], ["Three", "Üç"], ["Four", "Dört"], ["Five", "Beş"],
+      ["Day", "Gün"], ["Night", "Gece"], ["Morning", "Sabah"], ["Evening", "Akşam"], ["Today", "Bugün"],
+      ["OK", "Tamam"], ["Welcome", "Hoş geldin"], ["Please", "Lütfen"], ["Thank you", "Teşekkür ederim"], ["Sorry", "Özür dilerim"],
+      ["Yes", "Evet"], ["No", "Hayır"], ["Excuse me", "Afedersiniz"], ["Hello", "Merhaba"], ["Goodbye", "Hoşça kal"]
     ];
-    const words = wordList.map(([en,tr])=>({en,tr,img:`https://loremflickr.com/150/150/${encodeURIComponent(en.toLowerCase())}` }));
+
+    const words = wordList.map(([en, tr]) => ({
+      en,
+      tr,
+      img: `https://source.unsplash.com/featured/150x150/?${encodeURIComponent(en)}`
+    }));
 
     let idx = 0;
-    const cardImg = document.getElementById('cardImg'),
-          cardText = document.getElementById('cardText'),
-          prevBtn  = document.getElementById('prevBtn'),
-          nextBtn  = document.getElementById('nextBtn'),
-          startTestBtn = document.getElementById('startTest'),
-          cardEl = document.getElementById('card'),
-          controlsEl = document.querySelector('.controls'),
-          testEl = document.getElementById('test'),
-          questionBox = document.getElementById('question'),
-          answersBox = document.getElementById('answers'),
-          scoreBox = document.getElementById('score'),
-          exitTestBtn = document.getElementById('exitTest');
+    const cardImg = document.getElementById("cardImg");
+    const cardText = document.getElementById("cardText");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const startTestBtn = document.getElementById("startTest");
+    const exitTestBtn = document.getElementById("exitTest");
+    const cardEl = document.getElementById("card");
+    const controlsEl = document.querySelector(".controls");
+    const testEl = document.getElementById("test");
+    const questionBox = document.getElementById("question");
+    const answersBox = document.getElementById("answers");
+    const scoreBox = document.getElementById("score");
 
     function pronounce(text) {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
+      u.lang = "en-US";
       speechSynthesis.speak(u);
     }
 
@@ -88,67 +175,85 @@
       pronounce(w.en);
     }
 
-    prevBtn.onclick = () => { idx = (idx-1+words.length)%words.length; renderCard(); };
-    nextBtn.onclick = () => { idx = (idx+1)%words.length; renderCard(); };
-
-    startTestBtn.onclick = () => {
-      controlsEl.style.display = 'none';
-      cardEl.style.display = 'none';
-      testEl.style.display = 'block';
-      initTest();
-    };
-    exitTestBtn.onclick = () => {
-      testEl.style.display = 'none';
-      cardEl.style.display = 'block';
-      controlsEl.style.display = 'block';
+    prevBtn.onclick = () => {
+      idx = (idx - 1 + words.length) % words.length;
       renderCard();
     };
 
-    // TEST
-    let quiz = [], q = 0, score = 0;
+    nextBtn.onclick = () => {
+      idx = (idx + 1) % words.length;
+      renderCard();
+    };
+
+    startTestBtn.onclick = () => {
+      cardEl.style.display = "none";
+      controlsEl.style.display = "none";
+      testEl.style.display = "block";
+      initTest();
+    };
+
+    exitTestBtn.onclick = () => {
+      testEl.style.display = "none";
+      cardEl.style.display = "flex";
+      controlsEl.style.display = "block";
+      renderCard();
+    };
+
+    // Test fonksiyonları
+    let quiz = [],
+      q = 0,
+      score = 0;
+
     function initTest() {
-      quiz = words.slice().sort(()=>Math.random()-0.5).slice(0,20);
-      q = 0; score = 0;
+      quiz = words.slice().sort(() => Math.random() - 0.5).slice(0, 20);
+      q = 0;
+      score = 0;
       nextQ();
     }
+
     function playTone(correct) {
-      const ctx = new (window.AudioContext||window.webkitAudioContext)();
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = correct ? 220 : 880;
-      g.gain.setValueAtTime(0.5,ctx.currentTime);
-      o.start(); o.stop(ctx.currentTime+0.2);
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator(),
+        g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.frequency.value = correct ? 880 : 220;
+      g.gain.setValueAtTime(0.5, ctx.currentTime);
+      o.start();
+      o.stop(ctx.currentTime + 0.2);
     }
+
     function nextQ() {
-      answersBox.innerHTML = '';
-      if (q>=quiz.length) {
-        questionBox.textContent = 'Test tamamlandı!';
-        scoreBox.textContent = `Puan: ${score}/${quiz.length}`;
+      answersBox.innerHTML = "";
+      if (q >= quiz.length) {
+        questionBox.textContent = "Test tamamlandı!";
+        scoreBox.textContent = `Puan: ${score} / ${quiz.length}`;
         return;
       }
       const w = quiz[q];
-      questionBox.textContent = `${w.en}`;
-      scoreBox.textContent = `Puan: ${score}/${quiz.length} Soru: ${q+1}/${quiz.length}`;
+      questionBox.textContent = w.en;
+      scoreBox.textContent = `Puan: ${score}/${quiz.length} | Soru: ${q + 1}/${quiz.length}`;
       let opts = [w];
-      while(opts.length<4) {
-        const r = words[Math.floor(Math.random()*words.length)];
-        if(!opts.includes(r)) opts.push(r);
+      while (opts.length < 4) {
+        const r = words[Math.floor(Math.random() * words.length)];
+        if (!opts.includes(r)) opts.push(r);
       }
-      opts.sort(()=>Math.random()-0.5);
-      opts.forEach((o,i)=>{
-        const btn = document.createElement('button');
-        btn.textContent = `${String.fromCharCode(65+i)}. ${o.tr}`;
-        btn.onclick = ()=>{
-          btn.classList.add(o===w?'correct':'wrong');
-          playTone(o===w);
-          if(o===w) score++;
+      opts.sort(() => Math.random() - 0.5);
+      opts.forEach((o) => {
+        const btn = document.createElement("button");
+        btn.textContent = o.tr;
+        btn.onclick = () => {
+          btn.classList.add(o === w ? "correct" : "wrong");
+          playTone(o === w);
+          if (o === w) score++;
           q++;
-          setTimeout(nextQ,600);
+          setTimeout(nextQ, 800);
         };
         answersBox.appendChild(btn);
       });
     }
 
     renderCard();
-  </script></body>
+  </script>
+</body>
 </html>
