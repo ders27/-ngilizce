@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kelime Kartları</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f0ff;
+      text-align: center;
+      padding: 30px;
+    }
+    .card {
+      width: 300px;
+      height: 200px;
+      margin: 0 auto 20px;
+      border: 4px solid #6a0dad;
+      border-radius: 15px;
+      font-size: 3em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s;
+    }
+    button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 10px;
+      border: none;
+      background: #6a0dad;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>İngilizce Kelime Kartları</h1>
+<div class="card" id="card">Hello</div>
+<div>
+  <button id="prevBtn">Önceki</button>
+  <button id="nextBtn">Sonraki</button>
+</div>
+
+<script>
+  const words = [
+    {en: "Hello", tr: "Merhaba"},
+    {en: "Goodbye", tr: "Hoşça kal"},
+    {en: "Please", tr: "Lütfen"},
+    {en: "Thank you", tr: "Teşekkür ederim"},
+    {en: "Sorry", tr: "Özür dilerim"},
+    {en: "Yes", tr: "Evet"},
+    {en: "No", tr: "Hayır"},
+    {en: "Welcome", tr: "Hoş geldin"},
+    {en: "Excuse me", tr: "Afedersiniz"},
+    {en: "OK", tr: "Tamam"}
+  ];
+
+  let currentIndex = 0;
+  let showingEnglish = true;
+
+  const card = document.getElementById('card');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function showEnglish() {
+    card.textContent = words[currentIndex].en;
+    showingEnglish = true;
+  }
+
+  function showTurkish() {
+    card.textContent = words[currentIndex].tr;
+    showingEnglish = false;
+  }
+
+  card.addEventListener('click', () => {
+    if (showingEnglish) {
+      showTurkish();
+    } else {
+      showEnglish();
+    }
+  });
+
+  prevBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + words.length) % words.length;
+    showEnglish();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % words.length;
+    showEnglish();
+  });
+
+  // İlk gösterim
+  showEnglish();
+</script>
+
+</body>
+</html>
