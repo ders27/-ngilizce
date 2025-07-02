@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Çocuklar için İngilizce Kelime Kartları & Test</title>
+  <title>İngilizce Kelime Kartları & Test</title>
   <style>
     :root {
       --primary: #6a0dad;
@@ -13,95 +13,113 @@
       --wrong: #dc3545;
       --btn-font: 1.6em;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg); color: var(--text);
-      padding: 20px; text-align: center;
-      transition: background-color .4s ease;
-      display: flex; flex-direction: column; align-items: center;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      text-align: center;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1 { color: var(--primary); font-size: 2.4em; margin-bottom: 20px; }
+    h1 { font-size: 2.4em; color: var(--primary); margin-bottom: 20px; }
     .card {
       width: 90vw; max-width: 360px;
-      border: 5px solid var(--primary); border-radius: 18px;
-      background: #fff; padding: 15px;
+      border: 5px solid var(--primary);
+      border-radius: 18px;
+      background: #fff;
+      padding: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       user-select: none;
       margin-bottom: 30px;
     }
     .card .emoji { font-size: 80px; margin-bottom: 12px; }
     .card .text {
-      font-size: 2em; color: var(--primary);
-      font-weight: 700; cursor: pointer;
+      font-size: 2em;
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
     }
     .card #cardTranslation {
+      display: none;
       margin-top: 8px;
       font-size: 1.6em;
       color: var(--text);
-      display: none;
     }
-    .controls { margin: 20px 0; display: flex; gap: 8px; justify-content: center; }
-    .controls button {
+    .controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
+    .controls button, #testBtn, #backBtn {
       font-size: var(--btn-font);
       padding: 12px 20px;
-      border: none; border-radius: 10px;
-      background: var(--accent); color: #fff;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
       cursor: pointer;
     }
+    #testBtn { margin-bottom: 30px; }
     .hide { display: none !important; }
     .question-box {
       width: 90vw; max-width: 360px;
       min-height: 100px;
-      border: 5px solid var(--primary); border-radius: 18px;
+      border: 5px solid var(--primary);
+      border-radius: 18px;
       background: #fff;
-      font-size: 1.8em; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8em;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 20px;
       padding: 15px;
     }
     .answers {
-      display: flex; flex-direction: column; gap: 16px;
-      width: 90vw; max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 90vw;
+      max-width: 360px;
       margin-bottom: 20px;
     }
     .answer-btn {
       position: relative;
       padding: 16px 24px 16px 60px;
-      font-size: 1.4em; font-weight: 700; text-align: left;
+      font-size: 1.4em;
+      font-weight: 700;
+      text-align: left;
       width: 100%;
-      border: 4px solid var(--primary); border-radius: 14px;
-      background: var(--primary); color: #fff;
+      border: 4px solid var(--primary);
+      border-radius: 14px;
+      background: var(--primary);
+      color: #fff;
       cursor: pointer;
     }
     .answer-btn span.letter {
-      position: absolute; left: 12px; top: 50%;
+      position: absolute;
+      left: 12px;
+      top: 50%;
       transform: translateY(-50%);
-      width: 40px; height: 40px;
-      line-height: 40px; border-radius: 50%;
-      background: #fff; color: var(--primary);
-      font-size: 1.2em; font-weight: 900;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--primary);
+      font-size: 1.2em;
+      font-weight: 900;
     }
     .answer-btn.correct { background: var(--correct); border-color: var(--correct); }
     .answer-btn.wrong   { background: var(--wrong);   border-color: var(--wrong); }
     .answer-btn.disabled { pointer-events: none; opacity: .8; }
-    #scoreDisplay {
-      font-size: 1.4em; color: var(--primary);
-      margin-bottom: 20px;
-      font-weight: 700;
-    }
-    #backBtn {
-      font-size: 1.8em;
-      padding: 14px 30px;
-      border: none; border-radius: 10px;
-      background: var(--accent); color: #fff;
-      cursor: pointer;
-    }
+    #scoreDisplay { font-size: 1.4em; color: var(--primary); margin-bottom: 20px; font-weight: 700; }
+    @media (min-width:600px) { body { padding: 40px; } }
   </style>
 </head>
 <body>
-  <h1>İngilizce Kelime Kartları</h1>
+  <h1>İngilizce Kelime Kartları & Test</h1>
+  <!-- Kart Görüntüleme -->
   <div class="card" id="card">
     <div class="emoji" id="cardEmoji">😀</div>
     <div class="text" id="cardText">Yükleniyor...</div>
@@ -110,8 +128,9 @@
   <div class="controls" id="cardControls">
     <button id="prevBtn">Önceki</button>
     <button id="nextBtn">Sonraki</button>
-    <button id="testBtn">Teste Geç</button>
   </div>
+  <button id="testBtn">Teste Geç</button>
+  <!-- Test Modu -->
   <div id="testArea" class="hide">
     <h2>20 Soruluk Test</h2>
     <div class="question-box" id="question">...</div>
@@ -166,4 +185,90 @@
       {en:"Shoes",tr:"Ayakkabı",emoji:"👟"},{en:"Socks",tr:"Çorap",emoji:"🧦"},
       {en:"Hat",tr:"Şapka",emoji:"🎩"},{en:"Jacket",tr:"Ceket",emoji:"🧥"},
       {en:"Coat",tr:"Kaban",emoji:"🧥"},{en:"T-shirt",tr:"Tişört",emoji:"👕"},
-      {en:"Head",tr:"Kafa",emoji:"🧑‍🦲"},{en:"Hair"
+      {en:"Head",tr:"Kafa",emoji:"🧑‍🦲"},{en:"Hair",tr:"Saç",emoji:"💇‍♂️"},
+      {en:"Eye",tr:"Göz",emoji:"👁️"},{en:"Nose",tr:"Burun",emoji:"👃"},
+      {en:"Mouth",tr:"Ağız",emoji:"👄"},{en:"Ear",tr:"Kulak",emoji:"👂"},
+      {en:"Hand",tr:"El",emoji:"✋"},{en:"Arm",tr:"Kol",emoji:"💪"},
+      {en:"Leg",tr:"Bacak",emoji:"🦵"},{en:"Foot",tr:"Ayak",emoji:"🦶"}
+    ];let currentIndex=0, quiz=[], qIndex=0, score=0, questionIsEnglish;
+const card=document.getElementById('card'),
+      cardEmoji=document.getElementById('cardEmoji'),
+      cardText=document.getElementById('cardText'),
+      cardTranslation=document.getElementById('cardTranslation'),
+      prevBtn=document.getElementById('prevBtn'),
+      nextBtn=document.getElementById('nextBtn'),
+      testBtn=document.getElementById('testBtn'),
+      cardControls=document.getElementById('cardControls'),
+      testArea=document.getElementById('testArea'),
+      questionBox=document.getElementById('question'),
+      answersBox=document.getElementById('answers'),
+      scoreDisplay=document.getElementById('scoreDisplay'),
+      backBtn=document.getElementById('backBtn'),
+      body=document.body;
+
+function renderCard(){
+  const w=words[currentIndex];
+  cardEmoji.textContent=w.emoji;
+  cardText.textContent=w.en;
+  cardTranslation.style.display='none';
+  speak(w.en);
+}
+prevBtn.onclick=()=>{ currentIndex=(currentIndex-1+words.length)%words.length; renderCard(); };
+nextBtn.onclick=()=>{ currentIndex=(currentIndex+1)%words.length; renderCard(); };
+
+cardText.onclick=()=>{
+  const w=words[currentIndex];
+  const show=cardTranslation.style.display==='none';
+  cardTranslation.textContent= show? w.tr : '';
+  cardTranslation.style.display= show? 'block':'none';
+};
+
+testBtn.onclick=()=>{
+  quiz=shuffle([...words]).slice(0,20);
+  qIndex=0; score=0;
+  card.style.display='none'; cardControls.style.display='none'; testBtn.style.display='none';
+  testArea.classList.remove('hide'); loadQuestion(); updateScore();
+};
+backBtn.onclick=()=>{
+  testArea.classList.add('hide');
+  card.style.display='block'; cardControls.style.display='flex'; testBtn.style.display='block';
+  renderCard(); clearFeedback();
+};
+
+function loadQuestion(){
+  clearFeedback(); answersBox.innerHTML='';
+  if(qIndex>=quiz.length){
+    questionBox.textContent=`Test tamamlandı! Puan: ${score}/${quiz.length}`; scoreDisplay.textContent=''; return;
+  }
+  updateScore();
+  questionIsEnglish=Math.random()<0.5;
+  const w=quiz[qIndex];
+  questionBox.textContent = questionIsEnglish? w.en : w.tr;
+  const correctKey = questionIsEnglish? w.tr : w.en;
+  const opts=[w];
+  while(opts.length<4){ const r=words[Math.floor(Math.random()*words.length)]; if(!opts.includes(r)) opts.push(r); }
+  shuffle(opts).forEach((opt,i)=>{
+    const btn=document.createElement('button'); btn.className='answer-btn';
+    btn.innerHTML=`<span class="letter">${String.fromCharCode(65+i)}</span>` + (questionIsEnglish? opt.tr : opt.en);
+    btn.onclick=()=>selectAnswer(btn,opt,correctKey);
+    answersBox.appendChild(btn);
+  });
+}
+function selectAnswer(btn,opt,correctKey){
+  const isCorrect = btn.textContent.includes(correctKey);
+  playSound(isCorrect?'low':'high');
+  btn.classList.add(isCorrect?'correct':'wrong');
+  Array.from(answersBox.children).forEach(b=>{ b.disabled=true; if(b.textContent.includes(correctKey)) b.classList.add('correct'); });
+  if(isCorrect) score++;
+  setTimeout(()=>{ qIndex++; loadQuestion(); },1500);
+}
+function updateScore(){ scoreDisplay.textContent=`Puan: ${score}/${quiz.length}`; }
+function clearFeedback(){ body.style.backgroundColor=var(--bg); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function playSound(level){ if(!window.audioCtx) window.audioCtx=new(AudioContext||webkitAudioContext)(); const ctx=window.audioCtx,o=ctx.createOscillator(),g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value=level==='low'?250:800; g.gain.setValueAtTime(0.3,ctx.currentTime); o.start(ctx.currentTime); o.stop(ctx.currentTime+0.3); }
+function speak(text){ const u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.8; speechSynthesis.speak(u); }
+window.addEventListener('DOMContentLoaded',renderCard);
+
+  </script>
+</body>
+</html>
