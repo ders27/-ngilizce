@@ -59,7 +59,7 @@
       ["Hair","Saç"],["Eye","Göz"],["Nose","Burun"],["Mouth","Ağız"],["Ear","Kulak"],
       ["Hand","El"],["Arm","Kol"],["Leg","Bacak"],["Foot","Ayak"]
     ];
-    const words = wordList.map(([en,tr])=>({en,tr,img:`https://source.unsplash.com/150x150/?${encodeURIComponent(en)}`}));
+    const words = wordList.map(([en,tr])=>({en,tr,img:`https://loremflickr.com/150/150/${encodeURIComponent(en.toLowerCase())}` }));
 
     let idx = 0;
     const cardImg = document.getElementById('cardImg'),
@@ -115,7 +115,7 @@
       const ctx = new (window.AudioContext||window.webkitAudioContext)();
       const o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = correct ? 220 : 880; // Doğru: düşük ses, Yanlış: yüksek ses
+      o.frequency.value = correct ? 220 : 880;
       g.gain.setValueAtTime(0.5,ctx.currentTime);
       o.start(); o.stop(ctx.currentTime+0.2);
     }
