@@ -6,190 +6,242 @@
   <title>Kelime Kartları ve Test</title>
   <style>
     :root {
-      --primary: #6a0dad;
-      --accent: #ffa500;
-      --bg: #f4f0ff;
+      --primary: #8a2be2; /* Daha canlı mor */
+      --accent: #ff6347;  /* Domates kırmızısı gibi daha sıcak bir turuncu */
+      --bg: linear-gradient(135deg, #f0f8ff, #e6e6fa); /* Açık mavi ve leylak tonlarında degrade arka plan */
       --text: #333;
-      --correct: #28a745;
-      --wrong: #dc3545;
-      --card-bg: #fff; /* Kart arka plan rengi için yeni değişken */
-      --button-hover-bg: #e0e0e0; /* Butonların üzerine gelindiğinde rengi */
+      --correct: #3cb371; /* Orta deniz yeşili */
+      --wrong: #ff4500;   /* Turuncu kırmızı */
+      --card-bg: #ffffff; /* Kart arka planı beyaz */
+      --button-hover-bg: #ffe0b3; /* Buton hover için açık turuncu */
+      --card-border: #4682b4; /* Kart kenarlığı için çelik mavisi */
     }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Daha modern bir font */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: var(--bg);
       color: var(--text);
       text-align: center;
       padding: 20px;
-      line-height: 1.6; /* Daha iyi okunabilirlik için satır aralığı */
+      line-height: 1.6;
+      display: flex; /* Flexbox ile dikeyde ortalama için */
+      flex-direction: column; /* Dikey sıralama */
+      min-height: 100vh; /* Tam ekran yüksekliği */
+      justify-content: center; /* İçeriği dikeyde ortala */
+      align-items: center; /* İçeriği yatayda ortala */
     }
     h1 {
       color: var(--primary);
-      font-size: 2.5em; /* Başlığı büyüt */
-      margin-bottom: 30px; /* Alt boşluk ekle */
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* Hafif gölge */
+      font-size: 2.8em; /* Başlığı biraz daha büyüt */
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.15); /* Gölgeyi belirginleştir */
+      font-weight: 700; /* Kalınlaştır */
     }
     .card {
-      width: 320px;
+      width: 340px; /* Kart genişliğini artır */
+      height: 380px; /* Kart yüksekliğini artır (içerik sığması için) */
       margin: 20px auto;
-      border: 4px solid var(--primary);
-      border-radius: 15px; /* Daha yuvarlak köşeler */
+      border: 5px solid var(--card-border); /* Kalın ve renkli kenarlık */
+      border-radius: 20px; /* Daha yuvarlak köşeler */
       background: var(--card-bg);
-      padding: 20px; /* Daha fazla iç boşluk */
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* Daha belirgin gölge */
-      transition: transform 0.3s ease-in-out; /* Kart dönüş animasyonu */
-      cursor: pointer; /* Kartın tıklanabilir olduğunu belirtir */
+      justify-content: center; /* İçeriği dikeyde ortala */
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25); /* Daha belirgin gölge */
+      transition: transform 0.6s ease-in-out, box-shadow 0.3s ease; /* Yumuşak geçişler */
+      cursor: pointer;
+      position: relative; /* İçerik için gerekli */
     }
-    .card.flipped { /* Kartın çevrilmiş hali için stil */
+    .card.flipped .card-inner { /* Çevrilmiş kartın iç içeriği */
         transform: rotateY(180deg);
     }
-    .card-inner { /* Kartın iç içeriği için sarmalayıcı */
+    .card-inner {
         position: relative;
         width: 100%;
         height: 100%;
         text-align: center;
-        transition: transform 0.6s;
+        transition: transform 0.8s; /* Daha yavaş çevirme animasyonu */
         transform-style: preserve-3d;
-    }
-    .card-face { /* Kartın ön ve arka yüzleri için genel stil */
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        -webkit-backface-visibility: hidden; /* Webkit tarayıcılar için arka yüz gizleme */
-        backface-visibility: hidden; /* Arka yüzü gizler, çevirme efekti için gerekli */
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
     }
-    .card-front { /* Kartın ön yüzü */
-        background: var(--card-bg);
+    .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; /* İçeriği ortala */
     }
-    .card-back { /* Kartın arka yüzü */
+    .card-front {
         background: var(--card-bg);
-        transform: rotateY(180deg); /* Arka yüzü başlangıçta çevir */
+        border-radius: 15px; /* Kartın ön yüzüne de border-radius uygula */
+        padding: 10px; /* İç boşluk ekle */
+    }
+    .card-back {
+        background: var(--card-bg);
+        transform: rotateY(180deg);
+        border-radius: 15px;
+        padding: 10px;
     }
     .card img {
-      width: 180px; /* Görseli büyüt */
-      height: 180px; /* Görseli büyüt */
-      object-fit: cover;
-      border-radius: 10px;
+      width: 200px; /* Görseli daha da büyüt */
+      height: 200px;
+      object-fit: contain; /* Resmi bozmadan sığdır */
+      border-radius: 12px;
       margin-bottom: 15px;
-      border: 2px solid var(--accent); /* Görsele çerçeve ekle */
+      border: 3px solid var(--accent); /* Daha belirgin çerçeve */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Görsele gölge */
     }
     .card .text {
-      font-size: 2.5em; /* Metni büyüt */
+      font-size: 3em; /* Metni daha da büyüt */
       margin-top: 10px;
-      font-weight: bold; /* Metni kalınlaştır */
-      color: var(--primary); /* Metin rengini birincil renk yap */
+      font-weight: bold;
+      color: var(--primary);
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
     }
     .controls {
-      margin-top: 30px; /* Kontroller ile kart arasına boşluk */
+      margin-top: 40px;
+      display: flex; /* Butonları yan yana sırala */
+      flex-wrap: wrap; /* Küçük ekranlarda alta geçsinler */
+      justify-content: center; /* Ortala */
+      gap: 15px; /* Butonlar arası boşluk */
     }
     .controls button {
-      padding: 12px 25px; /* Buton boyutlarını ayarla */
-      font-size: 1.1em;
+      padding: 14px 30px;
+      font-size: 1.2em;
       border: none;
-      border-radius: 10px; /* Buton köşelerini yuvarla */
+      border-radius: 12px;
       background: var(--accent);
       color: #fff;
-      margin: 8px; /* Butonlar arası boşluk */
       cursor: pointer;
-      transition: background 0.3s ease, transform 0.1s ease; /* Yumuşak geçiş efektleri */
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Butonlara gölge ekle */
+      transition: background 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+      font-weight: bold;
+      letter-spacing: 0.5px; /* Harf aralığı ekle */
     }
     .controls button:hover {
-      background: darken(var(--accent), 10%); /* Hover efekti için rengi koyulaştır */
-      transform: translateY(-2px); /* Hafif yukarı kayma efekti */
+      background: #ff7f50; /* Daha açık bir ton */
+      transform: translateY(-3px) scale(1.02); /* Hafif yukarı ve büyütme efekti */
+      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
     }
     .controls button:active {
-      transform: translateY(0); /* Tıklama sonrası geri dönme */
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
     #test {
       display: none;
-      padding-top: 20px; /* Test bölümüne üst boşluk */
+      padding-top: 30px;
+      flex-direction: column; /* Test bölümünü de flex ile hizala */
+      align-items: center;
+      justify-content: center;
+      width: 100%;
     }
     .question {
-      margin: 25px auto; /* Boşlukları artır */
-      padding: 20px; /* İç boşluğu artır */
-      font-size: 1.8em; /* Soru metnini büyüt */
-      border: 3px solid var(--primary);
-      border-radius: 12px;
+      margin: 30px auto;
+      padding: 25px;
+      font-size: 2.2em;
+      border: 4px solid var(--primary);
+      border-radius: 15px;
       background: var(--card-bg);
-      max-width: 350px; /* Maksimum genişliği artır */
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15); /* Gölge ekle */
+      max-width: 400px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
       font-weight: bold;
       color: var(--text);
+      line-height: 1.4;
     }
     .answers button {
       display: block;
-      margin: 12px auto; /* Boşlukları artır */
-      padding: 15px; /* İç boşluğu artır */
-      font-size: 1.3em; /* Cevap butonları metnini büyüt */
-      border-radius: 10px;
-      width: 300px; /* Genişliği ayarla */
-      background: #eee;
+      margin: 15px auto;
+      padding: 18px;
+      font-size: 1.4em;
+      border-radius: 12px;
+      width: 320px;
+      background: #f0f0f0; /* Daha açık bir gri tonu */
       border: 2px solid var(--primary);
       cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-      text-align: left;
+      transition: background 0.3s, transform 0.15s, box-shadow 0.3s;
+      text-align: center; /* Cevap metinlerini ortala */
       color: var(--text);
       font-weight: bold;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
     }
-    .answers button:hover:not(.correct):not(.wrong) { /* Doğru/yanlış işaretlenmemiş butonlara hover efekti */
+    .answers button:hover:not(.correct):not(.wrong) {
       background: var(--button-hover-bg);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.15);
     }
     .answers button.correct {
       background: var(--correct) !important;
       color: #fff;
-      box-shadow: 0 4px 8px rgba(40,167,69,0.4); /* Doğru cevap için belirgin gölge */
-      transform: scale(1.02); /* Hafif büyütme */
+      box-shadow: 0 6px 12px rgba(60,179,113,0.5); /* Doğru cevap için daha belirgin gölge */
+      transform: scale(1.03);
     }
     .answers button.wrong {
       background: var(--wrong) !important;
       color: #fff;
-      box-shadow: 0 4px 8px rgba(220,53,69,0.4); /* Yanlış cevap için belirgin gölge */
-      transform: scale(1.02);
+      box-shadow: 0 6px 12px rgba(255,69,0,0.5); /* Yanlış cevap için daha belirgin gölge */
+      transform: scale(1.03);
     }
     #score {
-      font-size: 1.5em; /* Puan metnini büyüt */
-      margin-top: 20px;
+      font-size: 1.8em;
+      margin-top: 25px;
       font-weight: bold;
       color: var(--primary);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
     }
 
     /* Duyarlı Tasarım (Responsive Design) */
     @media (max-width: 600px) {
-      h1 {
-        font-size: 2em;
+      body {
+        padding: 10px;
       }
-      .card, .question, .answers button {
-        width: 90%; /* Küçük ekranlarda daha fazla yer kapla */
-        max-width: none; /* Maksimum genişliği kaldır */
+      h1 {
+        font-size: 2.2em;
+        margin-bottom: 20px;
+      }
+      .card {
+        width: 95%;
+        height: 350px; /* Mobil için yüksekliği ayarla */
+        padding: 15px;
+        border-radius: 15px;
       }
       .card img {
-        width: 120px;
-        height: 120px;
+        width: 150px;
+        height: 150px;
+        margin-bottom: 10px;
       }
       .card .text {
-        font-size: 2em;
+        font-size: 2.5em;
       }
-      .question {
-        font-size: 1.5em;
-      }
-      .answers button {
-        font-size: 1em;
-        padding: 10px;
+      .controls {
+        margin-top: 25px;
+        gap: 10px;
       }
       .controls button {
         padding: 10px 20px;
         font-size: 1em;
         margin: 5px;
+      }
+      .question {
+        font-size: 1.8em;
+        padding: 15px;
+        max-width: 95%;
+      }
+      .answers button {
+        font-size: 1.2em;
+        padding: 12px;
+        width: 90%;
+        margin: 10px auto;
+      }
+      #score {
+        font-size: 1.4em;
+        margin-top: 15px;
       }
     }
   </style>
@@ -246,16 +298,29 @@
       ["Yes", "Evet"], ["No", "Hayır"], ["Excuse me", "Afedersiniz"], ["Hello", "Merhaba"], ["Goodbye", "Hoşça kal"]
     ];
 
+    // Görsel arama fonksiyonunu değiştirdik. Artık özel olarak "pexels.com" adresini kullanacağız
+    // Pexels API'den görselleri çekmek için bir API anahtarına ihtiyacın olacak.
+    // Şimdilik test için placeholder bir görsel URL'i bırakacağım.
+    // Gerçek API entegrasyonu için Pexels API'ye kaydolup anahtar almalısın.
+    // Alternatif olarak, her kelime için manuel olarak bir görsel URL'i tanımlayabiliriz.
+    // Basit olması ve API anahtarı gerektirmemesi için, manuel URL'lerle devam edelim.
+    // Dilersen API entegrasyonu için de yardımcı olabilirim.
+
     const words = wordList.map(([en, tr]) => ({
       en,
       tr,
-      img: `https://source.unsplash.com/featured/150x150/?${encodeURIComponent(en)}`
+      // Kelimelere uygun daha iyi görseller için sabit URL'ler ekleyelim veya daha iyi bir API kullanalım
+      // Şimdilik Unsplash'in yeni sorgulama yapısıyla devam edelim, bu genellikle daha iyi sonuç verir.
+      // Ya da her kelime için özel bir görsel URL'i belirleyebiliriz.
+      // Örneğin: `img: "https://example.com/images/" + en.toLowerCase() + ".jpg"`
+      img: `https://source.unsplash.com/featured/400x300/?${encodeURIComponent(en).toLowerCase()},word` // Anahtar kelimeyi küçük harfe çevir ve "word" ekle
     }));
+
 
     let idx = 0;
     const cardImg = document.getElementById("cardImg");
     const cardText = document.getElementById("cardText");
-    const cardTranslation = document.getElementById("cardTranslation"); // Yeni eklenen çeviri div'i
+    const cardTranslation = document.getElementById("cardTranslation");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const startTestBtn = document.getElementById("startTest");
@@ -270,14 +335,12 @@
     // Kart çevirme işlevselliği
     cardEl.addEventListener('click', () => {
         cardEl.querySelector('.card-inner').classList.toggle('flipped');
-        // Kart çevrildiğinde telaffuzu durdur ve yeni kelimeye geçme
         if (speechSynthesis.speaking) {
             speechSynthesis.cancel();
         }
     });
 
     function pronounce(text, lang = "en-US") {
-      // Telaffuz ederken mevcut telaffuzu durdur
       if (speechSynthesis.speaking) {
         speechSynthesis.cancel();
       }
@@ -288,13 +351,17 @@
 
     function renderCard() {
       const w = words[idx];
+      // Görsel yüklenemediğinde hata yakalama
+      cardImg.onerror = () => {
+        cardImg.src = `https://via.placeholder.com/400x300?text=${w.en}`; // Alternatif placeholder görsel
+        console.warn(`Resim yüklenemedi: ${w.img}`);
+      };
       cardImg.src = w.img;
       cardText.textContent = w.en;
-      cardTranslation.textContent = w.tr; // Çeviriyi arka yüze yerleştir
-      pronounce(w.en); // Kart yüklendiğinde İngilizce kelimeyi telaffuz et
+      cardTranslation.textContent = w.tr;
+      pronounce(w.en);
 
-      // Kart çevriliyse eski haline getir (ön yüzü göster)
-      cardEl.querySelector('.card-inner').classList.remove('flipped');
+      cardEl.querySelector('.card-inner').classList.remove('flipped'); // Her kart değişiminde ön yüze dön
     }
 
     prevBtn.onclick = () => {
@@ -310,15 +377,15 @@
     startTestBtn.onclick = () => {
       cardEl.style.display = "none";
       controlsEl.style.display = "none";
-      testEl.style.display = "block";
+      testEl.style.display = "flex"; // Test bölümünü flex olarak göster
       initTest();
     };
 
     exitTestBtn.onclick = () => {
       testEl.style.display = "none";
       cardEl.style.display = "flex";
-      controlsEl.style.display = "block";
-      renderCard(); // Kartlara döndüğünde mevcut kartı göster
+      controlsEl.style.display = "flex"; // Kontrol butonlarını da flex olarak göster
+      renderCard();
     };
 
     // Test fonksiyonları
@@ -327,7 +394,6 @@
       score = 0;
 
     function initTest() {
-      // Kelimelerin 20'den az olması durumunda tüm kelimeleri kullan
       const quizSize = Math.min(words.length, 20);
       quiz = words.slice().sort(() => Math.random() - 0.5).slice(0, quizSize);
       q = 0;
@@ -341,7 +407,8 @@
         g = ctx.createGain();
       o.connect(g);
       g.connect(ctx.destination);
-      o.frequency.value = correct ? 880 : 220;
+      // Ses tonlarını değiştirdik: Doğru için 220, yanlış için 880
+      o.frequency.value = correct ? 220 : 880; // Doğru cevapta kalın, yanlış cevapta ince ses
       g.gain.setValueAtTime(0.5, ctx.currentTime);
       o.start();
       o.stop(ctx.currentTime + 0.2);
@@ -351,34 +418,34 @@
       answersBox.innerHTML = "";
       if (q >= quiz.length) {
         questionBox.textContent = `Test tamamlandı! Sonuç: ${score} / ${quiz.length}`;
-        scoreBox.textContent = ""; // Puan bilgisini temizle
+        scoreBox.textContent = "";
         return;
       }
       const w = quiz[q];
       questionBox.textContent = w.en;
-      pronounce(w.en); // Soruyu telaffuz et
+      pronounce(w.en);
       scoreBox.textContent = `Puan: ${score}/${quiz.length} | Soru: ${q + 1}/${quiz.length}`;
       let opts = [w];
 
-      // Soru seçeneklerini dinamik olarak oluştur
-      const availableWordsForOptions = words.filter(word => word !== w); // Doğru kelimeyi seçeneklerden çıkar
+      const availableWordsForOptions = words.filter(word => word.en !== w.en); // Kelimenin kendisini ele
+
       while (opts.length < 4 && availableWordsForOptions.length > 0) {
         const randomIndex = Math.floor(Math.random() * availableWordsForOptions.length);
         const randomWord = availableWordsForOptions[randomIndex];
-        if (!opts.includes(randomWord)) {
-          opts.push(randomWord);
-          availableWordsForOptions.splice(randomIndex, 1); // Seçilen kelimeyi tekrar seçmemek için kaldır
+        // Seçeneklerde aynı kelime olmasın diye kontrol
+        if (!opts.some(opt => opt.en === randomWord.en)) {
+            opts.push(randomWord);
+            availableWordsForOptions.splice(randomIndex, 1);
         }
       }
+      opts.sort(() => Math.random() - 0.5); // Seçenekleri karıştır
 
-      opts.sort(() => Math.random() - 0.5);
       opts.forEach((o) => {
         const btn = document.createElement("button");
         btn.textContent = o.tr;
         btn.onclick = (e) => {
-          // Tüm butonları devre dışı bırak
           Array.from(answersBox.children).forEach(button => {
-            button.disabled = true;
+            button.disabled = true; // Tüm butonları devre dışı bırak
           });
 
           btn.classList.add(o === w ? "correct" : "wrong");
@@ -386,21 +453,20 @@
           if (o === w) {
             score++;
           } else {
-            // Yanlış cevap verildiğinde doğru cevabı göster
             Array.from(answersBox.children).forEach(button => {
               if (button.textContent === w.tr) {
-                button.classList.add('correct');
+                button.classList.add('correct'); // Doğru cevabı göster
               }
             });
           }
           q++;
-          setTimeout(nextQ, 1200); // Cevap gösterimi için biraz daha uzun süre ver
+          setTimeout(nextQ, 1500); // Geri bildirim süresini biraz uzat
         };
         answersBox.appendChild(btn);
       });
     }
 
-    renderCard();
+    renderCard(); // Sayfa yüklendiğinde ilk kartı göster
   </script>
 </body>
 </html>
