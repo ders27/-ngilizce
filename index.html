@@ -1,303 +1,207 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!DOCTYPE html><html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Çocuklar için İngilizce Kelime Kartları & Test</title>
+  <title>Kelime Kartları ve Test</title>
   <style>
-    :root {
-      --primary: #6a0dad;
-      --accent: #ffa500;
-      --bg: #f4f0ff;
-      --text: #333;
-      --correct: #28a745;
-      --wrong: #dc3545;
-      --btn-font: 1.6em;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg); color: var(--text);
-      padding: 20px 10px; text-align: center;
-      transition: background-color .4s ease;
-      display: flex; flex-direction: column; align-items: center;
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #f4f0ff;
+      text-align: center;
+      padding: 20px;
     }
-    h1 { color: var(--primary); font-size: 2.4em; margin-bottom: 20px; }
+    h1 {
+      color: #6a0dad;
+    }
     .card {
-      width: 90vw; max-width: 360px; height: 260px;
-      border: 5px solid var(--primary); border-radius: 18px;
-      background: #fff; display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      user-select: none; padding: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 320px;
+      margin: 20px auto;
+      border: 4px solid #6a0dad;
+      border-radius: 12px;
+      background: white;
+      padding: 10px;
+      display: none;
     }
-    .card .emoji {
-      font-size: 90px; margin-bottom: 12px;
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
     }
     .card .text {
-      font-size: 2.4em; color: var(--primary);
-      font-weight: 700;
+      font-size: 2em;
+      margin-top: 10px;
     }
-    .controls {
-      margin-top: 20px;
+    .controls, .test-controls {
+      margin-top: 15px;
     }
     button {
-      font-size: var(--btn-font); padding: 12px 28px;
-      margin: 8px 6px; border: none; border-radius: 12px;
-      background: var(--accent); color: #fff;
-      cursor: pointer; transition: transform .15s;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: #6a0dad;
+      color: white;
+      margin: 5px;
+      cursor: pointer;
     }
-    button:hover:not(:disabled) { transform: scale(1.05); }
-    button:disabled { opacity: .6; cursor: default; }
-    .hide { display: none !important; }
-    .question-box {
-      width: 90vw; max-width: 360px; min-height: 110px;
-      border: 5px solid var(--primary); border-radius: 18px;
-      background: #fff; font-size: 2em; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px; margin-bottom: 20px;
+    .question {
+      margin: 20px auto;
+      padding: 15px;
+      font-size: 1.5em;
+      border: 3px solid #6a0dad;
+      border-radius: 10px;
+      background: white;
+      max-width: 300px;
     }
-    .answers {
-      display: flex; flex-direction: column; gap: 14px;
-      width: 90vw; max-width: 360px; margin-bottom: 24px;
+    .answers button {
+      display: block;
+      margin: 10px auto;
+      padding: 12px;
+      font-size: 1.2em;
+      border-radius: 8px;
+      width: 280px;
+      background: white;
+      border: 2px solid #6a0dad;
+      cursor: pointer;
     }
-    .answer-btn {
-      position: relative; padding: 16px 24px 16px 56px;
-      font-size: 1.5em; font-weight: 700; text-align: left;
-      width: 100%; max-width: 360px;
-      border: 4px solid var(--primary); border-radius: 14px;
-      background: #fff; cursor: pointer;
-      transition: background-color .3s, border-color .3s;
+    .correct {
+      background-color: #28a745 !important;
+      color: white;
     }
-    .answer-btn span.letter {
-      position: absolute; left: 18px; top: 50%;
-      transform: translateY(-50%); width: 42px; height: 42px;
-      line-height: 42px; border-radius: 50%;
-      background: var(--primary); color: #fff;
-      font-size: 1.4em; font-weight: 900;
-    }
-    .answer-btn.correct {
-      background: var(--correct); border-color: var(--correct); color: #fff;
-    }
-    .answer-btn.wrong {
-      background: var(--wrong); border-color: var(--wrong); color: #fff;
-    }
-    .answer-btn.disabled { pointer-events: none; opacity: .8; }
-    #scoreDisplay {
-      font-size: 1.6em; color: var(--primary);
-      margin-bottom: 20px; font-weight: 700;
-    }
-    @media (min-width: 600px) {
-      body { padding: 40px 0; }
+    .wrong {
+      background-color: #dc3545 !important;
+      color: white;
     }
   </style>
 </head>
 <body>
-
   <h1>İngilizce Kelime Kartları</h1>
-
-  <!-- Öğrenme Modu Kartı -->
   <div class="card" id="card">
-    <div class="emoji" id="cardEmoji">😀</div>
+    <img id="cardImg" src="" alt="Kelime Görseli" />
     <div class="text" id="cardText">Yükleniyor...</div>
   </div>
-  <div class="controls" id="cardControls">
-    <button id="prevBtn">Önceki</button>
-    <button id="nextBtn">Sonraki</button>
-    <button id="testBtn">Teste Geç</button>
-  </div>
-
-  <!-- Test Modu -->
-  <div id="testArea" class="hide">
-    <h2>20 Soruluk Kelime Testi</h2>
-    <div class="question-box" id="question">Hazırlanıyor...</div>
+  <div class="controls">
+    <button id="showCard">Kartları Göster</button>
+    <button id="nextWord">Sonraki</button>
+    <button id="startTest">Teste Başla</button>
+  </div>  <div id="test" style="display:none">
+    <div class="question" id="question">Soru</div>
     <div class="answers" id="answers"></div>
-    <div id="scoreDisplay">Puan: 0</div>
-    <button id="backToCardsBtn">Kartlara Geri Dön</button>
-  </div>
-
-  <script>
+    <div id="score">Puan: 0</div>
+    <div class="test-controls">
+      <button id="exitTest">Kartlara Dön</button>
+    </div>
+  </div>  <script>
     const words = [
-      {en:"Hello", tr:"Merhaba", emoji:"👋"}, {en:"Goodbye", tr:"Hoşça kal", emoji:"👋"},
-      {en:"Please", tr:"Lütfen", emoji:"🙏"}, {en:"Thank you", tr:"Teşekkür ederim", emoji:"🙏"},
-      {en:"Sorry", tr:"Özür dilerim", emoji:"😔"}, {en:"Yes", tr:"Evet", emoji:"👍"},
-      {en:"No", tr:"Hayır", emoji:"👎"}, {en:"Welcome", tr:"Hoş geldin", emoji:"🤗"},
-      {en:"Excuse me", tr:"Afedersiniz", emoji:"🙇"}, {en:"OK", tr:"Tamam", emoji:"👌"},
-      {en:"Mother", tr:"Anne", emoji:"👩‍👧"}, {en:"Father", tr:"Baba", emoji:"👨‍👧"},
-      {en:"Sister", tr:"Kız kardeş", emoji:"👧"}, {en:"Brother", tr:"Erkek kardeş", emoji:"👦"},
-      {en:"Friend", tr:"Arkadaş", emoji:"🤝"}, {en:"Baby", tr:"Bebek", emoji:"👶"},
-      {en:"Girl", tr:"Kız", emoji:"👧"}, {en:"Boy", tr:"Erkek", emoji:"👦"},
-      {en:"Family", tr:"Aile", emoji:"👨‍👩‍👧‍👦"}, {en:"People", tr:"İnsanlar", emoji:"🧑‍🤝‍🧑"},
-      {en:"House", tr:"Ev", emoji:"🏠"}, {en:"Room", tr:"Oda", emoji:"🚪"},
-      {en:"Bed", tr:"Yatak", emoji:"🛏️"}, {en:"Table", tr:"Masa", emoji:"🪑"},
-      {en:"Chair", tr:"Sandalye", emoji:"🪑"}, {en:"Door", tr:"Kapı", emoji:"🚪"},
-      {en:"Window", tr:"Pencere", emoji:"🪟"}, {en:"TV", tr:"Televizyon", emoji:"📺"},
-      {en:"Lamp", tr:"Lamba", emoji:"💡"}, {en:"Carpet", tr:"Halı", emoji:"🧶"},
-      {en:"School", tr:"Okul", emoji:"🏫"}, {en:"Teacher", tr:"Öğretmen", emoji:"👩‍🏫"},
-      {en:"Student", tr:"Öğrenci", emoji:"🧑‍🎓"}, {en:"Book", tr:"Kitap", emoji:"📚"},
-      {en:"Pen", tr:"Tükenmez kalem", emoji:"🖊️"}, {en:"Pencil", tr:"Kurşun kalem", emoji:"✏️"},
-      {en:"Bag", tr:"Çanta", emoji:"🎒"}, {en:"Ruler", tr:"Cetvel", emoji:"📏"},
-      {en:"Eraser", tr:"Silgi", emoji:"🩹"}, {en:"Board", tr:"Tahta", emoji:"🪧"},
-      {en:"Dog", tr:"Köpek", emoji:"🐶"}, {en:"Cat", tr:"Kedi", emoji:"🐱"},
-      {en:"Bird", tr:"Kuş", emoji:"🐦"}, {en:"Fish", tr:"Balık", emoji:"🐟"},
-      {en:"Cow", tr:"İnek", emoji:"🐄"}, {en:"Horse", tr:"At", emoji:"🐎"},
-      {en:"Duck", tr:"Ördek", emoji:"🦆"}, {en:"Lion", tr:"Aslan", emoji:"🦁"},
-      {en:"Elephant", tr:"Fil", emoji:"🐘"}, {en:"Monkey", tr:"Maymun", emoji:"🐒"},
-      {en:"Apple", tr:"Elma", emoji:"🍎"}, {en:"Banana", tr:"Muz", emoji:"🍌"},
-      {en:"Bread", tr:"Ekmek", emoji:"🍞"}, {en:"Water", tr:"Su", emoji:"💧"},
-      {en:"Milk", tr:"Süt", emoji:"🥛"}, {en:"Egg", tr:"Yumurta", emoji:"🥚"},
-      {en:"Cheese", tr:"Peynir", emoji:"🧀"}, {en:"Meat", tr:"Et", emoji:"🍖"},
-      {en:"Rice", tr:"Pirinç", emoji:"🍚"}, {en:"Cake", tr:"Kek", emoji:"🍰"},
-      {en:"Red", tr:"Kırmızı", emoji:"🔴"}, {en:"Blue", tr:"Mavi", emoji:"🔵"},
-      {en:"Green", tr:"Yeşil", emoji:"🟢"}, {en:"Yellow", tr:"Sarı", emoji:"🟡"},
-      {en:"Black", tr:"Siyah", emoji:"⚫"}, {en:"White", tr:"Beyaz", emoji:"⚪"},
-      {en:"Orange", tr:"Turuncu", emoji:"🟠"}, {en:"Pink", tr:"Pembe", emoji:"🌸"},
-      {en:"Brown", tr:"Kahverengi", emoji:"🟤"}, {en:"Purple", tr:"Mor", emoji:"🟣"},
-      {en:"One", tr:"Bir", emoji:"1️⃣"}, {en:"Two", tr:"İki", emoji:"2️⃣"},
-      {en:"Three", tr:"Üç", emoji:"3️⃣"}, {en:"Four", tr:"Dört", emoji:"4️⃣"},
-      {en:"Five", tr:"Beş", emoji:"5️⃣"}, {en:"Day", tr:"Gün", emoji:"☀️"},
-      {en:"Night", tr:"Gece", emoji:"🌙"}, {en:"Morning", tr:"Sabah", emoji:"🌅"},
-      {en:"Evening", tr:"Akşam", emoji:"🌇"}, {en:"Today", tr:"Bugün", emoji:"📅"},
-      {en:"Shirt", tr:"Gömlek", emoji:"👕"}, {en:"Pants", tr:"Pantolon", emoji:"👖"},
-      {en:"Dress", tr:"Elbise", emoji:"👗"}, {en:"Skirt", tr:"Etek", emoji:"👚"},
-      {en:"Shoes", tr:"Ayakkabı", emoji:"👟"}, {en:"Socks", tr:"Çorap", emoji:"🧦"},
-      {en:"Hat", tr:"Şapka", emoji:"🎩"}, {en:"Jacket", tr:"Ceket", emoji:"🧥"},
-      {en:"Coat", tr:"Kaban", emoji:"🧥"}, {en:"T-shirt", tr:"Tişört", emoji:"👕"},
-      {en:"Head", tr:"Kafa", emoji:"🧑‍🦲"}, {en:"Hair", tr:"Saç", emoji:"💇‍♂️"},
-      {en:"Eye", tr:"Göz", emoji:"👁️"}, {en:"Nose", tr:"Burun", emoji:"👃"},
-      {en:"Mouth", tr:"Ağız", emoji:"👄"}, {en:"Ear", tr:"Kulak", emoji:"👂"},
-      {en:"Hand", tr:"El", emoji:"✋"}, {en:"Arm", tr:"Kol", emoji:"💪"},
-      {en:"Leg", tr:"Bacak", emoji:"🦵"}, {en:"Foot", tr:"Ayak", emoji:"🦶"}
+      {en: "Apple", tr: "Elma", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/120px-Red_Apple.jpg"},
+      {en: "Dog", tr: "Köpek", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Golde33443.jpg/120px-Golde33443.jpg"},
+      {en: "Cat", tr: "Kedi", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/81_INF_DIV_SSI.jpg/120px-81_INF_DIV_SSI.jpg"},
+      {en: "Foot", tr: "Ayak", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Foot_icon.png/120px-Foot_icon.png"}
     ];
 
-    let currentIndex = 0, quiz = [], qIndex = 0, score = 0, questionIsEnglish;
+    let index = 0;
+    let showingEnglish = true;
+    const card = document.getElementById('card');
+    const cardImg = document.getElementById('cardImg');
+    const cardText = document.getElementById('cardText');
+    const showCardBtn = document.getElementById('showCard');
+    const nextWordBtn = document.getElementById('nextWord');
+    const testArea = document.getElementById('test');
+    const questionBox = document.getElementById('question');
+    const answersBox = document.getElementById('answers');
+    const startTestBtn = document.getElementById('startTest');
+    const scoreBox = document.getElementById('score');
+    const exitTestBtn = document.getElementById('exitTest');
 
-    const cardEmoji     = document.getElementById('cardEmoji');
-    const cardText      = document.getElementById('cardText');
-    const prevBtn       = document.getElementById('prevBtn');
-    const nextBtn       = document.getElementById('nextBtn');
-    const testBtn       = document.getElementById('testBtn');
-    const cardControls  = document.getElementById('cardControls');
-    const testArea      = document.getElementById('testArea');
-    const questionBox   = document.getElementById('question');
-    const answersBox    = document.getElementById('answers');
-    const scoreDisplay  = document.getElementById('scoreDisplay');
-    const backBtn       = document.getElementById('backToCardsBtn');
-    const body          = document.body;
-
-    function renderCard() {
-      const w = words[currentIndex];
-      cardEmoji.textContent = w.emoji;
-      cardText.textContent  = w.en;
+    function showCard() {
+      const word = words[index];
+      cardImg.src = word.img;
+      cardText.textContent = showingEnglish ? word.en : word.tr;
+      card.style.display = 'block';
     }
 
-    prevBtn.onclick = () => {
-      currentIndex = (currentIndex - 1 + words.length) % words.length;
-      renderCard();
+    showCardBtn.onclick = () => {
+      showingEnglish = !showingEnglish;
+      showCard();
     };
 
-    nextBtn.onclick = () => {
-      currentIndex = (currentIndex + 1) % words.length;
-      renderCard();
+    nextWordBtn.onclick = () => {
+      index = (index + 1) % words.length;
+      showingEnglish = true;
+      showCard();
     };
 
-    cardText.onclick = () => {
-      const w = words[currentIndex];
-      cardText.textContent = (cardText.textContent === w.en) ? w.tr : w.en;
+    startTestBtn.onclick = () => {
+      card.style.display = 'none';
+      testArea.style.display = 'block';
+      startTest();
     };
 
-    testBtn.onclick = () => {
-      quiz = shuffle([...words]).slice(0,20);
-      qIndex = 0; score = 0;
-      cardControls.classList.add('hide');
-      testArea.classList.remove('hide');
-      loadQuestion(); updateScore();
+    exitTestBtn.onclick = () => {
+      testArea.style.display = 'none';
+      card.style.display = 'block';
+      index = 0;
+      showCard();
     };
 
-    backBtn.onclick = () => {
-      testArea.classList.add('hide');
-      cardControls.classList.remove('hide');
-      renderCard();
-      body.style.backgroundColor = 'var(--bg)';
-    };
-
-    function loadQuestion() {
-      clearFeedback();
-      answersBox.innerHTML = '';
-      if (qIndex >= quiz.length) {
-        questionBox.textContent = `Test tamamlandı! Puan: ${score}/${quiz.length}`;
-        scoreDisplay.textContent = '';
-        return;
-      }
-      updateScore();
-      questionIsEnglish = Math.random() < 0.5;
-      const correct = quiz[qIndex];
-      questionBox.textContent = questionIsEnglish ? correct.en : correct.tr;
-
-      const opts = [correct];
-      while (opts.length < 4) {
-        const r = words[Math.floor(Math.random() * words.length)];
-        if (!opts.includes(r)) opts.push(r);
-      }
-      shuffle(opts).forEach((opt, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.innerHTML = `<span class="letter">${String.fromCharCode(65+i)}</span>` +
-                        (questionIsEnglish ? opt.tr : opt.en);
-        btn.onclick = () => selectAnswer(btn, opt, correct);
-        answersBox.appendChild(btn);
-      });
+    function playSound(correct) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      oscillator.connect(gain);
+      gain.connect(audioCtx.destination);
+      oscillator.type = 'sine';
+      oscillator.frequency.value = correct ? 700 : 200;
+      gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.5);
     }
 
-    function selectAnswer(btn, sel, corr) {
-      playSound(sel === corr ? 'correct' : 'wrong');
-      body.style.backgroundColor = sel === corr ? 'var(--correct)' : 'var(--wrong)';
-      if (sel === corr) { btn.classList.add('correct'); score++; }
-      else {
-        btn.classList.add('wrong');
-        Array.from(answersBox.children).forEach(b => {
-          if (b.textContent.includes(questionIsEnglish ? corr.tr : corr.en))
-            b.classList.add('correct');
+    function startTest() {
+      let currentQuestion = 0;
+      let score = 0;
+      const shuffled = [...words].sort(() => Math.random() - 0.5);
+
+      function askQuestion() {
+        if (currentQuestion >= shuffled.length) {
+          questionBox.textContent = 'Test Bitti!';
+          answersBox.innerHTML = '';
+          return;
+        }
+        const correct = shuffled[currentQuestion];
+        questionBox.textContent = correct.tr;
+        const options = [correct];
+        while (options.length < 4) {
+          const random = words[Math.floor(Math.random() * words.length)];
+          if (!options.includes(random)) options.push(random);
+        }
+        const shuffledOptions = options.sort(() => Math.random() - 0.5);
+        answersBox.innerHTML = '';
+        shuffledOptions.forEach((opt) => {
+          const btn = document.createElement('button');
+          btn.textContent = opt.en;
+          btn.onclick = () => {
+            if (opt === correct) {
+              btn.classList.add('correct');
+              playSound(true);
+              score++;
+            } else {
+              btn.classList.add('wrong');
+              playSound(false);
+            }
+            Array.from(answersBox.children).forEach(b => b.disabled = true);
+            setTimeout(() => {
+              currentQuestion++;
+              scoreBox.textContent = `Puan: ${score}`;
+              askQuestion();
+            }, 1200);
+          };
+          answersBox.appendChild(btn);
         });
       }
-      Array.from(answersBox.children).forEach(b => {
-        b.disabled = true; b.classList.add('disabled');
-      });
-      updateScore();
-      setTimeout(() => {
-        qIndex++; loadQuestion(); body.style.backgroundColor = 'var(--bg)';
-      }, 1500);
+      askQuestion();
     }
 
-    function updateScore() {
-      scoreDisplay.textContent = `Puan: ${score}/${quiz.length}  Soru: ${qIndex+1}/${quiz.length}`;
-    }
-
-    function playSound(type) {
-      if (!window.audioCtx) window.audioCtx = new (AudioContext||webkitAudioContext)();
-      const ctx = window.audioCtx;
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = type==='correct' ? 800 : 250;
-      g.gain.setValueAtTime(0.3, ctx.currentTime);
-      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.3);
-    }
-
-    function clearFeedback() {
-      body.style.backgroundColor = 'var(--bg)';
-    }
-
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    window.addEventListener('DOMContentLoaded', renderCard);
-  </script>
-
-</body>
+    showCard();
+  </script></body>
 </html>
