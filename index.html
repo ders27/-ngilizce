@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!DOCTYPE html><html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Çocuklar için İngilizce Kelime Kartları & Test</title>
+  <title>İngilizce Kelime Kartları ve Test</title>
   <style>
     :root {
       --primary: #6a0dad;
@@ -19,7 +18,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: var(--bg); color: var(--text);
       padding: 20px 10px; text-align: center;
-      transition: background-color .4s ease;
       display: flex; flex-direction: column; align-items: center;
       min-height: 100vh;
     }
@@ -32,16 +30,12 @@
       user-select: none; padding: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .card .emoji {
-      font-size: 90px; margin-bottom: 12px;
-    }
+    .card .emoji { font-size: 90px; margin-bottom: 12px; }
     .card .text {
       font-size: 2.4em; color: var(--primary);
       font-weight: 700; cursor: pointer;
     }
-    .controls {
-      margin-top: 20px;
-    }
+    .controls { margin-top: 20px; }
     button {
       font-size: var(--btn-font); padding: 12px 28px;
       margin: 8px 6px; border: none; border-radius: 12px;
@@ -71,33 +65,17 @@
       transition: background-color .3s, border-color .3s;
     }
     .answer-btn span.letter {
-      position: absolute; left: 18px; top: 50%;
-      transform: translateY(-50%); width: 42px; height: 42px;
-      line-height: 42px; border-radius: 50%;
-      background: var(--primary); color: #fff;
-      font-size: 1.4em; font-weight: 900;
+      position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+      width: 42px; height: 42px; line-height: 42px; border-radius: 50%;
+      background: var(--primary); color: #fff; font-size: 1.4em; font-weight: 900;
     }
-    .answer-btn.correct {
-      background: var(--correct); border-color: var(--correct); color: #fff;
-    }
-    .answer-btn.wrong {
-      background: var(--wrong); border-color: var(--wrong); color: #fff;
-    }
+    .answer-btn.correct { background: var(--correct); border-color: var(--correct); color: #fff; }
+    .answer-btn.wrong { background: var(--wrong); border-color: var(--wrong); color: #fff; }
     .answer-btn.disabled { pointer-events: none; opacity: .8; }
-    #scoreDisplay {
-      font-size: 1.6em; color: var(--primary);
-      margin-bottom: 20px; font-weight: 700;
-    }
-    @media (min-width: 600px) {
-      body { padding: 40px 0; }
-    }
+    #scoreDisplay { font-size: 1.6em; color: var(--primary); margin-bottom: 20px; font-weight: 700; }
   </style>
 </head>
-<body>
-
-  <h1>İngilizce Kelime Kartları</h1>
-
-  <div class="card" id="card">
+<body>  <h1>İngilizce Kelime Kartları</h1>  <div class="card" id="card">
     <div class="emoji" id="cardEmoji">😀</div>
     <div class="text" id="cardText">Yükleniyor...</div>
   </div>
@@ -105,18 +83,21 @@
     <button id="prevBtn">Önceki</button>
     <button id="nextBtn">Sonraki</button>
     <button id="testBtn">Teste Geç</button>
-  </div>
-
-  <div id="testArea" class="hide">
+  </div>  <div id="testArea" class="hide">
     <h2>20 Soruluk Kelime Testi</h2>
     <div class="question-box" id="question">Hazırlanıyor...</div>
     <div class="answers" id="answers"></div>
     <div id="scoreDisplay">Puan: 0</div>
     <button id="backToCardsBtn">Kartlara Geri Dön</button>
-  </div>
-
-  <script>
-    const words = [/* ... kelime dizisi buraya gelir (önceki kodda olan 100 kelime) ... */];
+  </div>  <script>
+    const words = [
+      {en:"Hello", tr:"Merhaba", emoji:"👋"},
+      {en:"Apple", tr:"Elma", emoji:"🍎"},
+      {en:"Dog", tr:"Köpek", emoji:"🐶"},
+      {en:"Book", tr:"Kitap", emoji:"📚"},
+      {en:"Car", tr:"Araba", emoji:"🚗"}
+      // Tüm kelimeleri buraya ekleyebilirsin...
+    ];
 
     let currentIndex = 0, quiz = [], qIndex = 0, score = 0, questionIsEnglish;
 
@@ -254,7 +235,5 @@
     }
 
     window.addEventListener('DOMContentLoaded', renderCard);
-  </script>
-
-</body>
+  </script></body>
 </html>
