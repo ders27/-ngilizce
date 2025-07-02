@@ -8,12 +8,12 @@
     body { font-family:Arial,sans-serif; background:var(--bg); color:var(--text); text-align:center; padding:20px; transition:background-color .3s; }
     h1 { color:var(--primary); font-size:2em; }
     .card { width:320px; margin:20px auto; border:4px solid var(--primary); border-radius:12px; background:#fff; padding:10px; display:flex; flex-direction:column; align-items:center; }
-    .card img { width:80px; height:80px; object-fit:contain; }
+    .card img { width:150px; height:150px; object-fit:contain; margin-bottom:10px; }
     .card .text { font-size:2em; margin-top:10px; }
     .controls, .test-controls { margin-top:15px; }
     button { padding:10px 20px; font-size:1em; border:none; border-radius:8px; background:var(--accent); color:#fff; margin:5px; cursor:pointer; }
     .question { margin:20px auto; padding:15px; font-size:1.5em; border:3px solid var(--primary); border-radius:10px; background:#fff; max-width:300px; }
-    .answers button { display:block; margin:10px auto; padding:12px; font-size:1.2em; border-radius:8px; width:280px; background:#fff; border:2px solid var(--primary); cursor:pointer; transition:background .2s; }
+    .answers button { display:block; margin:10px auto; padding:12px; font-size:1.2em; border-radius:8px; width:280px; background:#fff; border:2px solid var(--primary); cursor:pointer; transition:background .2s; text-align:left; }
     .correct { background:var(--correct)!important; color:#fff; }
     .wrong { background:var(--wrong)!important; color:#fff; }
     #score { font-size:1.2em; margin-top:10px; }
@@ -37,7 +37,6 @@
       <button id="exitTest">Kartlara Dön</button>
     </div>
   </div>  <script>
-    // 100 temel kelime ve img URL'leri placeholderla otomatik oluşturuluyor
     const wordList = [
       ["Hello","Merhaba"],["Goodbye","Hoşça kal"],["Please","Lütfen"],["Thank you","Teşekkür ederim"],["Sorry","Özür dilerim"],
       ["Yes","Evet"],["No","Hayır"],["Welcome","Hoş geldin"],["Excuse me","Afedersiniz"],["OK","Tamam"],
@@ -60,7 +59,7 @@
       ["Hair","Saç"],["Eye","Göz"],["Nose","Burun"],["Mouth","Ağız"],["Ear","Kulak"],
       ["Hand","El"],["Arm","Kol"],["Leg","Bacak"],["Foot","Ayak"]
     ];
-    const words = wordList.map(([en,tr])=>({en,tr,img:`https://via.placeholder.com/80?text=${encodeURIComponent(en)}`}));
+    const words = wordList.map(([en,tr])=>({en,tr,img:`https://via.placeholder.com/150?text=${encodeURIComponent(en)}`}));
 
     let idx = 0;
     const cardImg = document.getElementById('cardImg'),
@@ -94,11 +93,13 @@
 
     startTestBtn.onclick = () => {
       controlsEl.style.display = 'none';
+      cardEl.style.display = 'none';
       testEl.style.display = 'block';
       initTest();
     };
     exitTestBtn.onclick = () => {
       testEl.style.display = 'none';
+      cardEl.style.display = 'block';
       controlsEl.style.display = 'block';
       renderCard();
     };
@@ -126,7 +127,7 @@
         return;
       }
       const w = quiz[q];
-      questionBox.textContent = w.en;
+      questionBox.textContent = `${String.fromCharCode(65+q)}. ${w.en}`;
       scoreBox.textContent = `Puan: ${score}/${quiz.length} Soru: ${q+1}/${quiz.length}`;
       let opts = [w];
       while(opts.length<4) {
@@ -134,21 +135,20 @@
         if(!opts.includes(r)) opts.push(r);
       }
       opts.sort(()=>Math.random()-0.5);
-      opts.forEach(o=>{
+      opts.forEach((o,i)=>{
         const btn = document.createElement('button');
-        btn.textContent = o.tr;
+        btn.textContent = `${String.fromCharCode(65+i)}. ${o.tr}`;
         btn.onclick = ()=>{
           btn.classList.add(o===w?'correct':'wrong');
           playTone(o===w);
           if(o===w) score++;
           q++;
-          setTimeout(nextQ,500);
+          setTimeout(nextQ,600);
         };
         answersBox.appendChild(btn);
       });
     }
 
-    // İlk kart göster
     renderCard();
   </script></body>
 </html>
