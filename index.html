@@ -31,29 +31,30 @@
     }
     h1 {
       color: var(--primary);
-      font-size: 2.8em; /* Başlığı biraz daha büyüt */
+      font-size: 2.8em;
       margin-bottom: 30px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.15); /* Gölgeyi belirginleştir */
-      font-weight: 700; /* Kalınlaştır */
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+      font-weight: 700;
     }
     .card {
-      width: 340px; /* Kart genişliğini artır */
-      height: 380px; /* Kart yüksekliğini artır (içerik sığması için) */
+      width: 340px;
+      height: 380px;
       margin: 20px auto;
-      border: 5px solid var(--card-border); /* Kalın ve renkli kenarlık */
-      border-radius: 20px; /* Daha yuvarlak köşeler */
+      border: 5px solid var(--card-border);
+      border-radius: 20px;
       background: var(--card-bg);
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center; /* İçeriği dikeyde ortala */
-      box-shadow: 0 12px 24px rgba(0,0,0,0.25); /* Daha belirgin gölge */
-      transition: transform 0.6s ease-in-out, box-shadow 0.3s ease; /* Yumuşak geçişler */
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+      transition: transform 0.6s ease-in-out, box-shadow 0.3s ease;
       cursor: pointer;
-      position: relative; /* İçerik için gerekli */
+      position: relative;
+      overflow: hidden; /* İçerik taşmasını engelle */
     }
-    .card.flipped .card-inner { /* Çevrilmiş kartın iç içeriği */
+    .card.flipped .card-inner {
         transform: rotateY(180deg);
     }
     .card-inner {
@@ -61,7 +62,7 @@
         width: 100%;
         height: 100%;
         text-align: center;
-        transition: transform 0.8s; /* Daha yavaş çevirme animasyonu */
+        transition: transform 0.8s;
         transform-style: preserve-3d;
         display: flex;
         align-items: center;
@@ -77,40 +78,40 @@
         flex-direction: column;
         align-items: center;
         justify-content: center; /* İçeriği ortala */
+        padding: 10px; /* İç boşluk ekle */
+        box-sizing: border-box; /* Padding'in genişliği etkilememesi için */
     }
     .card-front {
         background: var(--card-bg);
-        border-radius: 15px; /* Kartın ön yüzüne de border-radius uygula */
-        padding: 10px; /* İç boşluk ekle */
+        border-radius: 15px;
     }
     .card-back {
         background: var(--card-bg);
         transform: rotateY(180deg);
         border-radius: 15px;
-        padding: 10px;
     }
     .card img {
-      width: 200px; /* Görseli daha da büyüt */
-      height: 200px;
+      max-width: 100%; /* Kart genişliğine sığdır */
+      max-height: 200px; /* Maksimum yükseklik */
       object-fit: contain; /* Resmi bozmadan sığdır */
       border-radius: 12px;
       margin-bottom: 15px;
-      border: 3px solid var(--accent); /* Daha belirgin çerçeve */
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Görsele gölge */
+      border: 3px solid var(--accent);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .card .text {
-      font-size: 3em; /* Metni daha da büyüt */
-      margin-top: 10px;
+      font-size: 3em;
       font-weight: bold;
       color: var(--primary);
       text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+      /* Metin ortalama zaten flexbox ile sağlanıyor */
     }
     .controls {
       margin-top: 40px;
-      display: flex; /* Butonları yan yana sırala */
-      flex-wrap: wrap; /* Küçük ekranlarda alta geçsinler */
-      justify-content: center; /* Ortala */
-      gap: 15px; /* Butonlar arası boşluk */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
     }
     .controls button {
       padding: 14px 30px;
@@ -123,11 +124,11 @@
       transition: background 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
       box-shadow: 0 6px 12px rgba(0,0,0,0.18);
       font-weight: bold;
-      letter-spacing: 0.5px; /* Harf aralığı ekle */
+      letter-spacing: 0.5px;
     }
     .controls button:hover {
-      background: #ff7f50; /* Daha açık bir ton */
-      transform: translateY(-3px) scale(1.02); /* Hafif yukarı ve büyütme efekti */
+      background: #ff7f50;
+      transform: translateY(-3px) scale(1.02);
       box-shadow: 0 8px 16px rgba(0,0,0,0.25);
     }
     .controls button:active {
@@ -137,7 +138,7 @@
     #test {
       display: none;
       padding-top: 30px;
-      flex-direction: column; /* Test bölümünü de flex ile hizala */
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 100%;
@@ -162,7 +163,7 @@
       font-size: 1.4em;
       border-radius: 12px;
       width: 320px;
-      background: #f0f0f0; /* Daha açık bir gri tonu */
+      background: #f0f0f0;
       border: 2px solid var(--primary);
       cursor: pointer;
       transition: background 0.3s, transform 0.15s, box-shadow 0.3s;
@@ -179,13 +180,13 @@
     .answers button.correct {
       background: var(--correct) !important;
       color: #fff;
-      box-shadow: 0 6px 12px rgba(60,179,113,0.5); /* Doğru cevap için daha belirgin gölge */
+      box-shadow: 0 6px 12px rgba(60,179,113,0.5);
       transform: scale(1.03);
     }
     .answers button.wrong {
       background: var(--wrong) !important;
       color: #fff;
-      box-shadow: 0 6px 12px rgba(255,69,0,0.5); /* Yanlış cevap için daha belirgin gölge */
+      box-shadow: 0 6px 12px rgba(255,69,0,0.5);
       transform: scale(1.03);
     }
     #score {
@@ -207,7 +208,7 @@
       }
       .card {
         width: 95%;
-        height: 350px; /* Mobil için yüksekliği ayarla */
+        height: 350px;
         padding: 15px;
         border-radius: 15px;
       }
@@ -298,22 +299,13 @@
       ["Yes", "Evet"], ["No", "Hayır"], ["Excuse me", "Afedersiniz"], ["Hello", "Merhaba"], ["Goodbye", "Hoşça kal"]
     ];
 
-    // Görsel arama fonksiyonunu değiştirdik. Artık özel olarak "pexels.com" adresini kullanacağız
-    // Pexels API'den görselleri çekmek için bir API anahtarına ihtiyacın olacak.
-    // Şimdilik test için placeholder bir görsel URL'i bırakacağım.
-    // Gerçek API entegrasyonu için Pexels API'ye kaydolup anahtar almalısın.
-    // Alternatif olarak, her kelime için manuel olarak bir görsel URL'i tanımlayabiliriz.
-    // Basit olması ve API anahtarı gerektirmemesi için, manuel URL'lerle devam edelim.
-    // Dilersen API entegrasyonu için de yardımcı olabilirim.
-
     const words = wordList.map(([en, tr]) => ({
       en,
       tr,
-      // Kelimelere uygun daha iyi görseller için sabit URL'ler ekleyelim veya daha iyi bir API kullanalım
-      // Şimdilik Unsplash'in yeni sorgulama yapısıyla devam edelim, bu genellikle daha iyi sonuç verir.
-      // Ya da her kelime için özel bir görsel URL'i belirleyebiliriz.
-      // Örneğin: `img: "https://example.com/images/" + en.toLowerCase() + ".jpg"`
-      img: `https://source.unsplash.com/featured/400x300/?${encodeURIComponent(en).toLowerCase()},word` // Anahtar kelimeyi küçük harfe çevir ve "word" ekle
+      // Unsplash'ten rastgele ama kelimeye uygun resim çekmeye çalışıyoruz.
+      // 'random/' yerine 'featured/' kullanmak bazen daha iyi sonuç verebilir, ancak 'random' daha geneldir.
+      // Sorguya 'concept' veya 'illustration' gibi ek kelimeler ekleyebiliriz.
+      img: `https://source.unsplash.com/random/400x300/?${encodeURIComponent(en.toLowerCase())},concept`
     }));
 
 
@@ -351,12 +343,24 @@
 
     function renderCard() {
       const w = words[idx];
-      // Görsel yüklenemediğinde hata yakalama
+
+      // Resim yüklenemediğinde veya hata verdiğinde alternatif metin gösterimi
       cardImg.onerror = () => {
-        cardImg.src = `https://via.placeholder.com/400x300?text=${w.en}`; // Alternatif placeholder görsel
-        console.warn(`Resim yüklenemedi: ${w.img}`);
+        // Resim yerine kelimenin kendisini gösterelim
+        cardImg.style.display = 'none'; // Resmi gizle
+        cardText.style.fontSize = '4em'; // Metni büyüt
+        cardText.textContent = w.en + " (Resim Yüklenemedi)"; // Hata mesajı ekle
+        console.warn(`Resim yüklenemedi: ${w.img} - Kelime: ${w.en}`);
       };
-      cardImg.src = w.img;
+
+      // Resim başarıyla yüklendiğinde eski haline getir
+      cardImg.onload = () => {
+        cardImg.style.display = 'block'; // Resmi göster
+        cardText.style.fontSize = '3em'; // Metin boyutunu normale döndür
+        cardText.textContent = w.en; // Hata mesajını kaldır
+      };
+
+      cardImg.src = w.img; // Resim URL'sini ata
       cardText.textContent = w.en;
       cardTranslation.textContent = w.tr;
       pronounce(w.en);
