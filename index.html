@@ -1,106 +1,260 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>English Flashcards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Çocuklar için İngilizce Kelime Kartları & Test</title>
   <style>
+    :root {
+      --primary: #6a0dad;
+      --accent: #ffa500;
+      --bg: #f4f0ff;
+      --text: #333;
+      --correct: #28a745;
+      --wrong: #dc3545;
+      --btn-font: 1.6em;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Arial, sans-serif;
-      background: #f9f9ff;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg); color: var(--text);
+      padding: 20px 10px; text-align: center;
+      transition: background-color .4s ease;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh;
     }
-    h1 {
-      color: #4b0082;
-    }
+    h1 { color: var(--primary); font-size: 2.4em; margin-bottom: 20px; }
     .card {
-      width: 90%;
-      max-width: 350px;
-      margin: 20px auto;
-      padding: 30px;
-      background: #fff;
-      border: 3px solid #4b0082;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      font-size: 2em;
-      cursor: pointer;
-      transition: 0.3s;
-      user-select: none;
+      width: 90vw; max-width: 360px; height: 260px;
+      border: 5px solid var(--primary); border-radius: 18px;
+      background: #fff; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      user-select: none; padding: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .card:hover {
-      background: #eeeaff;
+    .card .emoji {
+      font-size: 90px; margin-bottom: 12px;
+    }
+    .card .text {
+      font-size: 2.4em; color: var(--primary);
+      font-weight: 700; cursor: pointer;
+    }
+    .controls {
+      margin-top: 20px;
     }
     button {
-      padding: 10px 20px;
-      font-size: 1.1em;
-      background: #4b0082;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      margin: 10px;
-      cursor: pointer;
+      font-size: var(--btn-font); padding: 12px 28px;
+      margin: 8px 6px; border: none; border-radius: 12px;
+      background: var(--accent); color: #fff;
+      cursor: pointer; transition: transform .15s;
     }
-    .sound {
-      margin-top: 10px;
-      font-size: 1em;
+    button:hover:not(:disabled) { transform: scale(1.05); }
+    button:disabled { opacity: .6; cursor: default; }
+    .hide { display: none !important; }
+    .question-box {
+      width: 90vw; max-width: 360px; min-height: 110px;
+      border: 5px solid var(--primary); border-radius: 18px;
+      background: #fff; font-size: 2em; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; margin-bottom: 20px;
+    }
+    .answers {
+      display: flex; flex-direction: column; gap: 14px;
+      width: 90vw; max-width: 360px; margin-bottom: 24px;
+    }
+    .answer-btn {
+      position: relative; padding: 16px 24px 16px 56px;
+      font-size: 1.5em; font-weight: 700; text-align: left;
+      width: 100%; max-width: 360px;
+      border: 4px solid var(--primary); border-radius: 14px;
+      background: #fff; cursor: pointer;
+      transition: background-color .3s, border-color .3s;
+    }
+    .answer-btn span.letter {
+      position: absolute; left: 18px; top: 50%;
+      transform: translateY(-50%); width: 42px; height: 42px;
+      line-height: 42px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 1.4em; font-weight: 900;
+    }
+    .answer-btn.correct {
+      background: var(--correct); border-color: var(--correct); color: #fff;
+    }
+    .answer-btn.wrong {
+      background: var(--wrong); border-color: var(--wrong); color: #fff;
+    }
+    .answer-btn.disabled { pointer-events: none; opacity: .8; }
+    #scoreDisplay {
+      font-size: 1.6em; color: var(--primary);
+      margin-bottom: 20px; font-weight: 700;
+    }
+    @media (min-width: 600px) {
+      body { padding: 40px 0; }
     }
   </style>
 </head>
 <body>
 
-<h1>🎈 English Flashcards 🎈</h1>
+  <h1>İngilizce Kelime Kartları</h1>
 
-<div class="card" id="card">Hello</div>
-<button onclick="prev()">⬅️ Previous</button>
-<button onclick="next()">Next ➡️</button>
-<br/>
-<button class="sound" onclick="speak()">🔊 Speak</button>
+  <div class="card" id="card">
+    <div class="emoji" id="cardEmoji">😀</div>
+    <div class="text" id="cardText">Yükleniyor...</div>
+  </div>
+  <div class="controls" id="cardControls">
+    <button id="prevBtn">Önceki</button>
+    <button id="nextBtn">Sonraki</button>
+    <button id="testBtn">Teste Geç</button>
+  </div>
 
-<script>
-const words = [
-  { en: "Hello", tr: "Merhaba" },
-  { en: "Goodbye", tr: "Hoşça kal" },
-  { en: "Please", tr: "Lütfen" },
-  { en: "Thank you", tr: "Teşekkür ederim" },
-  { en: "Yes", tr: "Evet" },
-  { en: "No", tr: "Hayır" },
-  { en: "Dog", tr: "Köpek" },
-  { en: "Cat", tr: "Kedi" },
-  { en: "Apple", tr: "Elma" },
-  { en: "School", tr: "Okul" }
-];
+  <div id="testArea" class="hide">
+    <h2>20 Soruluk Kelime Testi</h2>
+    <div class="question-box" id="question">Hazırlanıyor...</div>
+    <div class="answers" id="answers"></div>
+    <div id="scoreDisplay">Puan: 0</div>
+    <button id="backToCardsBtn">Kartlara Geri Dön</button>
+  </div>
 
-let index = 0;
-let isEnglish = true;
+  <script>
+    const words = [/* ... kelime dizisi buraya gelir (önceki kodda olan 100 kelime) ... */];
 
-const card = document.getElementById('card');
-card.addEventListener('click', () => {
-  isEnglish = !isEnglish;
-  updateCard();
-});
+    let currentIndex = 0, quiz = [], qIndex = 0, score = 0, questionIsEnglish;
 
-function updateCard() {
-  card.textContent = isEnglish ? words[index].en : words[index].tr;
-}
-function next() {
-  index = (index + 1) % words.length;
-  isEnglish = true;
-  updateCard();
-}
-function prev() {
-  index = (index - 1 + words.length) % words.length;
-  isEnglish = true;
-  updateCard();
-}
-function speak() {
-  const utter = new SpeechSynthesisUtterance(words[index].en);
-  utter.lang = "en-US";
-  speechSynthesis.speak(utter);
-}
-updateCard();
-</script>
+    const cardEmoji     = document.getElementById('cardEmoji');
+    const cardText      = document.getElementById('cardText');
+    const prevBtn       = document.getElementById('prevBtn');
+    const nextBtn       = document.getElementById('nextBtn');
+    const testBtn       = document.getElementById('testBtn');
+    const cardControls  = document.getElementById('cardControls');
+    const testArea      = document.getElementById('testArea');
+    const questionBox   = document.getElementById('question');
+    const answersBox    = document.getElementById('answers');
+    const scoreDisplay  = document.getElementById('scoreDisplay');
+    const backBtn       = document.getElementById('backToCardsBtn');
+    const body          = document.body;
+
+    function renderCard() {
+      const w = words[currentIndex];
+      cardEmoji.textContent = w.emoji;
+      cardText.textContent  = w.en;
+      speak(w.en);
+    }
+
+    prevBtn.onclick = () => {
+      currentIndex = (currentIndex - 1 + words.length) % words.length;
+      renderCard();
+    };
+
+    nextBtn.onclick = () => {
+      currentIndex = (currentIndex + 1) % words.length;
+      renderCard();
+    };
+
+    cardText.onclick = () => {
+      const w = words[currentIndex];
+      const showingEnglish = (cardText.textContent === w.en);
+      cardText.textContent = showingEnglish ? w.tr : w.en;
+      if (!showingEnglish) speak(w.en);
+    };
+
+    testBtn.onclick = () => {
+      quiz = shuffle([...words]).slice(0,20);
+      qIndex = 0; score = 0;
+      cardControls.classList.add('hide');
+      testArea.classList.remove('hide');
+      loadQuestion(); updateScore();
+    };
+
+    backBtn.onclick = () => {
+      testArea.classList.add('hide');
+      cardControls.classList.remove('hide');
+      renderCard();
+      body.style.backgroundColor = 'var(--bg)';
+    };
+
+    function loadQuestion() {
+      clearFeedback();
+      answersBox.innerHTML = '';
+      if (qIndex >= quiz.length) {
+        questionBox.textContent = `Test tamamlandı! Puan: ${score}/${quiz.length}`;
+        scoreDisplay.textContent = '';
+        return;
+      }
+      updateScore();
+      questionIsEnglish = Math.random() < 0.5;
+      const correct = quiz[qIndex];
+      questionBox.textContent = questionIsEnglish ? correct.en : correct.tr;
+
+      const opts = [correct];
+      while (opts.length < 4) {
+        const r = words[Math.floor(Math.random() * words.length)];
+        if (!opts.includes(r)) opts.push(r);
+      }
+      shuffle(opts).forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.innerHTML = `<span class="letter">${String.fromCharCode(65+i)}</span>` +
+                        (questionIsEnglish ? opt.tr : opt.en);
+        btn.onclick = () => selectAnswer(btn, opt, correct);
+        answersBox.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(btn, sel, corr) {
+      playSound(sel === corr ? 'correct' : 'wrong');
+      body.style.backgroundColor = sel === corr ? 'var(--correct)' : 'var(--wrong)';
+      if (sel === corr) { btn.classList.add('correct'); score++; }
+      else {
+        btn.classList.add('wrong');
+        Array.from(answersBox.children).forEach(b => {
+          if (b.textContent.includes(questionIsEnglish ? corr.tr : corr.en))
+            b.classList.add('correct');
+        });
+      }
+      Array.from(answersBox.children).forEach(b => {
+        b.disabled = true; b.classList.add('disabled');
+      });
+      updateScore();
+      setTimeout(() => {
+        qIndex++; loadQuestion(); body.style.backgroundColor = 'var(--bg)';
+      }, 1500);
+    }
+
+    function updateScore() {
+      scoreDisplay.textContent = `Puan: ${score}/${quiz.length}  Soru: ${qIndex+1}/${quiz.length}`;
+    }
+
+    function playSound(type) {
+      if (!window.audioCtx) window.audioCtx = new (AudioContext||webkitAudioContext)();
+      const ctx = window.audioCtx;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = type==='correct' ? 800 : 250;
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.3);
+    }
+
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+    }
+
+    function clearFeedback() {
+      body.style.backgroundColor = 'var(--bg)';
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    window.addEventListener('DOMContentLoaded', renderCard);
+  </script>
 
 </body>
 </html>
