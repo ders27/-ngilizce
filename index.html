@@ -1,111 +1,133 @@
-const words = [
-  {en: "Hello", tr: "Merhaba"},
-  {en: "Goodbye", tr: "Hoşça kal"},
-  {en: "Please", tr: "Lütfen"},
-  {en: "Thank you", tr: "Teşekkür ederim"},
-  {en: "Sorry", tr: "Özür dilerim"},
-  {en: "Yes", tr: "Evet"},
-  {en: "No", tr: "Hayır"},
-  {en: "Welcome", tr: "Hoş geldin"},
-  {en: "Excuse me", tr: "Afedersiniz"},
-  {en: "OK", tr: "Tamam"},
-  
-  {en: "Mother", tr: "Anne"},
-  {en: "Father", tr: "Baba"},
-  {en: "Sister", tr: "Kız kardeş"},
-  {en: "Brother", tr: "Erkek kardeş"},
-  {en: "Friend", tr: "Arkadaş"},
-  {en: "Baby", tr: "Bebek"},
-  {en: "Girl", tr: "Kız"},
-  {en: "Boy", tr: "Erkek"},
-  {en: "Family", tr: "Aile"},
-  {en: "People", tr: "İnsanlar"},
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kelime Kartları</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f0ff;
+      text-align: center;
+      padding: 30px;
+    }
+    .card {
+      width: 300px;
+      height: 200px;
+      margin: 0 auto 20px;
+      border: 4px solid #6a0dad;
+      border-radius: 15px;
+      font-size: 2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s;
+    }
+    button {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 10px;
+      border: none;
+      background: #6a0dad;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
 
-  {en: "House", tr: "Ev"},
-  {en: "Room", tr: "Oda"},
-  {en: "Bed", tr: "Yatak"},
-  {en: "Table", tr: "Masa"},
-  {en: "Chair", tr: "Sandalye"},
-  {en: "Door", tr: "Kapı"},
-  {en: "Window", tr: "Pencere"},
-  {en: "TV", tr: "Televizyon"},
-  {en: "Lamp", tr: "Lamba"},
-  {en: "Carpet", tr: "Halı"},
+<h1>İngilizce Kelime Kartları</h1>
+<div class="card" id="card">Kelime Yükleniyor...</div>
+<div>
+  <button id="prevBtn">Önceki</button>
+  <button id="nextBtn">Sonraki</button>
+</div>
 
-  {en: "School", tr: "Okul"},
-  {en: "Teacher", tr: "Öğretmen"},
-  {en: "Student", tr: "Öğrenci"},
-  {en: "Book", tr: "Kitap"},
-  {en: "Pen", tr: "Tükenmez kalem"},
-  {en: "Pencil", tr: "Kurşun kalem"},
-  {en: "Bag", tr: "Çanta"},
-  {en: "Ruler", tr: "Cetvel"},
-  {en: "Eraser", tr: "Silgi"},
-  {en: "Board", tr: "Tahta"},
+<script>
+  const words = [
+    {en: "Hello", tr: "Merhaba"}, {en: "Goodbye", tr: "Hoşça kal"}, {en: "Please", tr: "Lütfen"},
+    {en: "Thank you", tr: "Teşekkür ederim"}, {en: "Sorry", tr: "Özür dilerim"}, {en: "Yes", tr: "Evet"},
+    {en: "No", tr: "Hayır"}, {en: "Welcome", tr: "Hoş geldin"}, {en: "Excuse me", tr: "Afedersiniz"},
+    {en: "OK", tr: "Tamam"}, {en: "Mother", tr: "Anne"}, {en: "Father", tr: "Baba"},
+    {en: "Sister", tr: "Kız kardeş"}, {en: "Brother", tr: "Erkek kardeş"}, {en: "Friend", tr: "Arkadaş"},
+    {en: "Baby", tr: "Bebek"}, {en: "Girl", tr: "Kız"}, {en: "Boy", tr: "Erkek"}, {en: "Family", tr: "Aile"},
+    {en: "People", tr: "İnsanlar"}, {en: "House", tr: "Ev"}, {en: "Room", tr: "Oda"},
+    {en: "Bed", tr: "Yatak"}, {en: "Table", tr: "Masa"}, {en: "Chair", tr: "Sandalye"},
+    {en: "Door", tr: "Kapı"}, {en: "Window", tr: "Pencere"}, {en: "TV", tr: "Televizyon"},
+    {en: "Lamp", tr: "Lamba"}, {en: "Carpet", tr: "Halı"}, {en: "School", tr: "Okul"},
+    {en: "Teacher", tr: "Öğretmen"}, {en: "Student", tr: "Öğrenci"}, {en: "Book", tr: "Kitap"},
+    {en: "Pen", tr: "Tükenmez kalem"}, {en: "Pencil", tr: "Kurşun kalem"}, {en: "Bag", tr: "Çanta"},
+    {en: "Ruler", tr: "Cetvel"}, {en: "Eraser", tr: "Silgi"}, {en: "Board", tr: "Tahta"},
+    {en: "Dog", tr: "Köpek"}, {en: "Cat", tr: "Kedi"}, {en: "Bird", tr: "Kuş"}, {en: "Fish", tr: "Balık"},
+    {en: "Cow", tr: "İnek"}, {en: "Horse", tr: "At"}, {en: "Duck", tr: "Ördek"}, {en: "Lion", tr: "Aslan"},
+    {en: "Elephant", tr: "Fil"}, {en: "Monkey", tr: "Maymun"}, {en: "Apple", tr: "Elma"},
+    {en: "Banana", tr: "Muz"}, {en: "Bread", tr: "Ekmek"}, {en: "Water", tr: "Su"},
+    {en: "Milk", tr: "Süt"}, {en: "Egg", tr: "Yumurta"}, {en: "Cheese", tr: "Peynir"}, {en: "Meat", tr: "Et"},
+    {en: "Rice", tr: "Pirinç"}, {en: "Cake", tr: "Kek"}, {en: "Red", tr: "Kırmızı"},
+    {en: "Blue", tr: "Mavi"}, {en: "Green", tr: "Yeşil"}, {en: "Yellow", tr: "Sarı"},
+    {en: "Black", tr: "Siyah"}, {en: "White", tr: "Beyaz"}, {en: "Orange", tr: "Turuncu"},
+    {en: "Pink", tr: "Pembe"}, {en: "Brown", tr: "Kahverengi"}, {en: "Purple", tr: "Mor"},
+    {en: "One", tr: "Bir"}, {en: "Two", tr: "İki"}, {en: "Three", tr: "Üç"}, {en: "Four", tr: "Dört"},
+    {en: "Five", tr: "Beş"}, {en: "Day", tr: "Gün"}, {en: "Night", tr: "Gece"},
+    {en: "Morning", tr: "Sabah"}, {en: "Evening", tr: "Akşam"}, {en: "Today", tr: "Bugün"},
+    {en: "Shirt", tr: "Gömlek"}, {en: "Pants", tr: "Pantolon"}, {en: "Dress", tr: "Elbise"},
+    {en: "Skirt", tr: "Etek"}, {en: "Shoes", tr: "Ayakkabı"}, {en: "Socks", tr: "Çorap"},
+    {en: "Hat", tr: "Şapka"}, {en: "Jacket", tr: "Ceket"}, {en: "Coat", tr: "Kaban"},
+    {en: "T-shirt", tr: "Tişört"}, {en: "Head", tr: "Kafa"}, {en: "Hair", tr: "Saç"},
+    {en: "Eye", tr: "Göz"}, {en: "Nose", tr: "Burun"}, {en: "Mouth", tr: "Ağız"},
+    {en: "Ear", tr: "Kulak"}, {en: "Hand", tr: "El"}, {en: "Arm", tr: "Kol"},
+    {en: "Leg", tr: "Bacak"}, {en: "Foot", tr: "Ayak"}
+  ];
 
-  {en: "Dog", tr: "Köpek"},
-  {en: "Cat", tr: "Kedi"},
-  {en: "Bird", tr: "Kuş"},
-  {en: "Fish", tr: "Balık"},
-  {en: "Cow", tr: "İnek"},
-  {en: "Horse", tr: "At"},
-  {en: "Duck", tr: "Ördek"},
-  {en: "Lion", tr: "Aslan"},
-  {en: "Elephant", tr: "Fil"},
-  {en: "Monkey", tr: "Maymun"},
+  let currentIndex = 0;
+  let showingEnglish = true;
 
-  {en: "Apple", tr: "Elma"},
-  {en: "Banana", tr: "Muz"},
-  {en: "Bread", tr: "Ekmek"},
-  {en: "Water", tr: "Su"},
-  {en: "Milk", tr: "Süt"},
-  {en: "Egg", tr: "Yumurta"},
-  {en: "Cheese", tr: "Peynir"},
-  {en: "Meat", tr: "Et"},
-  {en: "Rice", tr: "Pirinç"},
-  {en: "Cake", tr: "Kek"},
+  const card = document.getElementById('card');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
 
-  {en: "Red", tr: "Kırmızı"},
-  {en: "Blue", tr: "Mavi"},
-  {en: "Green", tr: "Yeşil"},
-  {en: "Yellow", tr: "Sarı"},
-  {en: "Black", tr: "Siyah"},
-  {en: "White", tr: "Beyaz"},
-  {en: "Orange", tr: "Turuncu"},
-  {en: "Pink", tr: "Pembe"},
-  {en: "Brown", tr: "Kahverengi"},
-  {en: "Purple", tr: "Mor"},
+  function showEnglish(speak = false) {
+    const word = words[currentIndex].en;
+    card.textContent = word;
+    showingEnglish = true;
+    if (speak) {
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.lang = 'en-US';
+      speechSynthesis.speak(utterance);
+    }
+  }
 
-  {en: "One", tr: "Bir"},
-  {en: "Two", tr: "İki"},
-  {en: "Three", tr: "Üç"},
-  {en: "Four", tr: "Dört"},
-  {en: "Five", tr: "Beş"},
-  {en: "Day", tr: "Gün"},
-  {en: "Night", tr: "Gece"},
-  {en: "Morning", tr: "Sabah"},
-  {en: "Evening", tr: "Akşam"},
-  {en: "Today", tr: "Bugün"},
+  function showTurkish() {
+    card.textContent = words[currentIndex].tr;
+    showingEnglish = false;
+  }
 
-  {en: "Shirt", tr: "Gömlek"},
-  {en: "Pants", tr: "Pantolon"},
-  {en: "Dress", tr: "Elbise"},
-  {en: "Skirt", tr: "Etek"},
-  {en: "Shoes", tr: "Ayakkabı"},
-  {en: "Socks", tr: "Çorap"},
-  {en: "Hat", tr: "Şapka"},
-  {en: "Jacket", tr: "Ceket"},
-  {en: "Coat", tr: "Kaban"},
-  {en: "T-shirt", tr: "Tişört"},
+  card.addEventListener('click', () => {
+    if (showingEnglish) {
+      showTurkish();
+    } else {
+      showEnglish();
+    }
+  });
 
-  {en: "Head", tr: "Kafa"},
-  {en: "Hair", tr: "Saç"},
-  {en: "Eye", tr: "Göz"},
-  {en: "Nose", tr: "Burun"},
-  {en: "Mouth", tr: "Ağız"},
-  {en: "Ear", tr: "Kulak"},
-  {en: "Hand", tr: "El"},
-  {en: "Arm", tr: "Kol"},
-  {en: "Leg", tr: "Bacak"},
-  {en: "Foot", tr: "Ayak"}
-];
+  prevBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + words.length) % words.length;
+    showEnglish();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % words.length;
+    showEnglish(true);
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    showEnglish();
+  });
+</script>
+
+</body>
+</html>
