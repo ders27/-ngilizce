@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Çocuklar için İngilizce Kelime Kartları & Test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>İngilizce Kelime Kartları & Test</title>
   <style>
     :root {
       --primary: #6a0dad;
@@ -14,88 +14,88 @@
       --wrong: #dc3545;
       --btn-font: 1.6em;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+    }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: var(--bg); color: var(--text);
-      padding: 20px 10px; text-align: center;
-      transition: background-color .4s ease;
       display: flex; flex-direction: column; align-items: center;
-      min-height: 100vh;
+      padding: 20px; text-align: center; min-height: 100vh;
+      transition: background-color .4s ease;
     }
     h1 { color: var(--primary); font-size: 2.4em; margin-bottom: 20px; }
     .card {
       width: 90vw; max-width: 360px; height: 260px;
-      border: 5px solid var(--primary); border-radius: 18px;
-      background: #fff; display: flex; flex-direction: column;
+      background: #fff; border: 5px solid var(--primary);
+      border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 15px; display: flex; flex-direction: column;
       justify-content: center; align-items: center;
-      user-select: none; padding: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      position: relative;
+      user-select: none; cursor: pointer; position: relative;
     }
     .card .emoji { font-size: 90px; margin-bottom: 12px; }
     .card .text {
       font-size: 2.4em; color: var(--primary);
-      font-weight: 700; cursor: pointer;
+      font-weight: 700; user-select: none;
     }
-    .card #cardTranslation {
-      margin-top: 8px;
-      font-size: 1.8em;
-      color: var(--text);
+    .card .translation {
+      margin-top: 8px; font-size: 1.8em; color: var(--text);
       display: none;
     }
-    .controls { margin-top: 20px; }
+    .controls {
+      margin-top: 20px; display: flex; flex-wrap: wrap;
+      gap: 8px; justify-content: center;
+    }
     button {
       font-size: var(--btn-font); padding: 12px 28px;
-      margin: 8px 6px; border: none; border-radius: 12px;
-      background: var(--accent); color: #fff;
-      cursor: pointer; transition: transform .15s;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 12px; cursor: pointer;
+      transition: transform .15s;
     }
     button:hover:not(:disabled) { transform: scale(1.05); }
-    button:disabled { opacity: .6; cursor: default; }
+    button:disabled { opacity: .6; }
+    #testBtn { margin-top: 20px; }
     .hide { display: none !important; }
     .question-box {
       width: 90vw; max-width: 360px; min-height: 110px;
-      border: 5px solid var(--primary); border-radius: 18px;
-      background: #fff; font-size: 2em; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px; margin-bottom: 20px;
+      background: #fff; border: 5px solid var(--primary);
+      border-radius: 18px; padding: 20px;
+      font-size: 2em; font-weight: 700;
+      display: flex; justify-content: center; align-items: center;
+      margin-bottom: 20px; user-select: none;
     }
     .answers {
-      display: flex; flex-direction: column; gap: 18px;
-      width: 90vw; max-width: 360px; margin-bottom: 24px;
+      display: flex; flex-direction: column; gap: 14px;
+      width: 90vw; max-width: 360px; margin-bottom: 20px;
     }
     .answer-btn {
-      position: relative; padding: 16px 24px 16px 70px;
-      font-size: 1.5em; font-weight: 700; text-align: left;
-      width: 100%; max-width: 360px;
-      border: 4px solid var(--primary); border-radius: 14px;
+      position: relative; padding: 16px 24px 16px 56px;
       background: var(--primary); color: #fff;
-      cursor: pointer;
-      transition: background-color .3s, border-color .3s;
+      border: 4px solid var(--primary); border-radius: 14px;
+      font-size: 1.5em; font-weight: 700; text-align: left;
+      cursor: pointer; transition: background-color .3s;
     }
     .answer-btn span.letter {
       position: absolute; left: 18px; top: 50%;
-      transform: translateY(-50%); width: 42px; height: 42px;
-      line-height: 42px; border-radius: 50%;
+      transform: translateY(-50%);
+      width: 42px; height: 42px; line-height: 42px;
       background: #fff; color: var(--primary);
       font-size: 1.4em; font-weight: 900;
+      border-radius: 50%;
     }
-    .answer-btn.correct {
-      background: var(--correct); border-color: var(--correct);
-      color: #fff;
-    }
-    .answer-btn.wrong {
-      background: var(--wrong); border-color: var(--wrong);
-      color: #fff;
-    }
+    .answer-btn.correct { background: var(--correct); }
+    .answer-btn.wrong   { background: var(--wrong); }
     .answer-btn.disabled { pointer-events: none; opacity: .8; }
     #scoreDisplay {
       font-size: 1.6em; color: var(--primary);
       margin-bottom: 20px; font-weight: 700;
     }
-    @media (min-width: 600px) {
-      body { padding: 40px 0; }
+    #backToCardsBtn {
+      font-size: 2em; padding: 16px 36px;
+      border-radius: 18px;
+    }
+    @media (min-width:600px) {
+      body { padding: 40px; }
     }
   </style>
 </head>
@@ -103,19 +103,19 @@
 
   <h1>İngilizce Kelime Kartları</h1>
 
-  <!-- Öğrenme Modu Kartı -->
-  <div class="card" id="card">
+  <div class="card" id="card" title="Tıklayınca Türkçesi göster/gizle">
     <div class="emoji" id="cardEmoji">😀</div>
     <div class="text" id="cardText">Yükleniyor...</div>
-    <div id="cardTranslation"></div>
+    <div class="translation" id="cardTranslation"></div>
   </div>
+
   <div class="controls" id="cardControls">
     <button id="prevBtn">Önceki</button>
     <button id="nextBtn">Sonraki</button>
+    <button id="speakBtn">🔊</button>
     <button id="testBtn">Teste Geç</button>
   </div>
 
-  <!-- Test Modu -->
   <div id="testArea" class="hide">
     <h2>20 Soruluk Kelime Testi</h2>
     <div class="question-box" id="question">Hazırlanıyor...</div>
@@ -179,128 +179,132 @@
     ];
 
     let currentIndex = 0, quiz = [], qIndex = 0, score = 0, questionIsEnglish;
-    const card           = document.getElementById('card');
-    const cardEmoji      = document.getElementById('cardEmoji');
-    const cardText       = document.getElementById('cardText');
-    const cardTranslation= document.getElementById('cardTranslation');
-    const prevBtn        = document.getElementById('prevBtn');
-    const nextBtn        = document.getElementById('nextBtn');
-    const testBtn        = document.getElementById('testBtn');
-    const cardControls   = document.getElementById('cardControls');
-    const testArea       = document.getElementById('testArea');
-    const questionBox    = document.getElementById('question');
-    const answersBox     = document.getElementById('answers');
-    const scoreDisplay   = document.getElementById('scoreDisplay');
-    const backBtn        = document.getElementById('backToCardsBtn');
-    const body           = document.body;
 
+    // Element referansları
+    const card      = document.getElementById('card');
+    const cardEmoji = document.getElementById('cardEmoji');
+    const cardText  = document.getElementById('cardText');
+    const cardTrans = document.getElementById('cardTranslation');
+    const prevBtn   = document.getElementById('prevBtn');
+    const nextBtn   = document.getElementById('nextBtn');
+    const speakBtn  = document.getElementById('speakBtn');
+    const testBtn   = document.getElementById('testBtn');
+    const cardCtrls = document.getElementById('cardControls');
+    const testArea  = document.getElementById('testArea');
+    const question  = document.getElementById('question');
+    const answers   = document.getElementById('answers');
+    const scoreDisp = document.getElementById('scoreDisplay');
+    const backBtn   = document.getElementById('backToCardsBtn');
+    const bodyEl    = document.body;
+
+    // Kartları göster
     function renderCard() {
       const w = words[currentIndex];
-      cardEmoji.textContent      = w.emoji;
-      cardText.textContent       = w.en;
-      cardTranslation.style.display = 'none';
-      speak(w.en);
+      cardEmoji.textContent = w.emoji;
+      cardText.textContent  = w.en;
+      cardTrans.style.display = 'none';
+    }
+    // Telaffuz
+    function speak(txt) {
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'en-US'; u.rate = 0.8;
+      speechSynthesis.cancel(); speechSynthesis.speak(u);
     }
 
-    prevBtn.onclick = () => {
-      currentIndex = (currentIndex - 1 + words.length) % words.length;
-      renderCard();
-    };
-    nextBtn.onclick = () => {
-      currentIndex = (currentIndex + 1) % words.length;
-      renderCard();
-    };
+    // Shuffle
+    function shuffle(a) {
+      for (let i=a.length-1;i>0;i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
 
-    cardText.onclick = () => {
+    // Feedback sesi
+    function playSound(type) {
+      const ctx = new (AudioContext||webkitAudioContext)();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = type==='correct'?250:800;
+      g.gain.setValueAtTime(0.3,ctx.currentTime);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.3);
+    }
+
+    // Eventler
+    prevBtn.onclick = ()=>{ currentIndex=(currentIndex-1+words.length)%words.length; renderCard(); speak(words[currentIndex].en); };
+    nextBtn.onclick = ()=>{ currentIndex=(currentIndex+1)%words.length; renderCard(); speak(words[currentIndex].en); };
+    speakBtn.onclick= ()=>{ speak(words[currentIndex].en); };
+    card.onclick    = ()=>{ 
       const w = words[currentIndex];
-      if (cardTranslation.style.display === 'none') {
-        cardTranslation.textContent = w.tr;
-        cardTranslation.style.display = 'block';
+      if (cardTrans.style.display==='none') {
+        cardTrans.textContent = w.tr; cardTrans.style.display='block';
       } else {
-        cardTranslation.style.display = 'none';
+        cardTrans.style.display='none';
       }
       speak(w.en);
     };
 
-    testBtn.onclick = () => {
+    testBtn.onclick = ()=> {
       quiz = shuffle([...words]).slice(0,20);
       qIndex = 0; score = 0;
-      card.classList.add('hide');
-      cardControls.classList.add('hide');
+      card.classList.add('hide'); cardCtrls.classList.add('hide'); testBtn.classList.add('hide');
       testArea.classList.remove('hide');
-      loadQuestion();
-      updateScore();
+      loadQuestion(); updateScore();
     };
-    backBtn.onclick = () => {
+    backBtn.onclick = ()=> {
       testArea.classList.add('hide');
-      card.classList.remove('hide');
-      cardControls.classList.remove('hide');
-      renderCard();
-      clearFeedback();
+      card.classList.remove('hide'); cardCtrls.classList.remove('hide'); testBtn.classList.remove('hide');
+      renderCard(); bodyEl.style.backgroundColor='var(--bg)';
     };
 
     function loadQuestion() {
-      clearFeedback();
-      answersBox.innerHTML = '';
-      if (qIndex >= quiz.length) {
-        questionBox.textContent = `Test tamamlandı! Puan: ${score}/${quiz.length}`;
-        scoreDisplay.textContent = '';
-        return;
+      bodyEl.style.backgroundColor = 'var(--bg)';
+      answers.innerHTML = '';
+      if (qIndex>=quiz.length) {
+        question.textContent = `Test tamamlandı! Puan: ${score}/${quiz.length}`;
+        scoreDisp.textContent = ''; return;
       }
       updateScore();
-      questionIsEnglish = Math.random() < 0.5;
+      questionIsEnglish = Math.random()<0.5;
       const correct = quiz[qIndex];
-      questionBox.textContent = questionIsEnglish ? correct.en : correct.tr;
-
+      question.textContent = questionIsEnglish? correct.en : correct.tr;
       const opts = [correct];
-      while (opts.length < 4) {
-        const r = words[Math.floor(Math.random() * words.length)];
+      while (opts.length<4) {
+        const r = words[Math.floor(Math.random()*words.length)];
         if (!opts.includes(r)) opts.push(r);
       }
-      shuffle(opts).forEach((opt, i) => {
+      shuffle(opts).forEach((opt,i)=>{
         const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.innerHTML = `<span class="letter">${String.fromCharCode(65+i)}</span>` +
-                        (questionIsEnglish ? opt.tr : opt.en);
-        btn.onclick = () => selectAnswer(btn, opt, correct);
-        answersBox.appendChild(btn);
+        btn.className='answer-btn';
+        btn.innerHTML = `<span class="letter">${String.fromCharCode(65+i)}</span>` + (questionIsEnglish? opt.tr: opt.en);
+        btn.onclick = ()=> selectAnswer(btn,opt,correct);
+        answers.appendChild(btn);
       });
     }
 
-    function selectAnswer(btn, sel, corr) {
-      // Ses tonlarını ters yapıldı: doğruysa düşük, yanlışsa yüksek
-      playSound(sel === corr ? 'wrong' : 'correct');
-      body.style.backgroundColor = sel === corr ? 'var(--correct)' : 'var(--wrong)';
-      if (sel === corr) {
-        btn.classList.add('correct');
-        score++;
-      } else {
+    function selectAnswer(btn,sel,corr) {
+      const ok = sel===corr;
+      playSound(ok?'correct':'wrong');
+      bodyEl.style.backgroundColor = ok? 'var(--correct)':'var(--wrong)';
+      if(ok){ btn.classList.add('correct'); score++; }
+      else {
         btn.classList.add('wrong');
-        Array.from(answersBox.children).forEach(b => {
-          if (b.textContent.includes(questionIsEnglish ? corr.tr : corr.en))
-            b.classList.add('correct');
+        Array.from(answers.children).forEach(b=>{
+          if (b.textContent.includes(questionIsEnglish?corr.tr:corr.en)) b.classList.add('correct');
         });
       }
-      Array.from(answersBox.children).forEach(b => {
-        b.disabled = true; b.classList.add('disabled');
-      });
-      updateScore();
-      setTimeout(() => {
-        qIndex++;
-        loadQuestion();
-      }, 1500);
+      Array.from(answers.children).forEach(b=>{ b.disabled=true; b.classList.add('disabled'); });
+      setTimeout(()=>{ qIndex++; loadQuestion(); },1500);
     }
 
     function updateScore() {
-      scoreDisplay.textContent = `Puan: ${score}/${quiz.length}`;
+      scoreDisp.textContent = `Puan: ${score}/${quiz.length}`;
     }
 
-    function clearFeedback() {
-      body.style.backgroundColor = '';
-    }
+    // İlk kart
+    renderCard();
+    speak(words[0].en);
+  </script>
 
-    // Basit shuffle
-    function shuffle(array) {
-      for (let i = array.length -1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i+1));
-        [array[i], array[j]] = [
+</body>
+</html>
