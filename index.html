@@ -1,53 +1,111 @@
-<script>
-  const words = [
-    {en: "Hello", tr: "Merhaba"},
-    {en: "Goodbye", tr: "Hoşça kal"},
-    {en: "Please", tr: "Lütfen"},
-    {en: "Thank you", tr: "Teşekkür ederim"},
-    {en: "Sorry", tr: "Özür dilerim"},
-    {en: "Yes", tr: "Evet"},
-    {en: "No", tr: "Hayır"},
-    {en: "Welcome", tr: "Hoş geldin"},
-    {en: "Excuse me", tr: "Afedersiniz"},
-    {en: "OK", tr: "Tamam"}
-  ];
+const words = [
+  {en: "Hello", tr: "Merhaba"},
+  {en: "Goodbye", tr: "Hoşça kal"},
+  {en: "Please", tr: "Lütfen"},
+  {en: "Thank you", tr: "Teşekkür ederim"},
+  {en: "Sorry", tr: "Özür dilerim"},
+  {en: "Yes", tr: "Evet"},
+  {en: "No", tr: "Hayır"},
+  {en: "Welcome", tr: "Hoş geldin"},
+  {en: "Excuse me", tr: "Afedersiniz"},
+  {en: "OK", tr: "Tamam"},
+  
+  {en: "Mother", tr: "Anne"},
+  {en: "Father", tr: "Baba"},
+  {en: "Sister", tr: "Kız kardeş"},
+  {en: "Brother", tr: "Erkek kardeş"},
+  {en: "Friend", tr: "Arkadaş"},
+  {en: "Baby", tr: "Bebek"},
+  {en: "Girl", tr: "Kız"},
+  {en: "Boy", tr: "Erkek"},
+  {en: "Family", tr: "Aile"},
+  {en: "People", tr: "İnsanlar"},
 
-  let currentIndex = 0;
-  let showingEnglish = true;
+  {en: "House", tr: "Ev"},
+  {en: "Room", tr: "Oda"},
+  {en: "Bed", tr: "Yatak"},
+  {en: "Table", tr: "Masa"},
+  {en: "Chair", tr: "Sandalye"},
+  {en: "Door", tr: "Kapı"},
+  {en: "Window", tr: "Pencere"},
+  {en: "TV", tr: "Televizyon"},
+  {en: "Lamp", tr: "Lamba"},
+  {en: "Carpet", tr: "Halı"},
 
-  const card = document.getElementById('card');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
+  {en: "School", tr: "Okul"},
+  {en: "Teacher", tr: "Öğretmen"},
+  {en: "Student", tr: "Öğrenci"},
+  {en: "Book", tr: "Kitap"},
+  {en: "Pen", tr: "Tükenmez kalem"},
+  {en: "Pencil", tr: "Kurşun kalem"},
+  {en: "Bag", tr: "Çanta"},
+  {en: "Ruler", tr: "Cetvel"},
+  {en: "Eraser", tr: "Silgi"},
+  {en: "Board", tr: "Tahta"},
 
-  function showEnglish() {
-    card.textContent = words[currentIndex].en;
-    showingEnglish = true;
-  }
+  {en: "Dog", tr: "Köpek"},
+  {en: "Cat", tr: "Kedi"},
+  {en: "Bird", tr: "Kuş"},
+  {en: "Fish", tr: "Balık"},
+  {en: "Cow", tr: "İnek"},
+  {en: "Horse", tr: "At"},
+  {en: "Duck", tr: "Ördek"},
+  {en: "Lion", tr: "Aslan"},
+  {en: "Elephant", tr: "Fil"},
+  {en: "Monkey", tr: "Maymun"},
 
-  function showTurkish() {
-    card.textContent = words[currentIndex].tr;
-    showingEnglish = false;
-  }
+  {en: "Apple", tr: "Elma"},
+  {en: "Banana", tr: "Muz"},
+  {en: "Bread", tr: "Ekmek"},
+  {en: "Water", tr: "Su"},
+  {en: "Milk", tr: "Süt"},
+  {en: "Egg", tr: "Yumurta"},
+  {en: "Cheese", tr: "Peynir"},
+  {en: "Meat", tr: "Et"},
+  {en: "Rice", tr: "Pirinç"},
+  {en: "Cake", tr: "Kek"},
 
-  // Sadece kullanıcı tıklarsa geçiş olsun
-  card.addEventListener('click', function () {
-    if (showingEnglish) {
-      showTurkish();
-    } else {
-      showEnglish();
-    }
-  });
+  {en: "Red", tr: "Kırmızı"},
+  {en: "Blue", tr: "Mavi"},
+  {en: "Green", tr: "Yeşil"},
+  {en: "Yellow", tr: "Sarı"},
+  {en: "Black", tr: "Siyah"},
+  {en: "White", tr: "Beyaz"},
+  {en: "Orange", tr: "Turuncu"},
+  {en: "Pink", tr: "Pembe"},
+  {en: "Brown", tr: "Kahverengi"},
+  {en: "Purple", tr: "Mor"},
 
-  prevBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + words.length) % words.length;
-    showEnglish(); // her seferinde İngilizce göster
-  });
+  {en: "One", tr: "Bir"},
+  {en: "Two", tr: "İki"},
+  {en: "Three", tr: "Üç"},
+  {en: "Four", tr: "Dört"},
+  {en: "Five", tr: "Beş"},
+  {en: "Day", tr: "Gün"},
+  {en: "Night", tr: "Gece"},
+  {en: "Morning", tr: "Sabah"},
+  {en: "Evening", tr: "Akşam"},
+  {en: "Today", tr: "Bugün"},
 
-  nextBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % words.length;
-    showEnglish(); // her seferinde İngilizce göster
-  });
+  {en: "Shirt", tr: "Gömlek"},
+  {en: "Pants", tr: "Pantolon"},
+  {en: "Dress", tr: "Elbise"},
+  {en: "Skirt", tr: "Etek"},
+  {en: "Shoes", tr: "Ayakkabı"},
+  {en: "Socks", tr: "Çorap"},
+  {en: "Hat", tr: "Şapka"},
+  {en: "Jacket", tr: "Ceket"},
+  {en: "Coat", tr: "Kaban"},
+  {en: "T-shirt", tr: "Tişört"},
 
-  // İlk açıldığında sadece İngilizce göster
-  showEnglish();
-</script>
+  {en: "Head", tr: "Kafa"},
+  {en: "Hair", tr: "Saç"},
+  {en: "Eye", tr: "Göz"},
+  {en: "Nose", tr: "Burun"},
+  {en: "Mouth", tr: "Ağız"},
+  {en: "Ear", tr: "Kulak"},
+  {en: "Hand", tr: "El"},
+  {en: "Arm", tr: "Kol"},
+  {en: "Leg", tr: "Bacak"},
+  {en: "Foot", tr: "Ayak"}
+];
