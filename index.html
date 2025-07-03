@@ -5,17 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>İngilizce Kelime Kartları & Test</title>
   <style>
-    /* Yukarıdaki yeni CSS stillerini buraya yapıştırın */
     :root {
-      --primary: #5a189a;
-      --accent: #ffb703;
-      --bg: #e0f2fe;
-      --text: #2c3e50;
-      --card-bg: #ffffff;
-      --correct: #4CAF50;
-      --wrong: #E53935;
+      --primary: #5a189a; /* Daha koyu mor */
+      --accent: #ffb703; /* Daha canlı turuncu/sarı */
+      --bg: #e0f2fe; /* Açık mavi, daha ferah bir arka plan */
+      --text: #2c3e50; /* Koyu gri, okunabilirliği artırır */
+      --card-bg: #ffffff; /* Kart arka planı */
+      --correct: #4CAF50; /* Yeşil */
+      --wrong: #E53935;   /* Kırmızı */
       --btn-font: 1.6em;
-      --transition-speed: 0.3s;
+      --transition-speed: 0.3s; /* Genel geçiş hızı */
+      --test-bg-correct: #d4edda; /* Test doğru cevap arka planı */
+      --test-bg-wrong: #f8d7da;   /* Test yanlış cevap arka planı */
     }
     *, *::before, *::after {
       box-sizing: border-box; margin: 0; padding: 0;
@@ -50,26 +51,26 @@
       position: absolute;
       top: 15px;
       right: 15px;
-      font-size: 50px; /* Daha küçük ve köşede */
+      font-size: 50px;
       opacity: 0.6;
       backface-visibility: hidden;
     }
     .card .text {
       font-size: 2.4em; color: var(--primary);
       font-weight: 700; user-select: none;
-      backface-visibility: hidden; /* Çevirme animasyonu için */
+      backface-visibility: hidden;
       position: absolute;
       width: 100%;
       padding: 0 15px;
     }
     .card .translation {
       margin-top: 8px; font-size: 1.8em; color: var(--text);
-      display: none; /* Başlangıçta gizli */
-      backface-visibility: hidden; /* Çevirme animasyonu için */
+      display: none;
+      backface-visibility: hidden;
       position: absolute;
       width: 100%;
       padding: 0 15px;
-      transform: rotateY(180deg); /* Çevrilince görünsün */
+      transform: rotateY(180deg);
     }
     .controls {
       margin-top: 20px; display: flex; flex-wrap: wrap;
@@ -96,6 +97,15 @@
       font-size: 2em; font-weight: 700;
       display: flex; justify-content: center; align-items: center;
       margin-bottom: 20px; user-select: none;
+      transition: all 0.3s ease; /* Yanma efekti için */
+    }
+    .question-box.correct-flash {
+      box-shadow: 0 0 20px 5px var(--correct);
+      border-color: var(--correct);
+    }
+    .question-box.wrong-flash {
+      box-shadow: 0 0 20px 5px var(--wrong);
+      border-color: var(--wrong);
     }
     .answers {
       display: flex; flex-direction: column;
@@ -125,7 +135,7 @@
       font-size: 1.6em; color: var(--primary);
       margin-bottom: 10px; font-weight: 700;
     }
-    #progressDisplay { /* Yeni ilerleme göstergesi */
+    #progressDisplay {
       font-size: 1.4em; color: var(--text);
       margin-bottom: 20px; font-weight: 600;
     }
@@ -174,7 +184,8 @@
     <div class="question-box" id="question">Hazırlanıyor...</div>
     <div class="answers" id="answers"></div>
     <div id="scoreDisplay">Puan: 0</div>
-    <div id="progressDisplay">Soru: 0/20</div> <button id="backToCardsBtn">Kartlara Geri Dön</button>
+    <div id="progressDisplay">Soru: 0/20</div>
+    <button id="backToCardsBtn">Kartlara Geri Dön</button>
   </div>
 
   <script>
@@ -236,9 +247,8 @@
     let qIndex = 0;
     let score = 0;
     let questionIsEnglish;
-    let wrongAnswers = []; // Yanlış bilinen kelimeleri tutacak dizi
+    let wrongAnswers = [];
 
-    // Element referansları
     const card      = document.getElementById('card');
     const cardEmoji = document.getElementById('cardEmoji');
     const cardText  = document.getElementById('cardText');
@@ -252,36 +262,31 @@
     const question  = document.getElementById('question');
     const answers   = document.getElementById('answers');
     const scoreDisp = document.getElementById('scoreDisplay');
-    const progressDisp = document.getElementById('progressDisplay'); // Yeni referans
+    const progressDisp = document.getElementById('progressDisplay');
     const backBtn   = document.getElementById('backToCardsBtn');
     const bodyEl    = document.body;
 
-    // Kartları göster
     function renderCard() {
       const w = words[currentIndex];
       cardEmoji.textContent = w.emoji;
       cardText.textContent  = w.en;
-      // Kartı ilk haline getir
       card.classList.remove('flipped');
       cardText.style.display = 'block';
       cardEmoji.style.display = 'block';
       cardTrans.style.display = 'none';
     }
 
-    // Telaffuz
     function speak(txt) {
-      // Önceki konuşmayı durdur
       if (speechSynthesis.speaking) {
           speechSynthesis.cancel();
       }
       const u = new SpeechSynthesisUtterance(txt);
-      u.lang = 'en-US'; // İngilizce
-      u.rate = 0.8;    // Konuşma hızı
-      u.pitch = 1;     // Ses tonu
+      u.lang = 'en-US';
+      u.rate = 0.8;
+      u.pitch = 1;
       speechSynthesis.speak(u);
     }
 
-    // Shuffle (Diziyi karıştırma)
     function shuffle(a) {
       for (let i=a.length-1;i>0;i--) {
         const j = Math.floor(Math.random()*(i+1));
@@ -290,17 +295,32 @@
       return a;
     }
 
-    // Feedback sesi
+    // YENİ: Daha hoş ses efektleri
     function playSound(type) {
-      const ctx = new (AudioContext||webkitAudioContext)();
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = type==='correct'?500:200; // Doğru için 500Hz, yanlış için 200Hz
-      g.gain.setValueAtTime(0.3,ctx.currentTime);
-      o.start(ctx.currentTime); o.stop(ctx.currentTime+0.2); // Daha kısa ses
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        if (type === 'correct') {
+            oscillator.type = 'sine'; // Sinüs dalgası, daha yumuşak
+            oscillator.frequency.setValueAtTime(700, audioContext.currentTime); // Yüksek frekans
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3); // Hızlı sönümleme
+        } else { // wrong
+            oscillator.type = 'triangle'; // Üçgen dalga, daha belirgin
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime); // Düşük frekans
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4); // Biraz daha yavaş sönümleme
+        }
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5); // Kısa ses
     }
 
-    // Eventler
+
     prevBtn.onclick = ()=>{
       currentIndex=(currentIndex-1+words.length)%words.length;
       renderCard();
@@ -313,117 +333,102 @@
     };
     speakBtn.onclick= ()=>{ speak(words[currentIndex].en); };
 
-    // Kart tıklama olayı - Animasyonlu çevirme
     card.onclick = () => {
-      card.classList.toggle('flipped'); // 'flipped' sınıfını ekle/çıkar
-
-      // Animasyon bitince metni göster/gizle
+      card.classList.toggle('flipped');
       setTimeout(() => {
         const w = words[currentIndex];
         if (card.classList.contains('flipped')) {
-          // Kart çevrildiğinde Türkçesini göster
           cardText.style.display = 'none';
           cardEmoji.style.display = 'none';
           cardTrans.textContent = w.tr;
           cardTrans.style.display = 'block';
         } else {
-          // Kart geri döndüğünde İngilizcesini göster
           cardText.textContent = w.en;
           cardEmoji.textContent = w.emoji;
           cardText.style.display = 'block';
           cardEmoji.style.display = 'block';
           cardTrans.style.display = 'none';
         }
-        speak(w.en); // Her çevirmede İngilizcesini seslendir
-      }, 300); // CSS transition süresiyle eşleşmeli
+        speak(w.en);
+      }, 300);
     };
 
-    // Teste geç butonu
     testBtn.onclick = ()=> {
-      quiz = shuffle([...words]).slice(0,20); // 20 soruluk quiz hazırla
-      qIndex = 0; // Soru indeksi sıfırla
-      score = 0;  // Puanı sıfırla
-      wrongAnswers = []; // Her yeni testte yanlış cevapları sıfırla
+      quiz = shuffle([...words]).slice(0,20);
+      qIndex = 0;
+      score = 0;
+      wrongAnswers = [];
 
-      // Gerekli elementleri gizle/göster
       card.classList.add('hide');
       cardCtrls.classList.add('hide');
       testBtn.classList.add('hide');
       testArea.classList.remove('hide');
 
-      loadQuestion();    // İlk soruyu yükle
-      updateScore();     // Puanı güncelle
-      updateProgress();  // İlerleme göstergesini güncelle
+      loadQuestion();
+      updateScore();
+      updateProgress();
     };
 
-    // Kartlara geri dön butonu
     backBtn.onclick = ()=> {
       testArea.classList.add('hide');
       card.classList.remove('hide');
       cardCtrls.classList.remove('hide');
       testBtn.classList.remove('hide');
-      card.classList.remove('flipped'); // Kartı başlangıç pozisyonuna getir
-      renderCard(); // Kart görünümünü tekrar oluştur
-      bodyEl.style.backgroundColor='var(--bg)'; // Arkaplan rengini sıfırla
+      card.classList.remove('flipped');
+      renderCard();
+      // YENİ: Arkaplan rengini sıfırla, soru kutusu yanma efektini kaldır
+      bodyEl.style.backgroundColor='var(--bg)';
+      question.classList.remove('correct-flash', 'wrong-flash');
     };
 
-    // Yeni: Test sorusunu yükler
     function loadQuestion() {
-      bodyEl.style.backgroundColor = 'var(--bg)'; // Arkaplan rengini normale döndür
-      answers.innerHTML = ''; // Önceki şıkları temizle
+      // YENİ: Soru kutusunun yanma efektini kaldır
+      question.classList.remove('correct-flash', 'wrong-flash');
+      bodyEl.style.backgroundColor = 'var(--bg)'; // Genel arkaplanı normale döndür
+      answers.innerHTML = '';
 
-      // Test bitti mi kontrol et
       if (qIndex >= quiz.length) {
-        // Test bittiğinde sonuç özetini göster
         showQuizResult();
-        return; // Fonksiyondan çık
+        return;
       }
 
-      updateScore();    // Puanı güncelle
-      updateProgress(); // İlerleme göstergesini güncelle
+      updateScore();
+      updateProgress();
 
-      // Sorunun İngilizce mi Türkçe mi olacağına rastgele karar ver
       questionIsEnglish = Math.random() < 0.5;
-      const correct = quiz[qIndex]; // Doğru cevap kelimesi
-
-      // Soruyu ayarla
+      const correct = quiz[qIndex];
       question.textContent = questionIsEnglish ? correct.en : correct.tr;
 
-      // Şıklar için seçenekleri oluştur (doğru cevap ve 3 yanlış cevap)
       const opts = [correct];
       while (opts.length < 4) {
         const r = words[Math.floor(Math.random() * words.length)];
-        // Seçeneklerde daha önce yoksa ekle ve doğru cevapla aynı kelime olmasın
         if (!opts.includes(r) && r.en !== correct.en) opts.push(r);
       }
-
       shuffle(opts).forEach((opt, i) => {
         const btn = document.createElement('button');
         btn.className = 'answer-btn';
-        // Şık metnini ayarla
         btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + i)}</span>` + (questionIsEnglish ? opt.tr : opt.en);
-        btn.onclick = () => selectAnswer(btn, opt, correct); // Tıklama olayını ayarla
-        answers.appendChild(btn); // Şıkkı DOM'a ekle
+        btn.onclick = () => selectAnswer(btn, opt, correct);
+        answers.appendChild(btn);
       });
     }
 
-    // Yeni: Cevap seçildiğinde
     function selectAnswer(btn, sel, corr) {
-      const ok = sel === corr; // Cevap doğru mu?
-      playSound(ok ? 'correct' : 'wrong'); // Geri bildirim sesi çal
-
-      // Arkaplan rengini cevaba göre ayarla
-      bodyEl.style.backgroundColor = ok ? 'var(--correct)' : 'var(--wrong)';
+      const ok = sel === corr;
+      playSound(ok ? 'correct' : 'wrong');
+      
+      // YENİ: Tüm ekran yerine sadece soru kutusu ve şıklar etkilensin
+      // bodyEl.style.backgroundColor = ok ? 'var(--correct)' : 'var(--wrong)'; // Bu satırı kaldırdık
+      question.classList.add(ok ? 'correct-flash' : 'wrong-flash'); // Soru kutusuna yanma efekti ekle
 
       if (ok) {
-        btn.classList.add('correct'); // Doğru cevabı işaretle
-        score++; // Puanı artır
+        btn.classList.add('correct');
+        score++;
       } else {
-        btn.classList.add('wrong'); // Yanlış cevabı işaretle
-        wrongAnswers.push(corr); // Yanlış bilinen kelimeyi ekle
+        btn.classList.add('wrong');
+        wrongAnswers.push(corr);
         Array.from(answers.children).forEach(b => {
-          // Doğru cevabın metnini içeren butonu bul
-          const buttonText = b.textContent.substring(1); // Harfi atlayıp metni al
+          const buttonText = b.textContent.substring(1);
           const correctAnswerText = questionIsEnglish ? corr.tr : corr.en;
 
           if (buttonText === correctAnswerText) {
@@ -431,30 +436,25 @@
           }
         });
       }
-      // Tüm şıkları devre dışı bırak
       Array.from(answers.children).forEach(b => { b.disabled = true; b.classList.add('disabled'); });
-      // 1.5 saniye sonra yeni soruyu yükle
       setTimeout(() => { qIndex++; loadQuestion(); }, 1500);
     }
 
-    // Puanı güncelleyen fonksiyon
     function updateScore() {
       scoreDisp.textContent = `Puan: ${score}/${quiz.length}`;
     }
 
-    // Yeni: İlerleme göstergesini güncelleyen fonksiyon
     function updateProgress() {
-        if (qIndex < quiz.length) { // Test bitmediyse
+        if (qIndex < quiz.length) {
             progressDisp.textContent = `Soru: ${qIndex + 1}/${quiz.length}`;
-        } else { // Test bittiyse
-            progressDisp.textContent = ''; // Boşalt
+        } else {
+            progressDisp.textContent = '';
         }
     }
 
-    // Yeni Fonksiyon: Test sonuçlarını gösterir
     function showQuizResult() {
       question.innerHTML = `Test tamamlandı!<br>Puanınız: <span style="color: var(--primary);">${score}/${quiz.length}</span>`;
-      answers.innerHTML = ''; // Şıkları temizle
+      answers.innerHTML = '';
       scoreDisp.textContent = '';
       progressDisp.textContent = '';
 
@@ -472,7 +472,6 @@
         wrongList.style.fontSize = '1.3em';
         wrongList.style.color = 'var(--text)';
 
-        // Tekrar eden kelimeleri listede bir kez göster
         const uniqueWrongAnswers = [...new Set(wrongAnswers)];
 
         uniqueWrongAnswers.forEach(word => {
@@ -490,22 +489,8 @@
         retryWrongBtn.style.padding = '10px 20px';
         retryWrongBtn.style.borderRadius = '10px';
         retryWrongBtn.onclick = () => {
-          quiz = shuffle([...uniqueWrongAnswers]); // Sadece yanlış bilinenleri tekrarla
+          quiz = shuffle([...uniqueWrongAnswers]);
           qIndex = 0;
           score = 0;
           wrongAnswers = [];
-          loadQuestion();
-          updateScore();
-          updateProgress();
-        };
-        answers.appendChild(retryWrongBtn);
-      }
-    }
-
-    // İlk kartı yükle ve seslendir
-    renderCard();
-    speak(words[0].en);
-  </script>
-
-</body>
-</html>
+    
