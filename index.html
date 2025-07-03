@@ -47,30 +47,34 @@
     .card.flipped {
       transform: perspective(1000px) rotateY(180deg);
     }
+    .card .front, .card .back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+    }
+    .card .back {
+        transform: rotateY(180deg);
+    }
+
     .card .emoji {
       position: absolute;
       top: 15px;
       right: 15px;
       font-size: 50px;
       opacity: 0.6;
-      backface-visibility: hidden;
     }
     .card .text {
       font-size: 2.4em; color: var(--primary);
       font-weight: 700; user-select: none;
-      backface-visibility: hidden;
-      position: absolute;
-      width: 100%;
-      padding: 0 15px;
     }
     .card .translation {
       margin-top: 8px; font-size: 1.8em; color: var(--text);
-      display: none;
-      backface-visibility: hidden;
-      position: absolute;
-      width: 100%;
-      padding: 0 15px;
-      transform: rotateY(180deg);
     }
     .controls {
       margin-top: 20px; display: flex; flex-wrap: wrap;
@@ -97,7 +101,7 @@
       font-size: 2em; font-weight: 700;
       display: flex; justify-content: center; align-items: center;
       margin-bottom: 20px; user-select: none;
-      transition: all 0.3s ease; /* Yanma efekti için */
+      transition: all 0.3s ease;
     }
     .question-box.correct-flash {
       box-shadow: 0 0 20px 5px var(--correct);
@@ -167,9 +171,13 @@
   <h1>İngilizce Kelime Kartları</h1>
 
   <div class="card" id="card" title="Tıklayınca Türkçesi göster/gizle">
-    <div class="emoji" id="cardEmoji"></div>
-    <div class="text" id="cardText">Yükleniyor...</div>
-    <div class="translation" id="cardTranslation"></div>
+    <div class="front">
+      <div class="emoji" id="cardEmoji"></div>
+      <div class="text" id="cardText">Yükleniyor...</div>
+    </div>
+    <div class="back">
+      <div class="translation" id="cardTranslation"></div>
+    </div>
   </div>
 
   <div class="controls" id="cardControls">
@@ -250,9 +258,9 @@
     let wrongAnswers = [];
 
     const card      = document.getElementById('card');
-    const cardEmoji = document.getElementById('cardEmoji');
-    const cardText  = document.getElementById('cardText');
-    const cardTrans = document.getElementById('cardTranslation');
+    const cardEmoji = card.querySelector('.emoji'); // front içindeki emoji
+    const cardText  = card.querySelector('.text');  // front içindeki text
+    const cardTrans = card.querySelector('.translation'); // back içindeki translation
     const prevBtn   = document.getElementById('prevBtn');
     const nextBtn   = document.getElementById('nextBtn');
     const speakBtn  = document.getElementById('speakBtn');
@@ -270,10 +278,9 @@
       const w = words[currentIndex];
       cardEmoji.textContent = w.emoji;
       cardText.textContent  = w.en;
-      card.classList.remove('flipped');
-      cardText.style.display = 'block';
-      cardEmoji.style.display = 'block';
-      cardTrans.style.display = 'none';
+      cardTrans.textContent = w.tr; // Translation textini de hazırda tut
+
+      card.classList.remove('flipped'); // Kartı ön yüzüne çevir
     }
 
     function speak(txt) {
@@ -295,7 +302,6 @@
       return a;
     }
 
-    // YENİ: Daha hoş ses efektleri
     function playSound(type) {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioContext.createOscillator();
@@ -305,21 +311,20 @@
         gainNode.connect(audioContext.destination);
 
         if (type === 'correct') {
-            oscillator.type = 'sine'; // Sinüs dalgası, daha yumuşak
-            oscillator.frequency.setValueAtTime(700, audioContext.currentTime); // Yüksek frekans
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(700, audioContext.currentTime);
             gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3); // Hızlı sönümleme
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
         } else { // wrong
-            oscillator.type = 'triangle'; // Üçgen dalga, daha belirgin
-            oscillator.frequency.setValueAtTime(200, audioContext.currentTime); // Düşük frekans
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
             gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4); // Biraz daha yavaş sönümleme
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
         }
 
         oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5); // Kısa ses
+        oscillator.stop(audioContext.currentTime + 0.5);
     }
-
 
     prevBtn.onclick = ()=>{
       currentIndex=(currentIndex-1+words.length)%words.length;
@@ -333,24 +338,15 @@
     };
     speakBtn.onclick= ()=>{ speak(words[currentIndex].en); };
 
+    // Kart çevirme animasyonu için HTML yapısını değiştirdik, JS de buna göre güncellendi.
     card.onclick = () => {
       card.classList.toggle('flipped');
-      setTimeout(() => {
-        const w = words[currentIndex];
-        if (card.classList.contains('flipped')) {
-          cardText.style.display = 'none';
-          cardEmoji.style.display = 'none';
-          cardTrans.textContent = w.tr;
-          cardTrans.style.display = 'block';
-        } else {
-          cardText.textContent = w.en;
-          cardEmoji.textContent = w.emoji;
-          cardText.style.display = 'block';
-          cardEmoji.style.display = 'block';
-          cardTrans.style.display = 'none';
-        }
-        speak(w.en);
-      }, 300);
+      // Telaffuzu animasyon bittikten sonra değil, hemen yapabiliriz.
+      // Ya da, sadece ön yüzdeyken İngilizceyi, arka yüzdeyken (Türkçe) İngilizceyi seslendirebiliriz.
+      // Şimdilik sadece İngilizceyi seslendirsin.
+      if (!card.classList.contains('flipped')) { // Sadece ön yüze dönerken İngilizceyi seslendir
+          speak(words[currentIndex].en);
+      }
     };
 
     testBtn.onclick = ()=> {
@@ -376,15 +372,13 @@
       testBtn.classList.remove('hide');
       card.classList.remove('flipped');
       renderCard();
-      // YENİ: Arkaplan rengini sıfırla, soru kutusu yanma efektini kaldır
       bodyEl.style.backgroundColor='var(--bg)';
       question.classList.remove('correct-flash', 'wrong-flash');
     };
 
     function loadQuestion() {
-      // YENİ: Soru kutusunun yanma efektini kaldır
       question.classList.remove('correct-flash', 'wrong-flash');
-      bodyEl.style.backgroundColor = 'var(--bg)'; // Genel arkaplanı normale döndür
+      bodyEl.style.backgroundColor = 'var(--bg)';
       answers.innerHTML = '';
 
       if (qIndex >= quiz.length) {
@@ -402,7 +396,8 @@
       const opts = [correct];
       while (opts.length < 4) {
         const r = words[Math.floor(Math.random() * words.length)];
-        if (!opts.includes(r) && r.en !== correct.en) opts.push(r);
+        // Doğru cevapla aynı kelime olmasın ve listede tekrar etmesin
+        if (!opts.some(o => o.en === r.en)) opts.push(r);
       }
       shuffle(opts).forEach((opt, i) => {
         const btn = document.createElement('button');
@@ -417,9 +412,7 @@
       const ok = sel === corr;
       playSound(ok ? 'correct' : 'wrong');
       
-      // YENİ: Tüm ekran yerine sadece soru kutusu ve şıklar etkilensin
-      // bodyEl.style.backgroundColor = ok ? 'var(--correct)' : 'var(--wrong)'; // Bu satırı kaldırdık
-      question.classList.add(ok ? 'correct-flash' : 'wrong-flash'); // Soru kutusuna yanma efekti ekle
+      question.classList.add(ok ? 'correct-flash' : 'wrong-flash');
 
       if (ok) {
         btn.classList.add('correct');
@@ -428,10 +421,10 @@
         btn.classList.add('wrong');
         wrongAnswers.push(corr);
         Array.from(answers.children).forEach(b => {
-          const buttonText = b.textContent.substring(1);
-          const correctAnswerText = questionIsEnglish ? corr.tr : corr.en;
-
-          if (buttonText === correctAnswerText) {
+          // Bu kısımda correct cevabı bulmak için kelimenin kendisini kontrol etmeliyiz
+          // Çünkü şık text'leri harfle başlıyor.
+          const currentButtonWord = questionIsEnglish ? words.find(w => w.tr === b.textContent.substring(1)) : words.find(w => w.en === b.textContent.substring(1));
+          if (currentButtonWord && currentButtonWord.en === corr.en) { // Correct kelimenin İngilizcesi ile karşılaştır
             b.classList.add('correct');
           }
         });
@@ -472,6 +465,7 @@
         wrongList.style.fontSize = '1.3em';
         wrongList.style.color = 'var(--text)';
 
+        // Tekrar eden kelimeleri listede bir kez göster
         const uniqueWrongAnswers = [...new Set(wrongAnswers)];
 
         uniqueWrongAnswers.forEach(word => {
@@ -493,4 +487,17 @@
           qIndex = 0;
           score = 0;
           wrongAnswers = [];
-    
+          loadQuestion();
+          updateScore();
+          updateProgress();
+        };
+        answers.appendChild(retryWrongBtn);
+      }
+    }
+
+    renderCard();
+    speak(words[0].en);
+  </script>
+
+</body>
+</html>
