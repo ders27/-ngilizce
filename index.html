@@ -94,8 +94,20 @@
     button:disabled { opacity: .6; cursor: not-allowed; }
     #testBtn { margin-top: 20px; }
     .hide { display: none !important; }
+
+    /* Test Alanı Stilleri */
+    #testArea {
+      width: 100%; /* Tam ekran genişliği */
+      max-width: 500px; /* Belirli bir max-width koruyarak çok geniş olmasını engelle */
+      padding: 0 10px; /* Kenarlardan biraz boşluk bırakabiliriz, isterseniz 0 yapın */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .question-box {
-      width: 90vw; max-width: 360px; min-height: 110px;
+      width: 100%; /* Tam ekran genişliği */
+      min-height: 110px;
       background: #fff; border: 5px solid var(--primary);
       border-radius: 18px; padding: 20px;
       font-size: 2em; font-weight: 700;
@@ -114,10 +126,13 @@
     .answers {
       display: flex; flex-direction: column;
       gap: 14px; /* Şıklar arası mesafe */
-      width: 90vw; max-width: 360px; margin-bottom: 20px;
+      width: 100%; /* Tam ekran genişliği */
+      margin-bottom: 20px;
     }
     .answer-btn {
-      position: relative; padding: 16px 24px 16px 56px;
+      position: relative;
+      /* Şık metni ile harf arasındaki boşluğu artırmak için padding-left'i büyütelim */
+      padding: 16px 24px 16px 70px; /* Daha fazla sol dolgu */
       background: var(--primary); color: #fff;
       border: 4px solid var(--primary); border-radius: 14px;
       font-size: 1.5em; font-weight: 700; text-align: left;
@@ -163,6 +178,9 @@
 
     @media (min-width:600px) {
       body { padding: 40px; }
+      #testArea {
+        padding: 0; /* Daha büyük ekranlarda yan boşluk kalmasın */
+      }
     }
   </style>
 </head>
@@ -258,9 +276,10 @@
     let wrongAnswers = [];
 
     const card      = document.getElementById('card');
-    const cardEmoji = card.querySelector('.emoji'); // front içindeki emoji
-    const cardText  = card.querySelector('.text');  // front içindeki text
-    const cardTrans = card.querySelector('.translation'); // back içindeki translation
+    // Yeni HTML yapısına göre querySelector kullandık
+    const cardEmoji = card.querySelector('.emoji');
+    const cardText  = card.querySelector('.text');
+    const cardTrans = card.querySelector('.translation');
     const prevBtn   = document.getElementById('prevBtn');
     const nextBtn   = document.getElementById('nextBtn');
     const speakBtn  = document.getElementById('speakBtn');
@@ -338,13 +357,11 @@
     };
     speakBtn.onclick= ()=>{ speak(words[currentIndex].en); };
 
-    // Kart çevirme animasyonu için HTML yapısını değiştirdik, JS de buna göre güncellendi.
+    // Kart çevirme animasyonu
     card.onclick = () => {
       card.classList.toggle('flipped');
-      // Telaffuzu animasyon bittikten sonra değil, hemen yapabiliriz.
-      // Ya da, sadece ön yüzdeyken İngilizceyi, arka yüzdeyken (Türkçe) İngilizceyi seslendirebiliriz.
-      // Şimdilik sadece İngilizceyi seslendirsin.
-      if (!card.classList.contains('flipped')) { // Sadece ön yüze dönerken İngilizceyi seslendir
+      // Sadece ön yüze dönerken İngilizceyi seslendir
+      if (!card.classList.contains('flipped')) {
           speak(words[currentIndex].en);
       }
     };
@@ -421,10 +438,10 @@
         btn.classList.add('wrong');
         wrongAnswers.push(corr);
         Array.from(answers.children).forEach(b => {
-          // Bu kısımda correct cevabı bulmak için kelimenin kendisini kontrol etmeliyiz
-          // Çünkü şık text'leri harfle başlıyor.
-          const currentButtonWord = questionIsEnglish ? words.find(w => w.tr === b.textContent.substring(1)) : words.find(w => w.en === b.textContent.substring(1));
-          if (currentButtonWord && currentButtonWord.en === corr.en) { // Correct kelimenin İngilizcesi ile karşılaştır
+          // Doğru cevabın kelime objesini bulmak için karşılaştırma yapalım
+          const correctWordText = questionIsEnglish ? corr.tr : corr.en;
+          // Şık metninin başındaki harfi atlayıp kelimeyi karşılaştır
+          if (b.textContent.substring(1) === correctWordText) {
             b.classList.add('correct');
           }
         });
