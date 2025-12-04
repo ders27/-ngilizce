@@ -1,520 +1,277 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>İngilizce Kelime Kartları & Test</title>
-  <style>
-    :root {
-      --primary: #5a189a; /* Daha koyu mor */
-      --accent: #ffb703; /* Daha canlı turuncu/sarı */
-      --bg: #e0f2fe; /* Açık mavi, daha ferah bir arka plan */
-      --text: #2c3e50; /* Koyu gri, okunabilirliği artırır */
-      --card-bg: #ffffff; /* Kart arka planı */
-      --correct: #4CAF50; /* Yeşil */
-      --wrong: #E53935;   /* Kırmızı */
-      --btn-font: 1.6em;
-      --transition-speed: 0.3s; /* Genel geçiş hızı */
-      --test-bg-correct: #d4edda; /* Test doğru cevap arka planı */
-      --test-bg-wrong: #f8d7da;   /* Test yanlış cevap arka planı */
-    }
-    *, *::before, *::after {
-      box-sizing: border-box; margin: 0; padding: 0;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg); color: var(--text);
-      display: flex; flex-direction: column; align-items: center;
-      padding: 20px; text-align: center; min-height: 100vh;
-      transition: background-color var(--transition-speed) ease;
-    }
-    h1 {
-      color: var(--primary);
-      font-size: 2.4em;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-    }
-    .card {
-      width: 90vw; max-width: 360px; height: 260px;
-      background: var(--card-bg); border: 5px solid var(--primary);
-      border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 15px; display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      user-select: none; cursor: pointer; position: relative;
-      transform-style: preserve-3d; /* 3D çevirme için gerekli */
-      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
-    }
-    .card.flipped {
-      transform: perspective(1000px) rotateY(180deg);
-    }
-    .card .front, .card .back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 15px;
-    }
-    .card .back {
-        transform: rotateY(180deg);
-    }
-
-    .card .emoji {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 50px;
-      opacity: 0.6;
-    }
-    .card .text {
-      font-size: 2.4em; color: var(--primary);
-      font-weight: 700; user-select: none;
-    }
-    .card .translation {
-      margin-top: 8px; font-size: 1.8em; color: var(--text);
-    }
-    .controls {
-      margin-top: 20px; display: flex; flex-wrap: wrap;
-      gap: 8px; justify-content: center;
-    }
-    button {
-      font-size: var(--btn-font); padding: 12px 28px;
-      background: var(--accent); color: #fff; border: none;
-      border-radius: 12px; cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: all var(--transition-speed) ease;
-    }
-    button:hover:not(:disabled) {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    }
-    button:disabled { opacity: .6; cursor: not-allowed; }
-    #testBtn { margin-top: 20px; }
-    .hide { display: none !important; }
-
-    /* Test Alanı Stilleri */
-    #testArea {
-      width: 100%; /* Tam ekran genişliği */
-      max-width: 500px; /* Belirli bir max-width koruyarak çok geniş olmasını engelle */
-      padding: 0 10px; /* Kenarlardan biraz boşluk bırakabiliriz, isterseniz 0 yapın */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .question-box {
-      width: 100%; /* Tam ekran genişliği */
-      min-height: 110px;
-      background: #fff; border: 5px solid var(--primary);
-      border-radius: 18px; padding: 20px;
-      font-size: 2em; font-weight: 700;
-      display: flex; justify-content: center; align-items: center;
-      margin-bottom: 20px; user-select: none;
-      transition: all 0.3s ease;
-    }
-    .question-box.correct-flash {
-      box-shadow: 0 0 20px 5px var(--correct);
-      border-color: var(--correct);
-    }
-    .question-box.wrong-flash {
-      box-shadow: 0 0 20px 5px var(--wrong);
-      border-color: var(--wrong);
-    }
-    .answers {
-      display: flex; flex-direction: column;
-      gap: 14px; /* Şıklar arası mesafe */
-      width: 100%; /* Tam ekran genişliği */
-      margin-bottom: 20px;
-    }
-    .answer-btn {
-      position: relative;
-      /* Şık metni ile harf arasındaki boşluğu artırmak için padding-left'i büyütelim */
-      padding: 16px 24px 16px 70px; /* Daha fazla sol dolgu */
-      background: var(--primary); color: #fff;
-      border: 4px solid var(--primary); border-radius: 14px;
-      font-size: 1.5em; font-weight: 700; text-align: left;
-      cursor: pointer; transition: background-color .3s, transform .15s, border-color .3s;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .answer-btn span.letter {
-      position: absolute; left: 18px; top: 50%;
-      transform: translateY(-50%);
-      width: 42px; height: 42px; line-height: 42px;
-      background: #fff; color: var(--primary);
-      font-size: 1.4em; font-weight: 900;
-      border-radius: 50%; text-align: center;
-    }
-    .answer-btn.correct { background: var(--correct); border-color: var(--correct); animation: pulseCorrect 0.5s forwards; }
-    .answer-btn.wrong   { background: var(--wrong); border-color: var(--wrong); animation: shake 0.5s forwards; }
-    .answer-btn.disabled { pointer-events: none; opacity: .8; }
-    #scoreDisplay {
-      font-size: 1.6em; color: var(--primary);
-      margin-bottom: 10px; font-weight: 700;
-    }
-    #progressDisplay {
-      font-size: 1.4em; color: var(--text);
-      margin-bottom: 20px; font-weight: 600;
-    }
-    #backToCardsBtn {
-      font-size: 2em; padding: 16px 36px;
-      border-radius: 18px;
-    }
-
-    /* Animasyonlar */
-    @keyframes pulseCorrect {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-10px); }
-      40%, 80% { transform: translateX(10px); }
-    }
-
-    @media (min-width:600px) {
-      body { padding: 40px; }
-      #testArea {
-        padding: 0; /* Daha büyük ekranlarda yan boşluk kalmasın */
-      }
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Atıcı Konum Tahmini — Basit 3D Rekonstrüksiyon</title>
+<style>
+  body{font-family:Inter,Arial;margin:16px;background:#f5f7fb;color:#111}
+  .card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 6px 20px rgba(30,40,60,.08);max-width:920px;margin:0 auto}
+  label{display:block;margin-top:10px;font-weight:600}
+  input,select{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;margin-top:6px}
+  button{margin-top:12px;padding:10px 16px;border:0;border-radius:8px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
+  .res{margin-top:14px;padding:12px;background:#eef6ff;border-left:4px solid #2b6df6;border-radius:6px}
+  .row{display:flex;gap:12px}
+  .col{flex:1}
+  svg{width:100%;height:260px;background:#fff;border-radius:8px;border:1px solid #e5e7eb}
+  .muted{color:#555;font-size:0.95rem}
+</style>
 </head>
 <body>
+  <div class="card">
+    <h2>Atıcı Konum Tahmini (3D)</h2>
+    <p class="muted">Olay yerinde ölçtüğünüz verileri girin — form girdi alanları ve kısa açıklamalar altında.</p>
 
-  <h1>İngilizce Kelime Kartları</h1>
-
-  <div class="card" id="card" title="Tıklayınca Türkçesi göster/gizle">
-    <div class="front">
-      <div class="emoji" id="cardEmoji"></div>
-      <div class="text" id="cardText">Yükleniyor...</div>
+    <div class="row">
+      <div class="col">
+        <label>Kısa Eksen (cm)</label>
+        <input id="kisa" type="number" step="0.01" value="0.4">
+      </div>
+      <div class="col">
+        <label>Uzun Eksen (cm)</label>
+        <input id="uzun" type="number" step="0.01" value="1.2">
+      </div>
     </div>
-    <div class="back">
-      <div class="translation" id="cardTranslation"></div>
+
+    <label>Elipsin duvarda yaptığı yatay açı — uzun eksenin yatay referansa (yatay boyunca sağa) açısı (°)</label>
+    <input id="elips_yon" type="number" step="0.1" value="10" placeholder="0 = yatay, 90 = dikey yukarı">
+
+    <div class="row">
+      <div class="col">
+        <label>İsabet yüksekliği (cm) — duvardaki deliğin yerden yüksekliği</label>
+        <input id="isabet" type="number" step="1" value="250">
+      </div>
+      <div class="col">
+        <label>Atıcının silah tutma yüksekliği (cm) (tahmini)</label>
+        <input id="atis_h" type="number" step="1" value="160">
+      </div>
     </div>
+
+    <label>Duvardaki sol kenardan deliğe yatay mesafe (cm) — duvar üzerindeki y koordinatı için</label>
+    <input id="duvar_sol" type="number" step="0.1" value="120">
+
+    <label>Duvarın dünya yönü (duvarın düzlüğünün yatay yönü) — rotasyon (°) (opsiyonel)</label>
+    <input id="duvar_acisi" type="number" step="0.1" value="0" placeholder="0 = duvar x=0, y artı yönü sağa">
+
+    <button onclick="hesaplaAtici()">HESAPLA</button>
+
+    <div id="sonuc" class="res">
+      <p>Henüz hesap yok. Değerleri girip "HESAPLA" butonuna basın.</p>
+    </div>
+
+    <h3 style="margin-top:18px">Görsel (üstten plan ve yan görünüş)</h3>
+    <svg id="viz" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+      <rect x="0" y="0" width="800" height="400" fill="#f8fafc"></rect>
+      <g id="plan"></g>
+    </svg>
   </div>
 
-  <div class="controls" id="cardControls">
-    <button id="prevBtn">Önceki</button>
-    <button id="nextBtn">Sonraki</button>
-    <button id="speakBtn">🔊</button>
-    <button id="testBtn">Teste Geç</button>
-  </div>
+<script>
+// Yardımcı fonksiyonlar
+function deg2rad(d){return d*Math.PI/180}
+function rad2deg(r){return r*180/Math.PI}
 
-  <div id="testArea" class="hide">
-    <h2>20 Soruluk Kelime Testi</h2>
-    <div class="question-box" id="question">Hazırlanıyor...</div>
-    <div class="answers" id="answers"></div>
-    <div id="scoreDisplay">Puan: 0</div>
-    <div id="progressDisplay">Soru: 0/20</div>
-    <button id="backToCardsBtn">Kartlara Geri Dön</button>
-  </div>
+// Ana hesap fonksiyonu
+function hesaplaAtici(){
+  // Girdi al
+  const kisa_cm = parseFloat(document.getElementById('kisa').value);
+  const uzun_cm = parseFloat(document.getElementById('uzun').value);
+  const elips_yon_deg = parseFloat(document.getElementById('elips_yon').value); // derecede, 0 = yatay sağa
+  const isabet_cm = parseFloat(document.getElementById('isabet').value);
+  const atis_h_cm = parseFloat(document.getElementById('atis_h').value);
+  const duvar_sol_cm = parseFloat(document.getElementById('duvar_sol').value);
+  const duvar_acisi_deg = parseFloat(document.getElementById('duvar_acisi').value) || 0;
 
-  <script>
-    const words = [
-      {en:"Hello", tr:"Merhaba", emoji:"👋"}, {en:"Goodbye", tr:"Hoşça kal", emoji:"👋"},
-      {en:"Please", tr:"Lütfen", emoji:"🙏"}, {en:"Thank you", tr:"Teşekkür ederim", emoji:"🙏"},
-      {en:"Sorry", tr:"Özür dilerim", emoji:"😔"}, {en:"Yes", tr:"Evet", emoji:"👍"},
-      {en:"No", tr:"Hayır", emoji:"👎"}, {en:"Welcome", tr:"Hoş geldin", emoji:"🤗"},
-      {en:"Excuse me", tr:"Afedersiniz", emoji:"🙇"}, {en:"OK", tr:"Tamam", emoji:"👌"},
-      {en:"Mother", tr:"Anne", emoji:"👩‍👧"}, {en:"Father", tr:"Baba", emoji:"👨‍👧"},
-      {en:"Sister", tr:"Kız kardeş", emoji:"👧"}, {en:"Brother", tr:"Erkek kardeş", emoji:"👦"},
-      {en:"Friend", tr:"Arkadaş", emoji:"🤝"}, {en:"Baby", tr:"Bebek", emoji:"👶"},
-      {en:"Girl", tr:"Kız", emoji:"👧"}, {en:"Boy", tr:"Erkek", emoji:"👦"},
-      {en:"Family", tr:"Aile", emoji:"👨‍👩‍👧‍👦"}, {en:"People", tr:"İnsanlar", emoji:"🧑‍🤝‍🧑"},
-      {en:"House", tr:"Ev", emoji:"🏠"}, {en:"Room", tr:"Oda", emoji:"🚪"},
-      {en:"Bed", tr:"Yatak", emoji:"🛏️"}, {en:"Table", tr:"Masa", emoji:"🪑"},
-      {en:"Chair", tr:"Sandalye", emoji:"🪑"}, {en:"Door", tr:"Kapı", emoji:"🚪"},
-      {en:"Window", tr:"Pencere", emoji:"🪟"}, {en:"TV", tr:"Televizyon", emoji:"📺"},
-      {en:"Lamp", tr:"Lamba", emoji:"💡"}, {en:"Carpet", tr:"Halı", emoji:"🧶"},
-      {en:"School", tr:"Okul", emoji:"🏫"}, {en:"Teacher", tr:"Öğretmen", emoji:"👩‍🏫"},
-      {en:"Student", tr:"Öğrenci", emoji:"🧑‍🎓"}, {en:"Book", tr:"Kitap", emoji:"📚"},
-      {en:"Pen", tr:"Tükenmez kalem", emoji:"🖊️"}, {en:"Pencil", tr:"Kurşun kalem", emoji:"✏️"},
-      {en:"Bag", tr:"Çanta", emoji:"🎒"}, {en:"Ruler", tr:"Cetvel", emoji:"📏"},
-      {en:"Eraser", tr:"Silgi", emoji:"🩹"}, {en:"Board", tr:"Tahta", emoji:"🪧"},
-      {en:"Dog", tr:"Köpek", emoji:"🐶"}, {en:"Cat", tr:"Kedi", emoji:"🐱"},
-      {en:"Bird", tr:"Kuş", emoji:"🐦"}, {en:"Fish", tr:"Balık", emoji:"🐟"},
-      {en:"Cow", tr:"İnek", emoji:"🐄"}, {en:"Horse", tr:"At", emoji:"🐎"},
-      {en:"Duck", tr:"Ördek", emoji:"🦆"}, {en:"Lion", tr:"Aslan", emoji:"🦁"},
-      {en:"Elephant", tr:"Fil", emoji:"🐘"}, {en:"Monkey", tr:"Maymun", emoji:"🐒"},
-      {en:"Apple", tr:"Elma", emoji:"🍎"}, {en:"Banana", tr:"Muz", emoji:"🍌"},
-      {en:"Bread", tr:"Ekmek", emoji:"🍞"}, {en:"Water", tr:"Su", emoji:"💧"},
-      {en:"Milk", tr:"Süt", emoji:"🥛"}, {en:"Egg", tr:"Yumurta", emoji:"🥚"},
-      {en:"Cheese", tr:"Peynir", emoji:"🧀"}, {en:"Meat", tr:"Et", emoji:"🍖"},
-      {en:"Rice", tr:"Pirinç", emoji:"🍚"}, {en:"Cake", tr:"Kek", emoji:"🍰"},
-      {en:"Red", tr:"Kırmızı", emoji:"🔴"}, {en:"Blue", tr:"Mavi", emoji:"🔵"},
-      {en:"Green", tr:"Yeşil", emoji:"🟢"}, {en:"Yellow", tr:"Sarı", emoji:"🟡"},
-      {en:"Black", tr:"Siyah", emoji:"⚫"}, {en:"White", tr:"Beyaz", emoji:"⚪"},
-      {en:"Orange", tr:"Turuncu", emoji:"🟠"}, {en:"Pink", tr:"Pembe", emoji:"🌸"},
-      {en:"Brown", tr:"Kahverengi", emoji:"🟤"}, {en:"Purple", tr:"Mor", emoji:"🟣"},
-      {en:"One", tr:"Bir", emoji:"1️⃣"}, {en:"Two", tr:"İki", emoji:"2️⃣"},
-      {en:"Three", tr:"Üç", emoji:"3️⃣"}, {en:"Four", tr:"Dört", emoji:"4️⃣"},
-      {en:"Five", tr:"Beş", emoji:"5️⃣"}, {en:"Day", tr:"Gün", emoji:"☀️"},
-      {en:"Night", tr:"Gece", emoji:"🌙"}, {en:"Morning", tr:"Sabah", emoji:"🌅"},
-      {en:"Evening", tr:"Akşam", emoji:"🌇"}, {en:"Today", tr:"Bugün", emoji:"📅"},
-      {en:"Shirt", tr:"Gömlek", emoji:"👕"}, {en:"Pants", tr:"Pantolon", emoji:"👖"},
-      {en:"Dress", tr:"Elbise", emoji:"👗"}, {en:"Skirt", tr:"Etek", emoji:"👚"},
-      {en:"Shoes", tr:"Ayakkabı", emoji:"👟"}, {en:"Socks", tr:"Çorap", emoji:"🧦"},
-      {en:"Hat", tr:"Şapka", emoji:"🎩"}, {en:"Jacket", tr:"Ceket", emoji:"🧥"},
-      {en:"Coat", tr:"Kaban", emoji:"🧥"}, {en:"T-shirt", tr:"Tişört", emoji:"👕"},
-      {en:"Head", tr:"Kafa", emoji:"🧑‍🦲"}, {en:"Hair", tr:"Saç", emoji:"💇‍♂️"},
-      {en:"Eye", tr:"Göz", emoji:"👁️"}, {en:"Nose", tr:"Burun", emoji:"👃"},
-      {en:"Mouth", tr:"Ağız", emoji:"👄"}, {en:"Ear", tr:"Kulak", emoji:"👂"},
-      {en:"Hand", tr:"El", emoji:"✋"}, {en:"Arm", tr:"Kol", emoji:"💪"},
-      {en:"Leg", tr:"Bacak", emoji:"🦵"}, {en:"Foot", tr:"Ayak", emoji:"🦶"}
+  // Basit validasyon
+  if (isNaN(kisa_cm) || isNaN(uzun_cm) || isNaN(isabet_cm) || isNaN(atis_h_cm)) {
+    document.getElementById('sonuc').innerHTML = '<strong>Hata:</strong> Lütfen tüm zorunlu alanları doğru doldurun.';
+    return;
+  }
+  if (kisa_cm <= 0 || uzun_cm <= 0 || kisa_cm > uzun_cm) {
+    document.getElementById('sonuc').innerHTML = '<strong>Hata:</strong> Kısa eksen pozitif olmalı ve uzun eksenden küçük olmalı.';
+    return;
+  }
+
+  // Birim dönüşümleri => metre
+  const b = kisa_cm / 100.0;
+  const a = uzun_cm / 100.0;
+  const Pz = isabet_cm / 100.0; // etki z
+  const Py = duvar_sol_cm / 100.0; // etki y (wall-local)
+  const shooter_h = atis_h_cm / 100.0;
+  const wallRot = deg2rad(duvar_acisi_deg);
+
+  // 1) çarpış açısı (theta) : cosθ = b/a
+  const ratio = Math.min(Math.max(b/a, 0), 1);
+  const theta = Math.acos(ratio); // rad
+  const theta_deg = rad2deg(theta);
+
+  // 2) wall-plane yön açısı (alpha) — elips_yon: 0° = yatay (y pozitif), pozitif açı yukarı doğru
+  const alpha = deg2rad(elips_yon_deg);
+
+  // 3) birim yön vektörü (duvar-normal ekseninde x; wall-plane: y (sağa), z (yukarı))
+  // Duvar normal'i +x olsun; mermi atıcı tarafından geliyorsa atıcı yönü wall içi pozitif x yönünde
+  // Biz merminin geldiği yönden atıcıya doğru yön oluşturuyoruz:
+  const dx = -Math.cos(theta); // negatif x (duvardan içeri doğru gelen vektör)
+  const planeProj = Math.sin(theta); // büyüklük duvar düzlemindeki projeksiyon
+  const dy = planeProj * Math.cos(alpha); // wall-local y
+  const dz = planeProj * Math.sin(alpha); // wall-local z (yukarı pozitif)
+
+  // P noktası (impact) wall-local coordinate (x=0)
+  let Px = 0.0, Py_local = Py, Pz_local = Pz;
+
+  // d vector (unit) pointing FROM impact TOWARD shooter:
+  const d_local = {x: dx, y: dy, z: dz};
+
+  // Eğer dikey bileşen çok küçükse, yükseklik kesişimi hesaplanamaz veya paralel
+  if (Math.abs(d_local.z) < 1e-8) {
+    document.getElementById('sonuc').innerHTML = '<strong>Uyarı:</strong> Merminin duvara paralel veya çok yatay geldiği tespit edildi (d_z ≈ 0). Atıcının yüksekliğe göre konumu bu modelle bulunamaz.';
+    drawVisualization(Px,Py_local,Pz_local,d_local,null,null);
+    return;
+  }
+
+  // t parametresi: Pz + t * d_z = shooter_h  => t = (shooter_h - Pz) / d_z
+  const t = (shooter_h - Pz_local) / d_local.z;
+
+  // Biz t > 0 bekleriz (çünkü d vector shooter yönüne doğru); eğer t negatifse, atıcı z-uyumlu değil.
+  if (t <= 0) {
+    // t negatif ise d vector yönüne göre atıcı arkamızda; bu durumda yine S = P + t*d hesaplanır ama mantık yorumlanmalı.
+    // Yine hesaplayıp gösterelim ama uyarı verelim.
+  }
+
+  // S point in wall-local coordinates:
+  const Sx_local = Px + t * d_local.x;
+  const Sy_local = Py_local + t * d_local.y;
+  const Sz_local = Pz_local + t * d_local.z;
+
+  // Rotate wall-local (x,y) by wallRot about z to get global coordinates:
+  function rotateXY(x,y,ang){
+    const c=Math.cos(ang), s=Math.sin(ang);
+    return {X: x*c - y*s, Y: x*s + y*c};
+  }
+  const Pglob = rotateXY(Px, Py_local, wallRot);
+  const Sglob = rotateXY(Sx_local, Sy_local, wallRot);
+  // Z stays same
+  const Pglobal = {x:Pglob.X, y:Pglob.Y, z:Pz_local};
+  const Sglobal = {x:Sglob.X, y:Sglob.Y, z:Sz_local};
+
+  // Mesafeler:
+  const dxs = Sglobal.x - Pglobal.x;
+  const dys = Sglobal.y - Pglobal.y;
+  const dzs = Sglobal.z - Pglobal.z;
+  const eucl = Math.sqrt(dxs*dxs + dys*dys + dzs*dzs);
+  const horizontalDistance = Math.sqrt(dxs*dxs + dys*dys);
+
+  // Duvara normal yönde uzaklık (Sx_local negatif ise atıcı duvarın önünde)
+  const dist_from_wall = Math.abs(Sx_local);
+
+  // Sonuç metni
+  let info = `<h3>Sonuç (Tahmini)</h3>`;
+  info += `<p><strong>Çarpış açısı (theta):</strong> ${theta_deg.toFixed(2)}°</p>`;
+  info += `<p><strong>Elips yönü (duvar plaindeki alpha):</strong> ${elips_yon_deg.toFixed(2)}°</p>`;
+  info += `<p><strong>Atıcının tahmini koordinatları (global):</strong><br>
+           X = ${Sglobal.x.toFixed(3)} m, Y = ${Sglobal.y.toFixed(3)} m, Z = ${Sglobal.z.toFixed(3)} m</p>`;
+  info += `<p><strong>Atıcı ile isabet noktası arası mesafe:</strong> ${eucl.toFixed(3)} m (yatay: ${horizontalDistance.toFixed(3)} m)</p>`;
+  info += `<p><strong>Atıcının duvardan uzaklığı (duvar-normal yönünde):</strong> ${dist_from_wall.toFixed(3)} m</p>`;
+  if (t <= 0) {
+    info += `<p style="color:#c00"><strong>Uyarı:</strong> Hesaplanan parametrik t ≤ 0 çıktı (${t.toFixed(3)}). Bu, seçilen yön vektörüne göre atıcının impact noktasının ters yönünde kalabileceğini gösterir. Ölçüleri (elips yönü / yükseklik) tekrar kontrol edin.</p>`;
+  }
+  info += `<hr><p class="muted">Not: Bu model geometri temelli (doğrusal) bir tahmindir. Mermi deformasyonu, yaw, rüzgâr, yorgun mermi, yüzey eğriliği veya fotoğraf/ölçüm hataları sonucu yanıltabilir.</p>`;
+
+  document.getElementById('sonuc').innerHTML = info;
+
+  // çizim
+  drawVisualization(Px,Py_local,Pz_local,d_local,Sglobal,Pglobal);
+}
+
+// Basit görselleştirme (üstten plan + yan)
+function drawVisualization(Px,Py,Pz,d_local,Sglobal,Pglobal){
+  const svg = document.getElementById('viz');
+  const g = document.getElementById('plan');
+  while(g.firstChild) g.removeChild(g.firstChild);
+
+  // Koordinatları normalize edip 2D plan ve yan görüntü çizimleri yapacağız.
+  // Plan view: x (duvardan uzaklık) -> right, y -> down
+  // Yan view: horizontal distance (duvardan uzaklık) -> right, z -> up
+
+  // Build simple shapes scaled to fit
+  // Collect points in local wall coords for drawing if Sglobal provided, rotate back to wall-local for easy plan.
+  // For simplicity we'll convert Sglobal back to wall-local by inverse rotation assuming wall rot 0 (we don't store wallRot globally)
+  // Instead, draw only wall-local info available: P at (x=0, y=Py, z=Pz) and S at P + t*d_local if Sglobal present compute S_local via logic
+  // For brevity here do a minimal drawing: show wall vertical line and shooter point by using Sglobal coords scaled.
+
+  // create simple text about plan/side
+  const txt = document.createElementNS("http://www.w3.org/2000/svg","text");
+  txt.setAttribute("x",14); txt.setAttribute("y",20);
+  txt.setAttribute("font-size",12); txt.setAttribute("fill","#333");
+  txt.textContent = "Basit görsel (üstten plan ve yan görünüş):";
+  g.appendChild(txt);
+
+  // If we have Sglobal and Pglobal - draw approximate topdown (Y vs X)
+  if (Sglobal && Pglobal){
+    // find bounding box
+    const pts = [
+      {x:Pglobal.x,y:Pglobal.y},
+      {x:Sglobal.x,y:Sglobal.y}
     ];
+    // margins; create scaling
+    const minX = Math.min(...pts.map(p=>p.x));
+    const maxX = Math.max(...pts.map(p=>p.x));
+    const minY = Math.min(...pts.map(p=>p.y));
+    const maxY = Math.max(...pts.map(p=>p.y));
+    const pad = 0.5; // meters padding
+    const W = 760, H = 300;
+    const scale = Math.min((W-40)/(Math.max(0.001,maxX-minX)+pad*2),(H-40)/(Math.max(0.001,maxY-minY)+pad*2));
+    const offsetX = 20 - (minX - pad)*scale;
+    const offsetY = 30 - (minY - pad)*scale;
 
-    let currentIndex = 0;
-    let quiz = [];
-    let qIndex = 0;
-    let score = 0;
-    let questionIsEnglish;
-    let wrongAnswers = [];
+    // line from shooter to impact (top-down)
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1", offsetX + Pglobal.x*scale);
+    line.setAttribute("y1", offsetY + Pglobal.y*scale);
+    line.setAttribute("x2", offsetX + Sglobal.x*scale);
+    line.setAttribute("y2", offsetY + Sglobal.y*scale);
+    line.setAttribute("stroke","#1f6feb"); line.setAttribute("stroke-width",2);
+    g.appendChild(line);
 
-    const card      = document.getElementById('card');
-    // Yeni HTML yapısına göre querySelector kullandık
-    const cardEmoji = card.querySelector('.emoji');
-    const cardText  = card.querySelector('.text');
-    const cardTrans = card.querySelector('.translation');
-    const prevBtn   = document.getElementById('prevBtn');
-    const nextBtn   = document.getElementById('nextBtn');
-    const speakBtn  = document.getElementById('speakBtn');
-    const testBtn   = document.getElementById('testBtn');
-    const cardCtrls = document.getElementById('cardControls');
-    const testArea  = document.getElementById('testArea');
-    const question  = document.getElementById('question');
-    const answers   = document.getElementById('answers');
-    const scoreDisp = document.getElementById('scoreDisplay');
-    const progressDisp = document.getElementById('progressDisplay');
-    const backBtn   = document.getElementById('backToCardsBtn');
-    const bodyEl    = document.body;
+    // impact point
+    const c1 = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c1.setAttribute("cx", offsetX + Pglobal.x*scale);
+    c1.setAttribute("cy", offsetY + Pglobal.y*scale);
+    c1.setAttribute("r",5); c1.setAttribute("fill","#ef4444");
+    g.appendChild(c1);
+    const t1 = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t1.setAttribute("x", offsetX + Pglobal.x*scale + 8); t1.setAttribute("y", offsetY + Pglobal.y*scale + 4);
+    t1.setAttribute("font-size",11); t1.setAttribute("fill","#333");
+    t1.textContent = "İsabet";
+    g.appendChild(t1);
 
-    function renderCard() {
-      const w = words[currentIndex];
-      cardEmoji.textContent = w.emoji;
-      cardText.textContent  = w.en;
-      cardTrans.textContent = w.tr; // Translation textini de hazırda tut
+    // shooter point
+    const c2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+    c2.setAttribute("x", offsetX + Sglobal.x*scale -5);
+    c2.setAttribute("y", offsetY + Sglobal.y*scale -5);
+    c2.setAttribute("width",10); c2.setAttribute("height",10);
+    c2.setAttribute("fill","#059669");
+    g.appendChild(c2);
+    const t2 = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t2.setAttribute("x", offsetX + Sglobal.x*scale + 8); t2.setAttribute("y", offsetY + Sglobal.y*scale + 4);
+    t2.setAttribute("font-size",11); t2.setAttribute("fill","#333");
+    t2.textContent = "Tahmini Atıcı (üstten)";
+    g.appendChild(t2);
 
-      card.classList.remove('flipped'); // Kartı ön yüzüne çevir
-    }
-
-    function speak(txt) {
-      if (speechSynthesis.speaking) {
-          speechSynthesis.cancel();
-      }
-      const u = new SpeechSynthesisUtterance(txt);
-      u.lang = 'en-US';
-      u.rate = 0.8;
-      u.pitch = 1;
-      speechSynthesis.speak(u);
-    }
-
-    function shuffle(a) {
-      for (let i=a.length-1;i>0;i--) {
-        const j = Math.floor(Math.random()*(i+1));
-        [a[i],a[j]] = [a[j],a[i]];
-      }
-      return a;
-    }
-
-    function playSound(type) {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        if (type === 'correct') {
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(700, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
-        } else { // wrong
-            oscillator.type = 'triangle';
-            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
-        }
-
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5);
-    }
-
-    prevBtn.onclick = ()=>{
-      currentIndex=(currentIndex-1+words.length)%words.length;
-      renderCard();
-      speak(words[currentIndex].en);
-    };
-    nextBtn.onclick = ()=>{
-      currentIndex=(currentIndex+1)%words.length;
-      renderCard();
-      speak(words[currentIndex].en);
-    };
-    speakBtn.onclick= ()=>{ speak(words[currentIndex].en); };
-
-    // Kart çevirme animasyonu
-    card.onclick = () => {
-      card.classList.toggle('flipped');
-      // Sadece ön yüze dönerken İngilizceyi seslendir
-      if (!card.classList.contains('flipped')) {
-          speak(words[currentIndex].en);
-      }
-    };
-
-    testBtn.onclick = ()=> {
-      quiz = shuffle([...words]).slice(0,20);
-      qIndex = 0;
-      score = 0;
-      wrongAnswers = [];
-
-      card.classList.add('hide');
-      cardCtrls.classList.add('hide');
-      testBtn.classList.add('hide');
-      testArea.classList.remove('hide');
-
-      loadQuestion();
-      updateScore();
-      updateProgress();
-    };
-
-    backBtn.onclick = ()=> {
-      testArea.classList.add('hide');
-      card.classList.remove('hide');
-      cardCtrls.classList.remove('hide');
-      testBtn.classList.remove('hide');
-      card.classList.remove('flipped');
-      renderCard();
-      bodyEl.style.backgroundColor='var(--bg)';
-      question.classList.remove('correct-flash', 'wrong-flash');
-    };
-
-    function loadQuestion() {
-      question.classList.remove('correct-flash', 'wrong-flash');
-      bodyEl.style.backgroundColor = 'var(--bg)';
-      answers.innerHTML = '';
-
-      if (qIndex >= quiz.length) {
-        showQuizResult();
-        return;
-      }
-
-      updateScore();
-      updateProgress();
-
-      questionIsEnglish = Math.random() < 0.5;
-      const correct = quiz[qIndex];
-      question.textContent = questionIsEnglish ? correct.en : correct.tr;
-
-      const opts = [correct];
-      while (opts.length < 4) {
-        const r = words[Math.floor(Math.random() * words.length)];
-        // Doğru cevapla aynı kelime olmasın ve listede tekrar etmesin
-        if (!opts.some(o => o.en === r.en)) opts.push(r);
-      }
-      shuffle(opts).forEach((opt, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.innerHTML = `<span class="letter">${String.fromCharCode(65 + i)}</span>` + (questionIsEnglish ? opt.tr : opt.en);
-        btn.onclick = () => selectAnswer(btn, opt, correct);
-        answers.appendChild(btn);
-      });
-    }
-
-    function selectAnswer(btn, sel, corr) {
-      const ok = sel === corr;
-      playSound(ok ? 'correct' : 'wrong');
-      
-      question.classList.add(ok ? 'correct-flash' : 'wrong-flash');
-
-      if (ok) {
-        btn.classList.add('correct');
-        score++;
-      } else {
-        btn.classList.add('wrong');
-        wrongAnswers.push(corr);
-        Array.from(answers.children).forEach(b => {
-          // Doğru cevabın kelime objesini bulmak için karşılaştırma yapalım
-          const correctWordText = questionIsEnglish ? corr.tr : corr.en;
-          // Şık metninin başındaki harfi atlayıp kelimeyi karşılaştır
-          if (b.textContent.substring(1) === correctWordText) {
-            b.classList.add('correct');
-          }
-        });
-      }
-      Array.from(answers.children).forEach(b => { b.disabled = true; b.classList.add('disabled'); });
-      setTimeout(() => { qIndex++; loadQuestion(); }, 1500);
-    }
-
-    function updateScore() {
-      scoreDisp.textContent = `Puan: ${score}/${quiz.length}`;
-    }
-
-    function updateProgress() {
-        if (qIndex < quiz.length) {
-            progressDisp.textContent = `Soru: ${qIndex + 1}/${quiz.length}`;
-        } else {
-            progressDisp.textContent = '';
-        }
-    }
-
-    function showQuizResult() {
-      question.innerHTML = `Test tamamlandı!<br>Puanınız: <span style="color: var(--primary);">${score}/${quiz.length}</span>`;
-      answers.innerHTML = '';
-      scoreDisp.textContent = '';
-      progressDisp.textContent = '';
-
-      if (wrongAnswers.length > 0) {
-        const wrongListTitle = document.createElement('h3');
-        wrongListTitle.style.color = 'var(--text)';
-        wrongListTitle.style.marginBottom = '10px';
-        wrongListTitle.textContent = 'Tekrar Çalışman Gereken Kelimeler:';
-        answers.appendChild(wrongListTitle);
-
-        const wrongList = document.createElement('ul');
-        wrongList.style.listStyle = 'none';
-        wrongList.style.padding = '0';
-        wrongList.style.marginBottom = '20px';
-        wrongList.style.fontSize = '1.3em';
-        wrongList.style.color = 'var(--text)';
-
-        // Tekrar eden kelimeleri listede bir kez göster
-        const uniqueWrongAnswers = [...new Set(wrongAnswers)];
-
-        uniqueWrongAnswers.forEach(word => {
-          const listItem = document.createElement('li');
-          listItem.innerHTML = `<strong>${word.en}</strong> - ${word.tr} ${word.emoji}`;
-          wrongList.appendChild(listItem);
-        });
-        answers.appendChild(wrongList);
-
-        const retryWrongBtn = document.createElement('button');
-        retryWrongBtn.textContent = 'Yanlışları Tekrarla';
-        retryWrongBtn.style.background = 'var(--primary)';
-        retryWrongBtn.style.color = '#fff';
-        retryWrongBtn.style.fontSize = '1.2em';
-        retryWrongBtn.style.padding = '10px 20px';
-        retryWrongBtn.style.borderRadius = '10px';
-        retryWrongBtn.onclick = () => {
-          quiz = shuffle([...uniqueWrongAnswers]);
-          qIndex = 0;
-          score = 0;
-          wrongAnswers = [];
-          loadQuestion();
-          updateScore();
-          updateProgress();
-        };
-        answers.appendChild(retryWrongBtn);
-      }
-    }
-
-    renderCard();
-    speak(words[0].en);
-  </script>
-
+    // legend
+    const leg = document.createElementNS("http://www.w3.org/2000/svg","text");
+    leg.setAttribute("x",14); leg.setAttribute("y",300);
+    leg.setAttribute("font-size",11); leg.setAttribute("fill","#555");
+    leg.textContent = "Not: Bu çizim üstten plan (X,Y). Duvara göre oryantasyon ve gerçek dünya referansları için duvar açısını kullanın.";
+    g.appendChild(leg);
+  } else {
+    const t = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.setAttribute("x",14); t.setAttribute("y",60);
+    t.setAttribute("font-size",12); t.setAttribute("fill","#666");
+    t.textContent = "Yeterli veri yok; sonuç bölümündeki uyarıyı kontrol edin.";
+    g.appendChild(t);
+  }
+}
+</script>
 </body>
 </html>
