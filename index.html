@@ -13,7 +13,7 @@ button:hover { background:#42A5F5; }
 .flip-container { cursor:pointer; perspective:1000px; margin-bottom:10px; }
 .flipper { transition:0.6s; transform-style:preserve-3d; position:relative; }
 .flipped .flipper { transform:rotateY(180deg); }
-.front, .back { backface-visibility:hidden; position:absolute; width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.5em; font-weight:bold; border-radius:12px; }
+.front, .back { backface-visibility:hidden; position:absolute; width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.5em; font-weight:bold; border-radius:12px; padding:10px; box-sizing:border-box; }
 .back { transform:rotateY(180deg); background:#CCE5FF; color:#2196F3; }
 #menu, #learn, #test, #results { display:none; }
 #menu.active, #learn.active, #test.active, #results.active { display:block; }
@@ -21,6 +21,7 @@ button:hover { background:#42A5F5; }
 .option-btn:hover { background:#f0f0f0; }
 .correct { background:#8BC34A; color:white; }
 .incorrect { background:#EF5350; color:white; }
+.nav-buttons { display:flex; justify-content:space-between; margin-top:15px; }
 </style>
 </head>
 <body>
@@ -40,9 +41,11 @@ button:hover { background:#42A5F5; }
           <div class="back" id="turkish-meaning"></div>
         </div>
       </div>
-      <button onclick="previousWord()">⬅️ Önceki</button>
-      <button onclick="nextWord()">Sonraki ➡️</button>
-      <button onclick="openSection('menu')">Menüye Dön</button>
+      <div class="nav-buttons">
+        <button onclick="previousWord()">⬅️ Önceki</button>
+        <button onclick="nextWord()">Sonraki ➡️</button>
+        <button onclick="openSection('menu')">Menüye Dön</button>
+      </div>
     </div>
   </div>
 
@@ -50,9 +53,11 @@ button:hover { background:#42A5F5; }
     <h2>📝 Sınav Testi</h2>
     <div id="question-container"></div>
     <p id="test-feedback"></p>
-    <button onclick="previousQuestion()" id="prev-btn" disabled>⬅️ Önceki</button>
-    <button onclick="checkAnswer()" id="next-btn">Cevapla ve İlerle ➡️</button>
-    <button onclick="openSection('menu')">Menüye Dön</button>
+    <div class="nav-buttons">
+      <button onclick="previousQuestion()" id="prev-btn" disabled>⬅️ Önceki</button>
+      <button onclick="checkAnswer()" id="next-btn">Cevapla ve İlerle ➡️</button>
+      <button onclick="openSection('menu')">Menüye Dön</button>
+    </div>
   </div>
 
   <div id="results">
@@ -65,123 +70,30 @@ button:hover { background:#42A5F5; }
 
 <script>
 // Menü yönetimi
-function openSection(section) {
-  ['menu','learn','test','results'].forEach(s=>{
-    document.getElementById(s).classList.remove('active');
-  });
+function openSection(section){
+  ['menu','learn','test','results'].forEach(s=>document.getElementById(s).classList.remove('active'));
   document.getElementById(section).classList.add('active');
 }
 
-// Kelime listesi (100+ örnek, yönler/hava/mevsimler dahil)
+// Kelime listesi 10-10-10 bloklar halinde
 const words = [
-  {english:"North", turkish:"Kuzey"},
-  {english:"South", turkish:"Güney"},
-  {english:"East", turkish:"Doğu"},
-  {english:"West", turkish:"Batı"},
-  {english:"Spring", turkish:"İlkbahar"},
-  {english:"Summer", turkish:"Yaz"},
-  {english:"Autumn", turkish:"Sonbahar"},
-  {english:"Winter", turkish:"Kış"},
-  {english:"Sunny", turkish:"Güneşli"},
-  {english:"Rainy", turkish:"Yağmurlu"},
-  {english:"Cloudy", turkish:"Bulutlu"},
-  {english:"Windy", turkish:"Rüzgarlı"},
-  {english:"Hot", turkish:"Sıcak"},
-  {english:"Cold", turkish:"Soğuk"},
-  {english:"Up", turkish:"Yukarı"},
-  {english:"Down", turkish:"Aşağı"},
-  {english:"Left", turkish:"Sol"},
-  {english:"Right", turkish:"Sağ"},
-  {english:"Monday", turkish:"Pazartesi"},
-  {english:"Tuesday", turkish:"Salı"},
-  {english:"Wednesday", turkish:"Çarşamba"},
-  {english:"Thursday", turkish:"Perşembe"},
-  {english:"Friday", turkish:"Cuma"},
-  {english:"Saturday", turkish:"Cumartesi"},
-  {english:"Sunday", turkish:"Pazar"},
-  {english:"Hello", turkish:"Merhaba"},
-  {english:"Goodbye", turkish:"Hoşça kal"},
-  {english:"Please", turkish:"Lütfen"},
-  {english:"Thank you", turkish:"Teşekkür ederim"},
-  {english:"Yes", turkish:"Evet"},
-  {english:"No", turkish:"Hayır"},
-  {english:"Water", turkish:"Su"},
-  {english:"Food", turkish:"Yemek"},
-  {english:"Book", turkish:"Kitap"},
-  {english:"Pen", turkish:"Kalem"},
-  {english:"School", turkish:"Okul"},
-  {english:"Teacher", turkish:"Öğretmen"},
-  {english:"Friend", turkish:"Arkadaş"},
-  {english:"Family", turkish:"Aile"},
-  {english:"Home", turkish:"Ev"},
-  {english:"Car", turkish:"Araba"},
-  {english:"Bus", turkish:"Otobüs"},
-  {english:"Bicycle", turkish:"Bisiklet"},
-  {english:"Dog", turkish:"Köpek"},
-  {english:"Cat", turkish:"Kedi"},
-  {english:"Bird", turkish:"Kuş"},
-  {english:"Happy", turkish:"Mutlu"},
-  {english:"Sad", turkish:"Üzgün"},
-  {english:"Big", turkish:"Büyük"},
-  {english:"Small", turkish:"Küçük"},
-  {english:"Fast", turkish:"Hızlı"},
-  {english:"Slow", turkish:"Yavaş"},
-  {english:"Hot", turkish:"Sıcak"},
-  {english:"Cold", turkish:"Soğuk"},
-  {english:"Open", turkish:"Açık"},
-  {english:"Close", turkish:"Kapalı"},
-  {english:"Day", turkish:"Gün"},
-  {english:"Night", turkish:"Gece"},
-  {english:"Morning", turkish:"Sabah"},
-  {english:"Evening", turkish:"Akşam"},
-  {english:"Today", turkish:"Bugün"},
-  {english:"Tomorrow", turkish:"Yarın"},
-  {english:"Yesterday", turkish:"Dün"},
-  {english:"Now", turkish:"Şimdi"},
-  {english:"Later", turkish:"Sonra"},
-  {english:"Here", turkish:"Burada"},
-  {english:"There", turkish:"Orada"},
-  {english:"Inside", turkish:"İçeride"},
-  {english:"Outside", turkish:"Dışarıda"},
-  {english:"Upstairs", turkish:"Üst katta"},
-  {english:"Downstairs", turkish:"Alt katta"},
-  {english:"First", turkish:"Birinci"},
-  {english:"Second", turkish:"İkinci"},
-  {english:"Third", turkish:"Üçüncü"},
-  {english:"Left", turkish:"Sol"},
-  {english:"Right", turkish:"Sağ"},
-  {english:"Forward", turkish:"İleri"},
-  {english:"Backward", turkish:"Geri"},
-  {english:"Near", turkish:"Yakın"},
-  {english:"Far", turkish:"Uzak"},
-  {english:"Above", turkish:"Yukarıda"},
-  {english:"Below", turkish:"Aşağıda"},
-  {english:"Hot", turkish:"Sıcak"},
-  {english:"Cold", turkish:"Soğuk"},
+  // Blok 1
+  {english:"North", turkish:"Kuzey"}, {english:"South", turkish:"Güney"}, {english:"East", turkish:"Doğu"}, {english:"West", turkish:"Batı"}, {english:"Up", turkish:"Yukarı"}, {english:"Down", turkish:"Aşağı"}, {english:"Left", turkish:"Sol"}, {english:"Right", turkish:"Sağ"}, {english:"Forward", turkish:"İleri"}, {english:"Backward", turkish:"Geri"},
+  // Blok 2
+  {english:"Sunny", turkish:"Güneşli"}, {english:"Rainy", turkish:"Yağmurlu"}, {english:"Cloudy", turkish:"Bulutlu"}, {english:"Windy", turkish:"Rüzgarlı"}, {english:"Hot", turkish:"Sıcak"}, {english:"Cold", turkish:"Soğuk"}, {english:"Warm", turkish:"Ilık"}, {english:"Cool", turkish:"Serin"}, {english:"Foggy", turkish:"Sisli"}, {english:"Stormy", turkish:"Fırtınalı"},
+  // Blok 3
+  {english:"Spring", turkish:"İlkbahar"}, {english:"Summer", turkish:"Yaz"}, {english:"Autumn", turkish:"Sonbahar"}, {english:"Winter", turkish:"Kış"}, {english:"Morning", turkish:"Sabah"}, {english:"Afternoon", turkish:"Öğleden sonra"}, {english:"Evening", turkish:"Akşam"}, {english:"Night", turkish:"Gece"}, {english:"Today", turkish:"Bugün"}, {english:"Tomorrow", turkish:"Yarın"},
+  // Blok 4 (diğer günlük kelimeler)
+  {english:"Hello", turkish:"Merhaba"}, {english:"Goodbye", turkish:"Hoşça kal"}, {english:"Please", turkish:"Lütfen"}, {english:"Thank you", turkish:"Teşekkür ederim"}, {english:"Yes", turkish:"Evet"}, {english:"No", turkish:"Hayır"}, {english:"Water", turkish:"Su"}, {english:"Food", turkish:"Yemek"}, {english:"Book", turkish:"Kitap"}, {english:"Pen", turkish:"Kalem"}
 ];
-
-// Kelime öğrenme
-let currentWordIndex = 0;
-function showWord() {
-  const word = words[currentWordIndex];
-  document.getElementById('english-word').innerText = word.english;
-  document.getElementById('turkish-meaning').innerText = word.turkish;
-}
-function nextWord() {
-  currentWordIndex = (currentWordIndex+1)%words.length;
-  showWord();
-}
-function previousWord() {
-  currentWordIndex = (currentWordIndex-1+words.length)%words.length;
-  showWord();
-}
-function flipCard() {
-  const container = document.querySelector('.flip-container');
-  container.classList.toggle('flipped');
-}
+let currentWordIndex=0;
+function showWord(){ const w=words[currentWordIndex]; document.getElementById('english-word').innerText=w.english; document.getElementById('turkish-meaning').innerText=w.turkish; }
+function nextWord(){currentWordIndex=(currentWordIndex+1)%words.length; showWord();}
+function previousWord(){currentWordIndex=(currentWordIndex-1+words.length)%words.length; showWord();}
+function flipCard(){document.querySelector('.flip-container').classList.toggle('flipped');}
 showWord();
 
-// Sınav soruları (örnek)
+// Sınav soruları
 const questions = [
   {q:"What is the Turkish word for 'North'?", options:["Kuzey","Güney","Doğu","Batı"], answer:0},
   {q:"Which is a season?", options:["Sunny","Winter","Hot","Car"], answer:1},
@@ -192,36 +104,30 @@ const questions = [
   {q:"Translate 'Right' to Turkish.", options:["Sol","Sağ","İleri","Geri"], answer:1},
   {q:"Which word means 'Kedi'?", options:["Dog","Cat","Bird","Fish"], answer:1},
   {q:"What is the Turkish for 'Summer'?", options:["Yaz","Kış","İlkbahar","Sonbahar"], answer:0},
-  {q:"Translate 'Rainy' to Turkish.", options:["Güneşli","Rüzgarlı","Yağmurlu","Bulutlu"], answer:2},
+  {q:"Translate 'Rainy' to Turkish.", options:["Güneşli","Rüzgarlı","Yağmurlu","Bulutlu"], answer:2}
 ];
 
-// Test yönetimi
-let currentQ = 0; let score=0;
-function showQuestion() {
-  const q = questions[currentQ];
+let currentQ=0, score=0;
+function showQuestion(){
+  const q=questions[currentQ];
   let html=`<div class="question-card"><p>${q.q}</p>`;
   q.options.forEach((opt,i)=>{html+=`<button class="option-btn" onclick="selectAnswer(${i})">${opt}</button>`});
   html+="</div>";
   document.getElementById('question-container').innerHTML=html;
   document.getElementById('test-feedback').innerText="";
-  document.getElementById('prev-btn').disabled = currentQ===0;
+  document.getElementById('prev-btn').disabled=currentQ===0;
 }
 function selectAnswer(i){
-  const q = questions[currentQ];
-  const buttons = document.querySelectorAll('.option-btn');
+  const q=questions[currentQ];
+  const buttons=document.querySelectorAll('.option-btn');
   if(i===q.answer){buttons[i].classList.add('correct'); score++; document.getElementById('test-feedback').innerText="✅ Doğru!";}
   else{buttons[i].classList.add('incorrect'); buttons[q.answer].classList.add('correct'); document.getElementById('test-feedback').innerText="❌ Yanlış!";}
   buttons.forEach(b=>b.disabled=true);
 }
-function checkAnswer(){
-  if(currentQ<questions.length-1){currentQ++; showQuestion();}
-  else{showResults();}
-}
+function checkAnswer(){if(currentQ<questions.length-1){currentQ++; showQuestion();}else{showResults();}}
 function previousQuestion(){if(currentQ>0){currentQ--; showQuestion();}}
 function showResults(){document.getElementById('score').innerText=score; document.getElementById('total').innerText=questions.length; openSection('results');}
 function restartTest(){score=0; currentQ=0; showQuestion(); openSection('test');}
-
-// Başlangıç
 showQuestion();
 </script>
 </body>
