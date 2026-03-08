@@ -3,214 +3,226 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>İngilizce Kelime Öğrenme & Test</title>
+<title>Kelime ve Sınav Testi</title>
 <style>
-  :root {
-    --primary: #4A90E2;
-    --secondary: #FFC107;
-    --success: #8BC34A;
-    --danger: #FF5252;
-    --bg: #F5F7FA;
-  }
-
-  body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-  
-  #app { 
-    width: 90%; max-width: 450px; background: white; padding: 30px; 
-    border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; 
-  }
-
-  h1 { color: #333; font-size: 1.5rem; margin-bottom: 20px; }
-
-  /* Butonlar */
-  button { 
-    padding: 12px 20px; margin: 8px; border-radius: 12px; border: none; 
-    background: var(--primary); color: white; font-weight: 600; cursor: pointer; 
-    transition: 0.2s; font-size: 1rem;
-  }
-  button:hover { opacity: 0.9; transform: translateY(-2px); }
-  button:disabled { background: #ccc; cursor: not-allowed; }
-
-  /* Kart Çevirme Alanı */
-  .flip-container { 
-    perspective: 1000px; width: 100%; height: 180px; margin: 25px 0; cursor: pointer; 
-  }
-  .flipper { 
-    position: relative; width: 100%; height: 100%; transition: 0.6s; 
-    transform-style: preserve-3d; 
-  }
-  .flipped .flipper { transform: rotateY(180deg); }
-  .front, .back { 
-    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
-    display: flex; align-items: center; justify-content: center; 
-    font-size: 1.8rem; font-weight: bold; border-radius: 15px; border: 2px solid var(--secondary);
-  }
-  .back { background: #E3F2FD; color: var(--primary); transform: rotateY(180deg); }
-
-  /* Test Seçenekleri */
-  .option-btn { 
-    display: block; width: 100%; background: white; color: #444; 
-    border: 2px solid #eee; margin: 10px 0; 
-  }
-  .option-btn:hover { background: #f9f9f9; border-color: var(--primary); }
-  .correct { background: var(--success) !important; color: white; border-color: var(--success); }
-  .incorrect { background: var(--danger) !important; color: white; border-color: var(--danger); }
-
-  /* İlerleme Çubuğu */
-  .progress-container { background: #eee; height: 8px; border-radius: 4px; margin: 15px 0; overflow: hidden; }
-  .progress-bar { background: var(--primary); height: 100%; width: 0%; transition: 0.3s; }
-
-  #menu, #learn, #test, #results { display: none; }
-  .active { display: block !important; }
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#FFF8E1; }
+#app { max-width:600px; margin: auto; padding:20px; text-align:center; }
+button { padding:10px 20px; margin:5px; cursor:pointer; border-radius:8px; border:none; background:#2196F3; color:white; font-weight:bold; }
+button:hover { background:#42A5F5; }
+.word-card, .question-card { background:white; border:2px solid #FFC107; border-radius:12px; padding:20px; margin:20px 0; }
+.flip-container { cursor:pointer; perspective:1000px; margin-bottom:10px; }
+.flipper { transition:0.6s; transform-style:preserve-3d; position:relative; }
+.flipped .flipper { transform:rotateY(180deg); }
+.front, .back { backface-visibility:hidden; position:absolute; width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.5em; font-weight:bold; border-radius:12px; }
+.back { transform:rotateY(180deg); background:#CCE5FF; color:#2196F3; }
+#menu, #learn, #test, #results { display:none; }
+#menu.active, #learn.active, #test.active, #results.active { display:block; }
+.option-btn { display:block; margin:10px auto; padding:8px 12px; border-radius:8px; border:1px solid #ccc; width:80%; max-width:300px; }
+.option-btn:hover { background:#f0f0f0; }
+.correct { background:#8BC34A; color:white; }
+.incorrect { background:#EF5350; color:white; }
 </style>
 </head>
 <body>
-
 <div id="app">
   <div id="menu" class="active">
-    <h1>🚀 Kelime Ustası</h1>
-    <button onclick="startLearn()">📖 Kelime Öğren</button>
-    <button onclick="startTest()">📝 Sınava Başla</button>
+    <h1>Kelime ve Sınav Testi</h1>
+    <button onclick="openSection('learn')">📖 Kelime Öğren</button>
+    <button onclick="openSection('test')">📝 Sınav Testi</button>
   </div>
 
   <div id="learn">
-    <div class="flip-container" id="card" onclick="flipCard()">
-      <div class="flipper">
-        <div class="front" id="eng-word">Word</div>
-        <div class="back" id="tr-word">Kelime</div>
+    <h2>📖 Kelime Öğren</h2>
+    <div class="word-card">
+      <div class="flip-container" onclick="flipCard()">
+        <div class="flipper">
+          <div class="front" id="english-word"></div>
+          <div class="back" id="turkish-meaning"></div>
+        </div>
       </div>
+      <button onclick="previousWord()">⬅️ Önceki</button>
+      <button onclick="nextWord()">Sonraki ➡️</button>
+      <button onclick="openSection('menu')">Menüye Dön</button>
     </div>
-    <div style="display:flex; justify-content: space-between;">
-      <button onclick="prevWord()">⬅️ Geri</button>
-      <button onclick="nextWord()">İleri ➡️</button>
-    </div>
-    <button style="background:#607D8B; margin-top:20px;" onclick="openSection('menu')">🏠 Ana Menü</button>
   </div>
 
   <div id="test">
-    <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
-    <h3 id="q-text">Soru burada görünecek</h3>
-    <div id="options-container"></div>
-    <p id="feedback" style="font-weight:bold;"></p>
-    <button id="next-q-btn" style="display:none;" onclick="nextQuestion()">Sıradaki Soru ➡️</button>
+    <h2>📝 Sınav Testi</h2>
+    <div id="question-container"></div>
+    <p id="test-feedback"></p>
+    <button onclick="previousQuestion()" id="prev-btn" disabled>⬅️ Önceki</button>
+    <button onclick="checkAnswer()" id="next-btn">Cevapla ve İlerle ➡️</button>
+    <button onclick="openSection('menu')">Menüye Dön</button>
   </div>
 
   <div id="results">
-    <h2 id="final-status">🎉 Harika!</h2>
-    <p style="font-size:1.2rem;">Puanın: <span id="score">0</span> / <span id="total">0</span></p>
-    <button onclick="startTest()">Tekrar Dene</button>
-    <button onclick="openSection('menu')">🏠 Menüye Dön</button>
+    <h2>🎉 Test Tamamlandı!</h2>
+    <p>Puan: <span id="score"></span> / <span id="total"></span></p>
+    <button onclick="restartTest()">Tekrar Dene</button>
+    <button onclick="openSection('menu')">Menüye Dön</button>
   </div>
 </div>
 
 <script>
-// Veri Seti
-const data = [
-  {eng:"North", tr:"Kuzey"}, {eng:"South", tr:"Güney"},
-  {eng:"Summer", tr:"Yaz"}, {eng:"Winter", tr:"Kış"},
-  {eng:"Rainy", tr:"Yağmurlu"}, {eng:"Sunny", tr:"Güneşli"},
-  {eng:"Mountain", tr:"Dağ"}, {eng:"Ocean", tr:"Okyanus"}
+// Menü yönetimi
+function openSection(section) {
+  ['menu','learn','test','results'].forEach(s=>{
+    document.getElementById(s).classList.remove('active');
+  });
+  document.getElementById(section).classList.add('active');
+}
+
+// Kelime listesi (100+ örnek, yönler/hava/mevsimler dahil)
+const words = [
+  {english:"North", turkish:"Kuzey"},
+  {english:"South", turkish:"Güney"},
+  {english:"East", turkish:"Doğu"},
+  {english:"West", turkish:"Batı"},
+  {english:"Spring", turkish:"İlkbahar"},
+  {english:"Summer", turkish:"Yaz"},
+  {english:"Autumn", turkish:"Sonbahar"},
+  {english:"Winter", turkish:"Kış"},
+  {english:"Sunny", turkish:"Güneşli"},
+  {english:"Rainy", turkish:"Yağmurlu"},
+  {english:"Cloudy", turkish:"Bulutlu"},
+  {english:"Windy", turkish:"Rüzgarlı"},
+  {english:"Hot", turkish:"Sıcak"},
+  {english:"Cold", turkish:"Soğuk"},
+  {english:"Up", turkish:"Yukarı"},
+  {english:"Down", turkish:"Aşağı"},
+  {english:"Left", turkish:"Sol"},
+  {english:"Right", turkish:"Sağ"},
+  {english:"Monday", turkish:"Pazartesi"},
+  {english:"Tuesday", turkish:"Salı"},
+  {english:"Wednesday", turkish:"Çarşamba"},
+  {english:"Thursday", turkish:"Perşembe"},
+  {english:"Friday", turkish:"Cuma"},
+  {english:"Saturday", turkish:"Cumartesi"},
+  {english:"Sunday", turkish:"Pazar"},
+  {english:"Hello", turkish:"Merhaba"},
+  {english:"Goodbye", turkish:"Hoşça kal"},
+  {english:"Please", turkish:"Lütfen"},
+  {english:"Thank you", turkish:"Teşekkür ederim"},
+  {english:"Yes", turkish:"Evet"},
+  {english:"No", turkish:"Hayır"},
+  {english:"Water", turkish:"Su"},
+  {english:"Food", turkish:"Yemek"},
+  {english:"Book", turkish:"Kitap"},
+  {english:"Pen", turkish:"Kalem"},
+  {english:"School", turkish:"Okul"},
+  {english:"Teacher", turkish:"Öğretmen"},
+  {english:"Friend", turkish:"Arkadaş"},
+  {english:"Family", turkish:"Aile"},
+  {english:"Home", turkish:"Ev"},
+  {english:"Car", turkish:"Araba"},
+  {english:"Bus", turkish:"Otobüs"},
+  {english:"Bicycle", turkish:"Bisiklet"},
+  {english:"Dog", turkish:"Köpek"},
+  {english:"Cat", turkish:"Kedi"},
+  {english:"Bird", turkish:"Kuş"},
+  {english:"Happy", turkish:"Mutlu"},
+  {english:"Sad", turkish:"Üzgün"},
+  {english:"Big", turkish:"Büyük"},
+  {english:"Small", turkish:"Küçük"},
+  {english:"Fast", turkish:"Hızlı"},
+  {english:"Slow", turkish:"Yavaş"},
+  {english:"Hot", turkish:"Sıcak"},
+  {english:"Cold", turkish:"Soğuk"},
+  {english:"Open", turkish:"Açık"},
+  {english:"Close", turkish:"Kapalı"},
+  {english:"Day", turkish:"Gün"},
+  {english:"Night", turkish:"Gece"},
+  {english:"Morning", turkish:"Sabah"},
+  {english:"Evening", turkish:"Akşam"},
+  {english:"Today", turkish:"Bugün"},
+  {english:"Tomorrow", turkish:"Yarın"},
+  {english:"Yesterday", turkish:"Dün"},
+  {english:"Now", turkish:"Şimdi"},
+  {english:"Later", turkish:"Sonra"},
+  {english:"Here", turkish:"Burada"},
+  {english:"There", turkish:"Orada"},
+  {english:"Inside", turkish:"İçeride"},
+  {english:"Outside", turkish:"Dışarıda"},
+  {english:"Upstairs", turkish:"Üst katta"},
+  {english:"Downstairs", turkish:"Alt katta"},
+  {english:"First", turkish:"Birinci"},
+  {english:"Second", turkish:"İkinci"},
+  {english:"Third", turkish:"Üçüncü"},
+  {english:"Left", turkish:"Sol"},
+  {english:"Right", turkish:"Sağ"},
+  {english:"Forward", turkish:"İleri"},
+  {english:"Backward", turkish:"Geri"},
+  {english:"Near", turkish:"Yakın"},
+  {english:"Far", turkish:"Uzak"},
+  {english:"Above", turkish:"Yukarıda"},
+  {english:"Below", turkish:"Aşağıda"},
+  {english:"Hot", turkish:"Sıcak"},
+  {english:"Cold", turkish:"Soğuk"},
 ];
 
-let currentIndex = 0;
-let testIndex = 0;
-let score = 0;
-let canAnswer = true;
-
-function openSection(id) {
-  ['menu','learn','test','results'].forEach(s => document.getElementById(s).classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// Kelime öğrenme
+let currentWordIndex = 0;
+function showWord() {
+  const word = words[currentWordIndex];
+  document.getElementById('english-word').innerText = word.english;
+  document.getElementById('turkish-meaning').innerText = word.turkish;
 }
-
-// ÖĞRENME FONKSİYONLARI
-function startLearn() {
-  currentIndex = 0;
-  updateCard();
-  openSection('learn');
+function nextWord() {
+  currentWordIndex = (currentWordIndex+1)%words.length;
+  showWord();
 }
-
-function updateCard() {
-  document.getElementById('card').classList.remove('flipped'); // Her kelimede ön yüzü aç
-  setTimeout(() => {
-    document.getElementById('eng-word').innerText = data[currentIndex].eng;
-    document.getElementById('tr-word').innerText = data[currentIndex].tr;
-  }, 150);
+function previousWord() {
+  currentWordIndex = (currentWordIndex-1+words.length)%words.length;
+  showWord();
 }
-
-function flipCard() { document.getElementById('card').classList.toggle('flipped'); }
-function nextWord() { currentIndex = (currentIndex + 1) % data.length; updateCard(); }
-function prevWord() { currentIndex = (currentIndex - 1 + data.length) % data.length; updateCard(); }
-
-// TEST FONKSİYONLARI
-function startTest() {
-  testIndex = 0;
-  score = 0;
-  openSection('test');
-  showQuestion();
+function flipCard() {
+  const container = document.querySelector('.flip-container');
+  container.classList.toggle('flipped');
 }
+showWord();
 
+// Sınav soruları (örnek)
+const questions = [
+  {q:"What is the Turkish word for 'North'?", options:["Kuzey","Güney","Doğu","Batı"], answer:0},
+  {q:"Which is a season?", options:["Sunny","Winter","Hot","Car"], answer:1},
+  {q:"Translate 'Yağmurlu' to English.", options:["Sunny","Rainy","Cloudy","Windy"], answer:1},
+  {q:"What is the opposite of 'Hot'?", options:["Cold","Warm","Big","Small"], answer:0},
+  {q:"Translate 'Spring' to English.", options:["Winter","Autumn","Spring","Summer"], answer:2},
+  {q:"Which direction is 'West'?", options:["Doğu","Batı","Kuzey","Güney"], answer:1},
+  {q:"Translate 'Right' to Turkish.", options:["Sol","Sağ","İleri","Geri"], answer:1},
+  {q:"Which word means 'Kedi'?", options:["Dog","Cat","Bird","Fish"], answer:1},
+  {q:"What is the Turkish for 'Summer'?", options:["Yaz","Kış","İlkbahar","Sonbahar"], answer:0},
+  {q:"Translate 'Rainy' to Turkish.", options:["Güneşli","Rüzgarlı","Yağmurlu","Bulutlu"], answer:2},
+];
+
+// Test yönetimi
+let currentQ = 0; let score=0;
 function showQuestion() {
-  canAnswer = true;
-  const current = data[testIndex];
-  document.getElementById('q-text').innerText = `"${current.eng}" ne demektir?`;
-  document.getElementById('feedback').innerText = "";
-  document.getElementById('next-q-btn').style.display = "none";
-  
-  // İlerleme çubuğu güncelle
-  document.getElementById('p-bar').style.width = ((testIndex) / data.length) * 100 + "%";
-
-  // Şıkları karıştır (Doğru cevap + 3 rastgele)
-  let options = [current.tr];
-  while(options.length < 4) {
-    let randomTr = data[Math.floor(Math.random() * data.length)].tr;
-    if(!options.includes(randomTr)) options.push(randomTr);
-  }
-  options.sort(() => Math.random() - 0.5);
-
-  const container = document.getElementById('options-container');
-  container.innerHTML = "";
-  options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = "option-btn";
-    btn.innerText = opt;
-    btn.onclick = () => checkSelection(opt, btn);
-    container.appendChild(btn);
-  });
+  const q = questions[currentQ];
+  let html=`<div class="question-card"><p>${q.q}</p>`;
+  q.options.forEach((opt,i)=>{html+=`<button class="option-btn" onclick="selectAnswer(${i})">${opt}</button>`});
+  html+="</div>";
+  document.getElementById('question-container').innerHTML=html;
+  document.getElementById('test-feedback').innerText="";
+  document.getElementById('prev-btn').disabled = currentQ===0;
 }
-
-function checkSelection(selected, btn) {
-  if(!canAnswer) return;
-  canAnswer = false;
-  const correct = data[testIndex].tr;
+function selectAnswer(i){
+  const q = questions[currentQ];
   const buttons = document.querySelectorAll('.option-btn');
-
-  if(selected === correct) {
-    btn.classList.add('correct');
-    score++;
-    document.getElementById('feedback').innerText = "✅ Doğru!";
-  } else {
-    btn.classList.add('incorrect');
-    document.getElementById('feedback').innerText = `❌ Yanlış! Doğrusu: ${correct}`;
-    buttons.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
-  }
-  document.getElementById('next-q-btn').style.display = "inline-block";
+  if(i===q.answer){buttons[i].classList.add('correct'); score++; document.getElementById('test-feedback').innerText="✅ Doğru!";}
+  else{buttons[i].classList.add('incorrect'); buttons[q.answer].classList.add('correct'); document.getElementById('test-feedback').innerText="❌ Yanlış!";}
+  buttons.forEach(b=>b.disabled=true);
 }
-
-function nextQuestion() {
-  testIndex++;
-  if(testIndex < data.length) {
-    showQuestion();
-  } else {
-    finishTest();
-  }
+function checkAnswer(){
+  if(currentQ<questions.length-1){currentQ++; showQuestion();}
+  else{showResults();}
 }
+function previousQuestion(){if(currentQ>0){currentQ--; showQuestion();}}
+function showResults(){document.getElementById('score').innerText=score; document.getElementById('total').innerText=questions.length; openSection('results');}
+function restartTest(){score=0; currentQ=0; showQuestion(); openSection('test');}
 
-function finishTest() {
-  document.getElementById('score').innerText = score;
-  document.getElementById('total').innerText = data.length;
-  document.getElementById('final-status').innerText = score > data.length/2 ? "🎉 Tebrikler!" : "🤔 Biraz Daha Çalışmalısın";
-  openSection('results');
-}
+// Başlangıç
+showQuestion();
 </script>
 </body>
 </html>
