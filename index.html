@@ -2,92 +2,215 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Atış Mesafesi Hesaplayıcı</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İngilizce Kelime Öğrenme & Test</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 30px;
-        background: #f2f2f2;
-    }
-    .container {
-        background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        width: 350px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-    input {
-        width: 100%;
-        padding: 10px;
-        margin-top: 6px;
-        margin-bottom: 15px;
-        border: 1px solid #aaa;
-        border-radius: 6px;
-        font-size: 16px;
-    }
-    button {
-        width: 100%;
-        padding: 12px;
-        background: #3498db;
-        border: none;
-        color: #fff;
-        font-size: 17px;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-    button:hover {
-        background: #2980b9;
-    }
-    .result {
-        margin-top: 20px;
-        font-size: 20px;
-        font-weight: bold;
-    }
+  :root {
+    --primary: #4A90E2;
+    --secondary: #FFC107;
+    --success: #8BC34A;
+    --danger: #FF5252;
+    --bg: #F5F7FA;
+  }
+
+  body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  
+  #app { 
+    width: 90%; max-width: 450px; background: white; padding: 30px; 
+    border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; 
+  }
+
+  h1 { color: #333; font-size: 1.5rem; margin-bottom: 20px; }
+
+  /* Butonlar */
+  button { 
+    padding: 12px 20px; margin: 8px; border-radius: 12px; border: none; 
+    background: var(--primary); color: white; font-weight: 600; cursor: pointer; 
+    transition: 0.2s; font-size: 1rem;
+  }
+  button:hover { opacity: 0.9; transform: translateY(-2px); }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+
+  /* Kart Çevirme Alanı */
+  .flip-container { 
+    perspective: 1000px; width: 100%; height: 180px; margin: 25px 0; cursor: pointer; 
+  }
+  .flipper { 
+    position: relative; width: 100%; height: 100%; transition: 0.6s; 
+    transform-style: preserve-3d; 
+  }
+  .flipped .flipper { transform: rotateY(180deg); }
+  .front, .back { 
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+    display: flex; align-items: center; justify-content: center; 
+    font-size: 1.8rem; font-weight: bold; border-radius: 15px; border: 2px solid var(--secondary);
+  }
+  .back { background: #E3F2FD; color: var(--primary); transform: rotateY(180deg); }
+
+  /* Test Seçenekleri */
+  .option-btn { 
+    display: block; width: 100%; background: white; color: #444; 
+    border: 2px solid #eee; margin: 10px 0; 
+  }
+  .option-btn:hover { background: #f9f9f9; border-color: var(--primary); }
+  .correct { background: var(--success) !important; color: white; border-color: var(--success); }
+  .incorrect { background: var(--danger) !important; color: white; border-color: var(--danger); }
+
+  /* İlerleme Çubuğu */
+  .progress-container { background: #eee; height: 8px; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+  .progress-bar { background: var(--primary); height: 100%; width: 0%; transition: 0.3s; }
+
+  #menu, #learn, #test, #results { display: none; }
+  .active { display: block !important; }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Atış Mesafesi Hesaplayıcı</h2>
+<div id="app">
+  <div id="menu" class="active">
+    <h1>🚀 Kelime Ustası</h1>
+    <button onclick="startLearn()">📖 Kelime Öğren</button>
+    <button onclick="startTest()">📝 Sınava Başla</button>
+  </div>
 
-    <label>Uzun Kenar (a) - mm</label>
-    <input id="a" type="number" placeholder="Örn: 12">
+  <div id="learn">
+    <div class="flip-container" id="card" onclick="flipCard()">
+      <div class="flipper">
+        <div class="front" id="eng-word">Word</div>
+        <div class="back" id="tr-word">Kelime</div>
+      </div>
+    </div>
+    <div style="display:flex; justify-content: space-between;">
+      <button onclick="prevWord()">⬅️ Geri</button>
+      <button onclick="nextWord()">İleri ➡️</button>
+    </div>
+    <button style="background:#607D8B; margin-top:20px;" onclick="openSection('menu')">🏠 Ana Menü</button>
+  </div>
 
-    <label>Kısa Kenar (b) - mm</label>
-    <input id="b" type="number" placeholder="Örn: 4">
+  <div id="test">
+    <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
+    <h3 id="q-text">Soru burada görünecek</h3>
+    <div id="options-container"></div>
+    <p id="feedback" style="font-weight:bold;"></p>
+    <button id="next-q-btn" style="display:none;" onclick="nextQuestion()">Sıradaki Soru ➡️</button>
+  </div>
 
-    <label>İsabet Yüksekliği (H) - cm</label>
-    <input id="H" type="number" placeholder="Örn: 250">
-
-    <label>Mermi Geliş Yönü</label>
-    <input id="yon" type="text" placeholder="Sağ / Sol / Karşı">
-
-    <button onclick="hesapla()">Hesapla</button>
-
-    <div class="result" id="sonuc"></div>
+  <div id="results">
+    <h2 id="final-status">🎉 Harika!</h2>
+    <p style="font-size:1.2rem;">Puanın: <span id="score">0</span> / <span id="total">0</span></p>
+    <button onclick="startTest()">Tekrar Dene</button>
+    <button onclick="openSection('menu')">🏠 Menüye Dön</button>
+  </div>
 </div>
 
 <script>
-function hesapla() {
-    let a = parseFloat(document.getElementById("a").value);
-    let b = parseFloat(document.getElementById("b").value);
-    let H = parseFloat(document.getElementById("H").value);
-    let yon = document.getElementById("yon").value;
+// Veri Seti
+const data = [
+  {eng:"North", tr:"Kuzey"}, {eng:"South", tr:"Güney"},
+  {eng:"Summer", tr:"Yaz"}, {eng:"Winter", tr:"Kış"},
+  {eng:"Rainy", tr:"Yağmurlu"}, {eng:"Sunny", tr:"Güneşli"},
+  {eng:"Mountain", tr:"Dağ"}, {eng:"Ocean", tr:"Okyanus"}
+];
 
-    if (!a || !b || !H) {
-        document.getElementById("sonuc").innerHTML = "Lütfen tüm değerleri girin.";
-        return;
-    }
+let currentIndex = 0;
+let testIndex = 0;
+let score = 0;
+let canAnswer = true;
 
-    let theta = Math.acos(b / a);   // radyan
-    let deltaH = (H - 150) / 100;   // metre
-    let D = Math.abs(deltaH / Math.tan(theta));
+function openSection(id) {
+  ['menu','learn','test','results'].forEach(s => document.getElementById(s).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
 
-    document.getElementById("sonuc").innerHTML =
-        "Atış Mesafesi: " + D.toFixed(2) + " metre<br>" +
-        "Geliş Yönü: " + yon;
+// ÖĞRENME FONKSİYONLARI
+function startLearn() {
+  currentIndex = 0;
+  updateCard();
+  openSection('learn');
+}
+
+function updateCard() {
+  document.getElementById('card').classList.remove('flipped'); // Her kelimede ön yüzü aç
+  setTimeout(() => {
+    document.getElementById('eng-word').innerText = data[currentIndex].eng;
+    document.getElementById('tr-word').innerText = data[currentIndex].tr;
+  }, 150);
+}
+
+function flipCard() { document.getElementById('card').classList.toggle('flipped'); }
+function nextWord() { currentIndex = (currentIndex + 1) % data.length; updateCard(); }
+function prevWord() { currentIndex = (currentIndex - 1 + data.length) % data.length; updateCard(); }
+
+// TEST FONKSİYONLARI
+function startTest() {
+  testIndex = 0;
+  score = 0;
+  openSection('test');
+  showQuestion();
+}
+
+function showQuestion() {
+  canAnswer = true;
+  const current = data[testIndex];
+  document.getElementById('q-text').innerText = `"${current.eng}" ne demektir?`;
+  document.getElementById('feedback').innerText = "";
+  document.getElementById('next-q-btn').style.display = "none";
+  
+  // İlerleme çubuğu güncelle
+  document.getElementById('p-bar').style.width = ((testIndex) / data.length) * 100 + "%";
+
+  // Şıkları karıştır (Doğru cevap + 3 rastgele)
+  let options = [current.tr];
+  while(options.length < 4) {
+    let randomTr = data[Math.floor(Math.random() * data.length)].tr;
+    if(!options.includes(randomTr)) options.push(randomTr);
+  }
+  options.sort(() => Math.random() - 0.5);
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = "";
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = "option-btn";
+    btn.innerText = opt;
+    btn.onclick = () => checkSelection(opt, btn);
+    container.appendChild(btn);
+  });
+}
+
+function checkSelection(selected, btn) {
+  if(!canAnswer) return;
+  canAnswer = false;
+  const correct = data[testIndex].tr;
+  const buttons = document.querySelectorAll('.option-btn');
+
+  if(selected === correct) {
+    btn.classList.add('correct');
+    score++;
+    document.getElementById('feedback').innerText = "✅ Doğru!";
+  } else {
+    btn.classList.add('incorrect');
+    document.getElementById('feedback').innerText = `❌ Yanlış! Doğrusu: ${correct}`;
+    buttons.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+  }
+  document.getElementById('next-q-btn').style.display = "inline-block";
+}
+
+function nextQuestion() {
+  testIndex++;
+  if(testIndex < data.length) {
+    showQuestion();
+  } else {
+    finishTest();
+  }
+}
+
+function finishTest() {
+  document.getElementById('score').innerText = score;
+  document.getElementById('total').innerText = data.length;
+  document.getElementById('final-status').innerText = score > data.length/2 ? "🎉 Tebrikler!" : "🤔 Biraz Daha Çalışmalısın";
+  openSection('results');
 }
 </script>
-
 </body>
 </html>
