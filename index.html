@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Çocuk İngilizce Öğren</title>
+<title>Çocuk İngilizce</title>
 
 <style>
 
@@ -30,66 +31,59 @@ margin:0;
 }
 
 button{
-width:90%;
-padding:15px;
+width:95%;
+padding:16px;
 margin:8px;
 font-size:20px;
 border:none;
-border-radius:10px;
+border-radius:12px;
 background:#4CAF50;
 color:white;
 }
 
 .wordbox{
-
 margin-top:100px;
 background:white;
-font-size:45px;
+font-size:46px;
 padding:40px;
 border-radius:20px;
 transition:0.3s;
-
 }
 
 .translate{
-
-font-size:30px;
+font-size:32px;
 margin-top:20px;
 color:#333;
-
 }
 
 .controls{
-
 margin-top:50px;
-
 }
 
 .arrow{
-
-width:40%;
-font-size:25px;
-
+width:45%;
+font-size:24px;
 }
 
 .option{
-
 display:block;
-width:90%;
-margin:10px auto;
-padding:15px;
-font-size:22px;
+width:95%;
+margin:12px auto;
+padding:18px;
+font-size:24px;
 background:white;
+color:black;
 border:3px solid #4CAF50;
-border-radius:10px;
-
+border-radius:12px;
 }
 
 .score{
-
 font-size:22px;
-margin-top:10px;
+margin-top:15px;
+}
 
+.star{
+font-size:28px;
 }
 
 </style>
@@ -156,6 +150,8 @@ margin-top:10px;
 
 <div class="score" id="score"></div>
 
+<div class="star" id="stars"></div>
+
 <button onclick="backMenu()">🏠 Menü</button>
 
 </div>
@@ -168,133 +164,89 @@ margin-top:10px;
 let units={
 
 greetings:[
-["hello","merhaba"],
-["good morning","günaydın"],
-["good night","iyi geceler"],
-["goodbye","güle güle"],
-["thank you","teşekkürler"],
-["please","lütfen"],
-["sorry","özür dilerim"],
-["yes","evet"],
-["no","hayır"],
-["welcome","hoşgeldin"]
+["hello","merhaba"],["good morning","günaydın"],["good night","iyi geceler"],["goodbye","güle güle"],
+["thank you","teşekkürler"],["please","lütfen"],["sorry","özür dilerim"],["yes","evet"],
+["no","hayır"],["welcome","hoşgeldin"],["see you","görüşürüz"],["excuse me","affedersiniz"],
+["nice","güzel"],["friend","arkadaş"],["okay","tamam"],["good job","aferin"],
+["great","harika"],["perfect","mükemmel"],["good day","iyi günler"],["bye bye","bay bay"]
 ],
 
 numbers:[
-["one","bir"],
-["two","iki"],
-["three","üç"],
-["four","dört"],
-["five","beş"],
-["six","altı"],
-["seven","yedi"],
-["eight","sekiz"],
-["nine","dokuz"],
-["ten","on"]
+["one","bir"],["two","iki"],["three","üç"],["four","dört"],["five","beş"],
+["six","altı"],["seven","yedi"],["eight","sekiz"],["nine","dokuz"],["ten","on"],
+["eleven","on bir"],["twelve","on iki"],["thirteen","on üç"],["fourteen","on dört"],
+["fifteen","on beş"],["sixteen","on altı"],["seventeen","on yedi"],["eighteen","on sekiz"],
+["nineteen","on dokuz"],["twenty","yirmi"]
 ],
 
 home:[
-["house","ev"],
-["room","oda"],
-["door","kapı"],
-["window","pencere"],
-["bed","yatak"],
-["table","masa"],
-["chair","sandalye"],
-["kitchen","mutfak"],
-["bathroom","banyo"],
-["garden","bahçe"]
+["house","ev"],["room","oda"],["door","kapı"],["window","pencere"],["bed","yatak"],
+["table","masa"],["chair","sandalye"],["sofa","koltuk"],["floor","yer"],
+["wall","duvar"],["roof","çatı"],["lamp","lamba"],["mirror","ayna"],
+["stairs","merdiven"],["garage","garaj"],["key","anahtar"],
+["lock","kilit"],["balcony","balkon"],["yard","avlu"],["gate","kapı"]
 ],
 
 kitchen:[
-["food","yemek"],
-["water","su"],
-["milk","süt"],
-["bread","ekmek"],
-["cheese","peynir"],
-["egg","yumurta"],
-["salt","tuz"],
-["sugar","şeker"],
-["tea","çay"],
-["coffee","kahve"]
+["food","yemek"],["water","su"],["milk","süt"],["bread","ekmek"],["cheese","peynir"],
+["egg","yumurta"],["salt","tuz"],["sugar","şeker"],["tea","çay"],["coffee","kahve"],
+["cup","fincan"],["plate","tabak"],["spoon","kaşık"],["fork","çatal"],
+["knife","bıçak"],["bowl","kase"],["pan","tava"],["pot","tencere"],
+["juice","meyve suyu"],["butter","tereyağı"]
 ],
 
 school:[
-["school","okul"],
-["teacher","öğretmen"],
-["student","öğrenci"],
-["book","kitap"],
-["pen","kalem"],
-["pencil","kurşun kalem"],
-["bag","çanta"],
-["board","tahta"],
-["lesson","ders"],
-["exam","sınav"]
+["school","okul"],["teacher","öğretmen"],["student","öğrenci"],["book","kitap"],
+["pen","kalem"],["pencil","kurşun kalem"],["bag","çanta"],["board","tahta"],
+["desk","sıra"],["lesson","ders"],["exam","sınav"],["paper","kağıt"],
+["ruler","cetvel"],["color","renk"],["marker","kalem"],
+["class","sınıf"],["library","kütüphane"],["homework","ödev"],
+["break","teneffüs"],["study","çalışmak"]
 ],
 
 verbs:[
-["eat","yemek"],
-["drink","içmek"],
-["sleep","uyumak"],
-["run","koşmak"],
-["walk","yürümek"],
-["play","oynamak"],
-["read","okumak"],
-["write","yazmak"],
-["listen","dinlemek"],
-["watch","izlemek"]
+["eat","yemek"],["drink","içmek"],["sleep","uyumak"],["run","koşmak"],
+["walk","yürümek"],["play","oynamak"],["read","okumak"],["write","yazmak"],
+["listen","dinlemek"],["watch","izlemek"],["open","açmak"],["close","kapatmak"],
+["sit","oturmak"],["stand","ayakta durmak"],["jump","zıplamak"],
+["laugh","gülmek"],["cry","ağlamak"],["think","düşünmek"],["start","başlamak"],
+["finish","bitirmek"]
 ],
 
 family:[
-["mother","anne"],
-["father","baba"],
-["sister","kız kardeş"],
-["brother","erkek kardeş"],
-["baby","bebek"],
-["family","aile"],
-["aunt","teyze"],
-["uncle","amca"],
-["son","oğul"],
-["daughter","kız"]
+["mother","anne"],["father","baba"],["sister","kız kardeş"],["brother","erkek kardeş"],
+["baby","bebek"],["family","aile"],["aunt","teyze"],["uncle","amca"],
+["son","oğul"],["daughter","kız"],["parents","ebeveyn"],
+["grandmother","büyükanne"],["grandfather","büyükbaba"],
+["wife","eş"],["husband","koca"],["child","çocuk"],
+["people","insanlar"],["relative","akraba"],["cousin","kuzen"],["friend","arkadaş"]
 ],
 
 food:[
-["apple","elma"],
-["banana","muz"],
-["orange","portakal"],
-["grape","üzüm"],
-["tomato","domates"],
-["potato","patates"],
-["carrot","havuç"],
-["rice","pirinç"],
-["cake","pasta"],
-["chocolate","çikolata"]
+["apple","elma"],["banana","muz"],["orange","portakal"],["grape","üzüm"],
+["strawberry","çilek"],["watermelon","karpuz"],["tomato","domates"],
+["potato","patates"],["carrot","havuç"],["onion","soğan"],
+["rice","pirinç"],["pasta","makarna"],["meat","et"],["chicken","tavuk"],
+["fish","balık"],["soup","çorba"],["cake","pasta"],["cookie","kurabiye"],
+["chocolate","çikolata"],["ice cream","dondurma"]
 ],
 
 animals:[
-["cat","kedi"],
-["dog","köpek"],
-["bird","kuş"],
-["fish","balık"],
-["cow","inek"],
-["lion","aslan"],
-["tiger","kaplan"],
-["elephant","fil"],
-["rabbit","tavşan"],
-["bear","ayı"]
+["cat","kedi"],["dog","köpek"],["bird","kuş"],["fish","balık"],
+["cow","inek"],["sheep","koyun"],["horse","at"],["lion","aslan"],
+["tiger","kaplan"],["elephant","fil"],["monkey","maymun"],["bear","ayı"],
+["rabbit","tavşan"],["snake","yılan"],["frog","kurbağa"],
+["duck","ördek"],["chicken","tavuk"],["goat","keçi"],
+["pig","domuz"],["zebra","zebra"]
 ],
 
 daily:[
-["what","ne"],
-["where","nerede"],
-["when","ne zaman"],
-["why","neden"],
-["how","nasıl"],
-["who","kim"],
-["come","gel"],
-["go","git"],
-["stop","dur"],
-["help","yardım"]
+["what","ne"],["where","nerede"],["when","ne zaman"],["why","neden"],
+["how","nasıl"],["who","kim"],["come","gel"],["go","git"],
+["stop","dur"],["wait","bekle"],["look","bak"],["listen","dinle"],
+["help","yardım et"],["try","dene"],["start","başla"],
+["finish","bitir"],["again","tekrar"],["slow","yavaş"],
+["fast","hızlı"],["ready","hazır"]
 ]
 
 }
@@ -304,12 +256,9 @@ let index=0
 let score=0
 
 function speak(word){
-
-let speech=new SpeechSynthesisUtterance(word)
-speech.lang="en-US"
-speech.rate=0.9
-speechSynthesis.speak(speech)
-
+let s=new SpeechSynthesisUtterance(word)
+s.lang="en-US"
+speechSynthesis.speak(s)
 }
 
 function playCorrect(){
@@ -325,65 +274,47 @@ new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play()
 }
 
 function openUnits(){
-
 hideAll()
-document.getElementById("units").style.display="block"
-
+unitsDiv.style.display="block"
 }
 
 function startUnit(name){
-
 current=units[name]
 index=0
-
 hideAll()
-document.getElementById("wordPage").style.display="block"
-
+wordPage.style.display="block"
 loadWord()
-
 }
 
 function loadWord(){
-
-document.getElementById("english").innerText=current[index][0]
-document.getElementById("turkish").innerText=""
-document.getElementById("wordbox").style.background="white"
-
+english.innerText=current[index][0]
+turkish.innerText=""
+wordbox.style.background="white"
 }
 
 function showTranslation(){
-
-document.getElementById("turkish").innerText=current[index][1]
-document.getElementById("wordbox").style.background="#8BC34A"
-
+turkish.innerText=current[index][1]
+wordbox.style.background="#8BC34A"
 speak(current[index][0])
 playPop()
-
 }
 
 function nextWord(){
-
 index++
 if(index>=current.length) index=0
 loadWord()
-
 }
 
 function prevWord(){
-
 index--
 if(index<0) index=current.length-1
 loadWord()
-
 }
 
 function openTest(){
-
 hideAll()
-document.getElementById("testPage").style.display="block"
-
+testPage.style.display="block"
 newQuestion()
-
 }
 
 function newQuestion(){
@@ -392,7 +323,7 @@ let all=Object.values(units).flat()
 
 let q=all[Math.floor(Math.random()*all.length)]
 
-document.getElementById("question").innerText=q[0]+" ne demek?"
+question.innerText=q[0]+" ne demek?"
 
 let options=[q]
 
@@ -400,7 +331,7 @@ while(options.length<4){
 
 let r=all[Math.floor(Math.random()*all.length)]
 
-if(!options.includes(r)) options.push(r)
+if(!options.some(x=>x[0]==r[0])) options.push(r)
 
 }
 
@@ -410,27 +341,26 @@ let html=""
 
 options.forEach(o=>{
 
-html+=`<button class="option" onclick="answer('${o[1]}','${q[1]}')">${o[1]}</button>`
+html+=`<button class="option"
+onclick="answer('${o[1]}','${q[1]}')">${o[1]}</button>`
 
 })
 
-document.getElementById("options").innerHTML=html
+optionsDiv.innerHTML=html
 
-document.getElementById("score").innerText="Puan: "+score
+scoreDiv.innerText="Puan: "+score
+
+stars.innerText="⭐".repeat(Math.floor(score/50))
 
 }
 
 function answer(a,b){
 
 if(a==b){
-
 score+=10
 playCorrect()
-
 }else{
-
 playWrong()
-
 }
 
 setTimeout(newQuestion,800)
@@ -442,12 +372,10 @@ location.reload()
 }
 
 function hideAll(){
-
-document.getElementById("menu").style.display="none"
-document.getElementById("units").style.display="none"
-document.getElementById("wordPage").style.display="none"
-document.getElementById("testPage").style.display="none"
-
+menu.style.display="none"
+unitsDiv.style.display="none"
+wordPage.style.display="none"
+testPage.style.display="none"
 }
 
 </script>
