@@ -1,55 +1,248 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>İngilizce Kelime Öğrenme & Test</title>
-<style>
-body {font-family: Arial, sans-serif; background: #f0f8ff; margin:0; display:flex; justify-content:center; align-items:center; min-height:100vh;}
-#app {width:95%; max-width:700px; background:#fff; border-radius:20px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.2);}
-.screen {display:none;}
-.screen.active {display:block;}
-h1,h2{color:#333; text-align:center;}
-button {padding:10px 20px; margin:5px; border:none; border-radius:10px; cursor:pointer;}
-#menu-buttons button {width:45%; font-weight:bold;}
-.word-card {margin:20px auto; padding:30px; border:2px solid #2196f3; border-radius:15px; text-align:center; font-size:2em; cursor:pointer; transition:0.3s;}
-.word-card.show-meaning {color:#f44336;}
-.test-options {display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;}
-.test-options button {padding:15px; border-radius:10px; border:1px solid #ccc; cursor:pointer;}
-.feedback {margin-top:20px; font-weight:bold; text-align:center; font-size:1.2em;}
-.nav-buttons {display:flex; justify-content:space-between; margin-top:20px;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çocuk İngilizce</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f2f6ff;
+            text-align: center;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .container { max-width: 500px; margin: auto; padding: 10px; }
+        h1 { background: #4CAF50; color: white; padding: 15px; margin: 0; border-bottom: 5px solid #388E3C; }
+        
+        button {
+            width: 90%;
+            padding: 15px;
+            margin: 8px;
+            font-size: 20px;
+            border: none;
+            border-radius: 15px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+
+        /* Kelime Kutusu */
+        .wordbox {
+            margin-top: 50px;
+            font-size: 45px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: background 0.3s;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Doğru/Yanlış Renkleri */
+        .correct-bg { background: #c8e6c9 !important; }
+        .wrong-bg { background: #ffcdd2 !important; }
+
+        .translate {
+            font-size: 30px;
+            margin-top: 20px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .controls { margin-top: 30px; display: flex; justify-content: center; }
+        .arrow { width: 40%; font-size: 25px; background: #2196F3; }
+
+        /* Test Şıkları */
+        .option {
+            display: block;
+            margin: 10px auto;
+            width: 90%;
+            font-size: 22px;
+            padding: 15px;
+            background: white;
+            color: #333;
+            border: 3px solid #4CAF50;
+            border-radius: 15px;
+        }
+        
+        #question { margin-top: 20px; color: #333; }
+    </style>
 </head>
 <body>
-<div id="app"><div id="screen-menu" class="screen active">
-<h1>İngilizce Kelime Uygulaması</h1>
-<div id="menu-buttons">
-<button onclick="openWords()">📖 Kelimeler</button>
-<button onclick="openTest()">📝 Test</button>
-</div>
-</div><div id="screen-words" class="screen">
-<h2 id="unit-title">Kelimeler</h2>
-<div id="word-container" class="word-card">Kelime</div>
-<div class="nav-buttons">
-<button onclick="prevWord()">⬅️</button>
-<button onclick="nextWord()">➡️</button>
-<button onclick="backToMenu()">🏠 Menü</button>
-</div>
-</div><div id="screen-test" class="screen">
-<h2>Kelime Testi</h2>
-<div id="test-word" style="text-align:center; font-size:2em;">Kelime</div>
-<div class="test-options" id="test-options"></div>
-<div class="feedback" id="test-feedback"></div>
-<button onclick="backToMenu()">🏠 Menü</button>
-</div><audio id="sound-correct" src="https://freesound.org/data/previews/331/331912_3248244-lq.mp3"></audio> <audio id="sound-wrong" src="https://freesound.org/data/previews/256/256113_4486188-lq.mp3"></audio>
 
+<h1>📚 İngilizce Öğren</h1>
+
+<div class="container">
+    <div id="menu">
+        <button onclick="openUnits()">📚 Kelimeler</button>
+        <button onclick="openTest()">🧠 Test</button>
+    </div>
+
+    <div id="units" style="display:none">
+        <div id="unitButtons"></div>
+        <button onclick="backMenu()" style="background:#666">🏠 Menü</button>
+    </div>
+
+    <div id="wordPage" style="display:none">
+        <div id="wordCard" class="wordbox" onclick="showTranslation()">
+            <div id="english"></div>
+            <div id="turkish" class="translate"></div>
+            <div style="font-size:14px; color:#999; margin-top:10px;">(Dinlemek için dokun)</div>
+        </div>
+
+        <div class="controls">
+            <button class="arrow" onclick="prevWord()">⬅️</button>
+            <button class="arrow" onclick="nextWord()">➡️</button>
+        </div>
+        <button onclick="openUnits()" style="background:#666; margin-top:20px;">⬅️ Üniteler</button>
+    </div>
+
+    <div id="testPage" style="display:none">
+        <h2 id="question"></h2>
+        <div id="options"></div>
+        <button onclick="backMenu()" style="background:#666; margin-top:20px;">🏠 Menü</button>
+    </div>
 </div>
+
 <script>
-let currentUnit = 0;
-let currentWordIndex = 0;const units = [ {title:'Selamlaşma', words:[ {eng:'Hello',tr:'Merhaba'}, {eng:'Goodbye',tr:'Güle güle'}, {eng:'Good morning',tr:'Günaydın'}, {eng:'Good night',tr:'İyi geceler'}, {eng:'See you',tr:'Görüşürüz'}, {eng:'How are you?',tr:'Nasılsın?'}, {eng:'I am fine',tr:'İyiyim'}, {eng:'Thank you',tr:'Teşekkür ederim'}, {eng:'Please',tr:'Lütfen'}, {eng:'Yes',tr:'Evet'}]}, {title:'Sayılar', words:[ {eng:'One',tr:'Bir'},{eng:'Two',tr:'İki'},{eng:'Three',tr:'Üç'},{eng:'Four',tr:'Dört'},{eng:'Five',tr:'Beş'},{eng:'Six',tr:'Altı'},{eng:'Seven',tr:'Yedi'},{eng:'Eight',tr:'Sekiz'},{eng:'Nine',tr:'Dokuz'},{eng:'Ten',tr:'On'}]}, {title:'Ev', words:[ {eng:'House',tr:'Ev'},{eng:'Door',tr:'Kapı'},{eng:'Window',tr:'Pencere'},{eng:'Chair',tr:'Sandalye'},{eng:'Table',tr:'Masa'},{eng:'Bed',tr:'Yatak'},{eng:'Kitchen',tr:'Mutfak'},{eng:'Bathroom',tr:'Banyo'},{eng:'Living room',tr:'Oturma odası'},{eng:'Garden',tr:'Bahçe'}]}, {title:'Mutfak', words:[ {eng:'Water',tr:'Su'},{eng:'Bread',tr:'Ekmek'},{eng:'Milk',tr:'Süt'},{eng:'Egg',tr:'Yumurta'},{eng:'Cheese',tr:'Peynir'},{eng:'Apple',tr:'Elma'},{eng:'Banana',tr:'Muz'},{eng:'Plate',tr:'Tabak'},{eng:'Spoon',tr:'Kaşık'},{eng:'Fork',tr:'Çatal'}]}, {title:'Okul', words:[ {eng:'Book',tr:'Kitap'},{eng:'Pen',tr:'Kalem'},{eng:'Notebook',tr:'Defter'},{eng:'Teacher',tr:'Öğretmen'},{eng:'Student',tr:'Öğrenci'},{eng:'Classroom',tr:'Sınıf'},{eng:'Bag',tr:'Çanta'},{eng:'Desk',tr:'Sıra'},{eng:'Chair',tr:'Sandalye'},{eng:'Lesson',tr:'Ders'}]}, {title:'Fiiller', words:[ {eng:'Go',tr:'Gitmek'},{eng:'Come',tr:'Gelmek'},{eng:'Run',tr:'Koşmak'},{eng:'Walk',tr:'Yürümek'},{eng:'Eat',tr:'Yemek yemek'},{eng:'Drink',tr:'İçmek'},{eng:'Read',tr:'Okumak'},{eng:'Write',tr:'Yazmak'},{eng:'Sleep',tr:'Uyumak'},{eng:'Play',tr:'Oynamak'}]}, {title:'Aile', words:[ {eng:'Mother',tr:'Anne'},{eng:'Father',tr:'Baba'},{eng:'Brother',tr:'Kardeş'},{eng:'Sister',tr:'Kız kardeş'},{eng:'Grandmother',tr:'Büyükanne'},{eng:'Grandfather',tr:'Büyükbaba'},{eng:'Uncle',tr:'Amca'},{eng:'Aunt',tr:'Teyze'},{eng:'Cousin',tr:'Kuzen'},{eng:'Baby',tr:'Bebek'}]}, {title:'Hayvanlar', words:[ {eng:'Cat',tr:'Kedi'},{eng:'Dog',tr:'Köpek'},{eng:'Bird',tr:'Kuş'},{eng:'Fish',tr:'Balık'},{eng:'Horse',tr:'At'},{eng:'Cow',tr:'İnek'},{eng:'Sheep',tr:'Koyun'},{eng:'Goat',tr:'Keçi'},{eng:'Rabbit',tr:'Tavşan'},{eng:'Mouse',tr:'Fare'}]}, {title:'Günlük kelimeler', words:[ {eng:'Sun',tr:'Güneş'},{eng:'Rain',tr:'Yağmur'},{eng:'Wind',tr:'Rüzgar'},{eng:'Snow',tr:'Kar'},{eng:'Hot',tr:'Sıcak'},{eng:'Cold',tr:'Soğuk'},{eng:'Monday',tr:'Pazartesi'},{eng:'Tuesday',tr:'Salı'},{eng:'Wednesday',tr:'Çarşamba'},{eng:'Thursday',tr:'Perşembe'}} ];
+const units = {
+    greetings: [["hello","merhaba"], ["good morning","günaydın"], ["good night","iyi geceler"], ["goodbye","güle güle"], ["thank you","teşekkürler"], ["please","lütfen"], ["sorry","özür dilerim"], ["yes","evet"], ["no","hayır"], ["welcome","hoşgeldin"]],
+    numbers: [["one","bir"], ["two","iki"], ["three","üç"], ["four","dört"], ["five","beş"], ["six","altı"], ["seven","yedi"], ["eight","sekiz"], ["nine","dokuz"], ["ten","on"]],
+    home: [["house","ev"], ["room","oda"], ["door","kapı"], ["window","pencere"], ["bed","yatak"], ["table","masa"], ["chair","sandalye"], ["kitchen","mutfak"], ["bathroom","banyo"], ["garden","bahçe"]],
+    kitchen: [["food","yemek"], ["water","su"], ["milk","süt"], ["bread","ekmek"], ["cheese","peynir"], ["egg","yumurta"], ["salt","tuz"], ["sugar","şeker"], ["tea","çay"], ["coffee","kahve"]],
+    school: [["school","okul"], ["teacher","öğretmen"], ["student","öğrenci"], ["book","kitap"], ["pen","kalem"], ["pencil","kurşun kalem"], ["bag","çanta"], ["board","tahta"], ["lesson","ders"], ["exam","sınav"]],
+    verbs: [["eat","yemek"], ["drink","içmek"], ["sleep","uyumak"], ["run","koşmak"], ["walk","yürümek"], ["play","oynamak"], ["read","okumak"], ["write","yazmak"], ["listen","dinlemek"], ["watch","izlemek"]],
+    family: [["mother","anne"], ["father","baba"], ["sister","kız kardeş"], ["brother","erkek kardeş"], ["baby","bebek"], ["family","aile"], ["aunt","teyze"], ["uncle","amca"], ["son","oğul"], ["daughter","kız"]],
+    food: [["apple","elma"], ["banana","muz"], ["orange","portakal"], ["grape","üzüm"], ["tomato","domates"], ["potato","patates"], ["carrot","havuç"], ["rice","pirinç"], ["cake","pasta"], ["chocolate","çikolata"]],
+    animals: [["cat","kedi"], ["dog","köpek"], ["bird","kuş"], ["fish","balık"], ["cow","inek"], ["lion","aslan"], ["tiger","kaplan"], ["elephant","fil"], ["rabbit","tavşan"], ["bear","ayı"]],
+    daily: [["what","ne"], ["where","nerede"], ["when","ne zaman"], ["why","neden"], ["how","nasıl"], ["who","kim"], ["come","gel"], ["go","git"], ["stop","dur"], ["help","yardım"]]
+};
 
-function openWords(){currentUnit=0; currentWordIndex=0; document.getElementById('screen-menu').classList.remove('active'); document.getElementById('screen-words').classList.add('active'); showWord();} function openTest(){prepareTest(); document.getElementById('screen-menu').classList.remove('active'); document.getElementById('screen-test').classList.add('active');} function backToMenu(){document.getElementById('screen-words').classList.remove('active'); document.getElementById('screen-test').classList.remove('active'); document.getElementById('screen-menu').classList.add('active');} function showWord(){ const word = units[currentUnit].words[currentWordIndex]; const el = document.getElementById('word-container'); el.textContent = word.eng; el.classList.remove('show-meaning'); document.getElementById('unit-title').textContent = units[currentUnit].title; } document.getElementById('word-container').addEventListener('click',()=>{ const word = units[currentUnit].words[currentWordIndex]; const el=document.getElementById('word-container'); el.textContent=word.eng + ' - ' + word.tr; el.classList.add('show-meaning'); new Audio('https://freesound.org/data/previews/331/331912_3248244-lq.mp3').play(); }); function nextWord(){currentWordIndex++; if(currentWordIndex>=units[currentUnit].words.length){currentWordIndex=0; currentUnit++; if(currentUnit>=units.length){currentUnit=0;}} showWord();} function prevWord(){currentWordIndex--; if(currentWordIndex<0){currentUnit--; if(currentUnit<0){currentUnit=units.length-1;} currentWordIndex=units[currentUnit].words.length-1;} showWord();}
+let current = [];
+let index = 0;
 
-// Test let testQuestions=[]; let currentTestIndex=0; function prepareTest(){testQuestions=[]; units.forEach(unit=>{unit.words.forEach(w=>{testQuestions.push({word:w.eng, answer:w.tr})})}); shuffleArray(testQuestions); currentTestIndex=0; showTestQuestion();} function showTestQuestion(){ const q = testQuestions[currentTestIndex]; document.getElementById('test-word').textContent = q.word; const optionsEl = document.getElementById('test-options'); optionsEl.innerHTML=''; const answers=[q.answer]; while(answers.length<4){ let randomUnit = units[Math.floor(Math.random()*units.length)]; let randomWord = randomUnit.words[Math.floor(Math.random()randomUnit.words.length)].tr; if(!answers.includes(randomWord)) answers.push(randomWord); } shuffleArray(answers); answers.forEach(opt=>{const b=document.createElement('button');b.textContent=opt;b.onclick=()=>{checkAnswer(opt)}; optionsEl.appendChild(b);}); document.getElementById('test-feedback').textContent=''; } function checkAnswer(opt){ const correct=testQuestions[currentTestIndex].answer; const feedback=document.getElementById('test-feedback'); if(opt===correct){feedback.textContent='✅ Doğru'; new Audio('https://freesound.org/data/previews/331/331912_3248244-lq.mp3').play();} else {feedback.textContent='❌ Yanlış, Doğru: '+correct; new Audio('https://freesound.org/data/previews/256/256113_4486188-lq.mp3').play();} currentTestIndex++; if(currentTestIndex>=testQuestions.length){feedback.textContent+=' | Test bitti!'; return;} setTimeout(showTestQuestion,1500); } function shuffleArray(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()(i+1)); [a[i],a[j]]=[a[j],a[i]];}} </script>
+// Ünite butonlarını otomatik oluştur
+function createUnitButtons() {
+    const container = document.getElementById("unitButtons");
+    container.innerHTML = "";
+    for (let key in units) {
+        let btn = document.createElement("button");
+        btn.innerText = key.toUpperCase();
+        btn.onclick = () => startUnit(key);
+        container.appendChild(btn);
+    }
+}
+createUnitButtons();
+
+function speak(text) {
+    const msg = new SpeechSynthesisUtterance();
+    msg.text = text;
+    msg.lang = 'en-US'; 
+    window.speechSynthesis.speak(msg);
+}
+
+function openUnits() {
+    hideAll();
+    document.getElementById("units").style.display = "block";
+}
+
+function startUnit(name) {
+    current = units[name];
+    index = 0;
+    hideAll();
+    document.getElementById("wordPage").style.display = "block";
+    loadWord();
+}
+
+function loadWord() {
+    const card = document.getElementById("wordCard");
+    card.classList.remove("correct-bg");
+    document.getElementById("english").innerText = current[index][0];
+    document.getElementById("turkish").innerText = "";
+    speak(current[index][0]); // Kelime açıldığında oku
+}
+
+function showTranslation() {
+    const card = document.getElementById("wordCard");
+    card.classList.add("correct-bg"); // Renk değiştir
+    document.getElementById("turkish").innerText = current[index][1];
+    speak(current[index][0]); // Tıklayınca tekrar oku
+}
+
+function nextWord() {
+    index = (index + 1) % current.length;
+    loadWord();
+}
+
+function prevWord() {
+    index = (index - 1 + current.length) % current.length;
+    loadWord();
+}
+
+function openTest() {
+    hideAll();
+    document.getElementById("testPage").style.display = "block";
+    newQuestion();
+}
+
+function newQuestion() {
+    let all = Object.values(units).flat();
+    let q = all[Math.floor(Math.random() * all.length)];
+    
+    document.getElementById("question").innerText = `"${q[0]}" ne demek?`;
+    speak(q[0]);
+
+    let options = [q];
+    while (options.length < 4) {
+        let r = all[Math.floor(Math.random() * all.length)];
+        if (!options.some(opt => opt[1] === r[1])) options.push(r);
+    }
+    options.sort(() => Math.random() - 0.5);
+
+    let html = "";
+    options.forEach(o => {
+        // Şık butonlarını HTML olarak oluştururken tırnak işaretlerine dikkat
+        html += `<button class="option" onclick="answer(this, '${o[1]}', '${q[1]}')">${o[1]}</button>`;
+    });
+    document.getElementById("options").innerHTML = html;
+}
+
+function answer(btn, selected, correct) {
+    if (selected === correct) {
+        btn.style.background = "#c8e6c9";
+        playCorrect();
+        setTimeout(newQuestion, 1000);
+    } else {
+        btn.style.background = "#ffcdd2";
+        playWrong();
+    }
+}
+
+function playCorrect() {
+    new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play().catch(()=>{});
+}
+
+function playWrong() {
+    new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg").play().catch(()=>{});
+}
+
+function backMenu() { hideAll(); document.getElementById("menu").style.display = "block"; }
+
+function hideAll() {
+    ["menu", "units", "wordPage", "testPage"].forEach(id => {
+        document.getElementById(id).style.display = "none";
+    });
+}
+</script>
 
 </body>
 </html>
