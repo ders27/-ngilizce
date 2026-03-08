@@ -34,15 +34,16 @@ button:hover {background-color:#009688;}
     border:2px solid #004D40;
     border-radius:15px;
     padding:40px 20px;
-    margin:50px 0;
+    margin:20px 0;
     font-size:2.5em;
     cursor:pointer;
     transition:0.3s;
 }
 .word-card:hover {background:#B2DFDB;}
-#menu-buttons button {width:160px;margin:5px;}
+#menu-buttons {position:fixed; bottom:10px; width:100%; display:flex; justify-content:center; flex-wrap:wrap;}
 .block-button {width:120px;margin:3px;background:#004D40;}
 .block-button:hover {background:#00796B;}
+#word-meaning {margin-top:20px;font-size:1.5em;color:#004D40;}
 #test-section .test-option {
     display:block;
     margin:10px auto;
@@ -55,19 +56,13 @@ button:hover {background-color:#009688;}
 }
 #test-section .correct {background:#8BC34A;color:white;}
 #test-section .incorrect {background:#EF5350;color:white;}
-#word-meaning {margin-top:20px;font-size:1.5em;color:#004D40;}
 </style>
 </head>
 <body>
 <div id="app">
-
+    <h1>Kelime Macerası</h1>
     <div id="screen-menu">
-        <h1>Kelime Macerası</h1>
-        <div id="menu-buttons">
-            <button onclick="startLearning()">📖 Kelime Öğren</button>
-            <button onclick="startTest()">📝 Test</button>
-        </div>
-        <h3>Kelime Blokları</h3>
+        <h2>Kelime Blokları</h2>
         <div id="block-buttons"></div>
     </div>
 
@@ -81,23 +76,10 @@ button:hover {background-color:#009688;}
             <button onclick="goMenu()">🏠</button>
         </div>
     </div>
-
-    <div id="screen-test" style="display:none">
-        <h2>📝 Kelime Testi</h2>
-        <div id="test-word" style="font-size:2em;margin:20px;"></div>
-        <div id="test-options"></div>
-        <p id="test-feedback" style="font-weight:bold;"></p>
-        <button onclick="nextTest()">Sonraki</button>
-        <button onclick="goMenu()">🏠 Menü</button>
-    </div>
-
-    <audio id="correct-sound" src="sounds/correct.mp3"></audio>
-    <audio id="incorrect-sound" src="sounds/incorrect.mp3"></audio>
-
 </div>
 
 <script>
-// Kelime listesi ve blok başlıkları
+// 10 kelimelik bloklar
 const wordBlocks = [
   {title:"Selamlaşmalar", words:[
     {english:"Hello", turkish:"Merhaba"},
@@ -209,115 +191,52 @@ const wordBlocks = [
   ]}
 ];
 
-let currentBlock = 0;
-let currentWord = 0;
+let currentBlock=0,currentWord=0;
 
 function renderBlockButtons(){
-    const blockButtons = document.getElementById("block-buttons");
-    blockButtons.innerHTML="";
-    wordBlocks.forEach((b,i)=>{
-        let btn=document.createElement("button");
-        btn.className="block-button";
-        btn.innerText=b.title;
-        btn.onclick=()=>{currentBlock=i; startLearning();}
-        blockButtons.appendChild(btn);
-    });
+  const blockDiv=document.getElementById("block-buttons");
+  blockDiv.innerHTML="";
+  wordBlocks.forEach((b,i)=>{
+      let btn=document.createElement("button");
+      btn.className="block-button";
+      btn.innerText=b.title;
+      btn.onclick=()=>{currentBlock=i; startLearning();}
+      blockDiv.appendChild(btn);
+  });
 }
 
 function startLearning(){
-    document.getElementById("screen-menu").style.display="none";
-    document.getElementById("screen-learn").style.display="block";
-    currentWord=0;
-    document.getElementById("block-title").innerText=wordBlocks[currentBlock].title;
-    showWord();
-    document.getElementById("word-meaning").innerText="";
+  document.getElementById("screen-menu").style.display="none";
+  document.getElementById("screen-learn").style.display="block";
+  currentWord=0;
+  document.getElementById("block-title").innerText=wordBlocks[currentBlock].title;
+  showWord();
+  document.getElementById("word-meaning").innerText="";
 }
 
 function showWord(){
-    const word = wordBlocks[currentBlock].words[currentWord];
-    document.getElementById("word-card").innerText=word.english;
-    document.getElementById("word-meaning").innerText="";
+  const word=wordBlocks[currentBlock].words[currentWord];
+  document.getElementById("word-card").innerText=word.english;
+  document.getElementById("word-meaning").innerText="";
 }
 
 function showMeaning(){
-    const word = wordBlocks[currentBlock].words[currentWord];
-    document.getElementById("word-meaning").innerText=word.turkish;
+  const word=wordBlocks[currentBlock].words[currentWord];
+  document.getElementById("word-meaning").innerText=word.turkish;
 }
 
 function nextWord(){
-    if(currentWord<wordBlocks[currentBlock].words.length-1){
-        currentWord++;
-        showWord();
-    }
+  if(currentWord<wordBlocks[currentBlock].words.length-1){currentWord++;showWord();}
 }
 function prevWord(){
-    if(currentWord>0){
-        currentWord--;
-        showWord();
-    }
+  if(currentWord>0){currentWord--;showWord();}
 }
-
 function goMenu(){
-    document.getElementById("screen-learn").style.display="none";
-    document.getElementById("screen-test").style.display="none";
-    document.getElementById("screen-menu").style.display="block";
+  document.getElementById("screen-learn").style.display="none";
+  document.getElementById("screen-menu").style.display="block";
 }
 
 renderBlockButtons();
-
-// Test bölümü
-let testIndex = 0;
-let testAnswers = [];
-function startTest(){
-    document.getElementById("screen-menu").style.display="none";
-    document.getElementById("screen-test").style.display="block";
-    testIndex=0; testAnswers=[];
-    renderTest();
-}
-
-function renderTest(){
-    const word = words[testIndex];
-    document.getElementById("test-word").innerText=word.english;
-    const optionsDiv = document.getElementById("test-options");
-    optionsDiv.innerHTML="";
-    let choices=[word.turkish];
-    while(choices.length<4){
-        let rand = words[Math.floor(Math.random()*words.length)].turkish;
-        if(!choices.includes(rand)) choices.push(rand);
-    }
-    choices.sort(()=>Math.random()-0.5);
-    choices.forEach(c=>{
-        let btn=document.createElement("button");
-        btn.className="test-option";
-        btn.innerText=c;
-        btn.onclick=()=>checkAnswer(btn,c,word.turkish);
-        optionsDiv.appendChild(btn);
-    });
-    document.getElementById("test-feedback").innerText="";
-}
-
-function checkAnswer(button,opt,answer){
-    if(opt===answer){
-        button.classList.add("correct");
-        document.getElementById("test-feedback").innerText="Doğru!";
-        document.getElementById("correct-sound").play();
-    }else{
-        button.classList.add("incorrect");
-        document.getElementById("test-feedback").innerText=`Yanlış! Doğru: ${answer}`;
-        document.getElementById("incorrect-sound").play();
-    }
-}
-
-function nextTest(){
-    if(testIndex<words.length-1){
-        testIndex++;
-        renderTest();
-    }else{
-        alert("Test tamamlandı!");
-        goMenu();
-    }
-}
-
 </script>
 </body>
 </html>
