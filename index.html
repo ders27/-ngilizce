@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Çocuk İngilizce</title>
+    <title>İngilizce Öğren - Yeni Nesil</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -11,7 +11,6 @@
             background: #f2f6ff;
             text-align: center;
             margin: 0;
-            overflow-x: hidden;
         }
         .container { max-width: 500px; margin: auto; padding: 10px; }
         h1 { background: #4CAF50; color: white; padding: 15px; margin: 0; border-bottom: 5px solid #388E3C; }
@@ -31,14 +30,13 @@
         button:active { transform: scale(0.95); }
 
         .wordbox {
-            margin-top: 50px;
-            font-size: 40px;
+            margin-top: 30px;
+            font-size: 35px;
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-            min-height: 220px;
+            min-height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -47,16 +45,16 @@
         
         .correct-bg { background: #c8e6c9 !important; }
         .wrong-bg { background: #ffcdd2 !important; }
+        .translate { font-size: 26px; margin-top: 15px; color: #4CAF50; font-weight: bold; }
 
-        .translate { font-size: 28px; margin-top: 20px; color: #4CAF50; font-weight: bold; }
-        .controls { margin-top: 30px; display: flex; justify-content: center; }
+        .controls { margin-top: 20px; display: flex; justify-content: center; }
         .arrow { width: 40%; font-size: 25px; background: #2196F3; }
 
         .option {
             display: block;
             margin: 10px auto;
             width: 90%;
-            font-size: 20px;
+            font-size: 18px;
             padding: 15px;
             background: white;
             color: #333;
@@ -74,8 +72,8 @@
 
 <div class="container">
     <div id="menu">
-        <button onclick="openUnits()">📚 Kelimeler (Kategoriler)</button>
-        <button onclick="openTest()">🧠 İki Aşamalı Test</button>
+        <button onclick="openUnits()">📚 Üniteler (Kelimeler)</button>
+        <button onclick="openTest()">🧠 Karma Test (Diyalog & Soru)</button>
     </div>
 
     <div id="units" style="display:none">
@@ -87,7 +85,7 @@
         <div id="wordCard" class="wordbox" onclick="showTranslation()">
             <div id="english"></div>
             <div id="turkish" class="translate"></div>
-            <div style="font-size:14px; color:#999; margin-top:10px;">(Dinlemek ve Anlamı İçin Dokun)</div>
+            <div style="font-size:14px; color:#999; margin-top:10px;">(Dinle ve Anlamı Gör)</div>
         </div>
         <div class="controls">
             <button class="arrow" onclick="prevWord()">⬅️</button>
@@ -108,30 +106,26 @@
 
 <script>
 const units = {
-    greetings: { title: "Greetings (Selamlaşma)", data: [["hello","merhaba"], ["good morning","günaydın"], ["goodbye","güle güle"], ["thank you","teşekkürler"], ["please","lütfen"]] },
-    numbers: { title: "Numbers (Sayılar)", data: [["one","bir"], ["two","iki"], ["three","üç"], ["four","dört"], ["five","beş"]] },
-    home: { title: "Home (Ev)", data: [["house","ev"], ["door","kapı"], ["window","pencere"], ["bed","yatak"], ["table","masa"]] },
-    kitchen: { title: "Kitchen (Mutfak)", data: [["water","su"], ["milk","süt"], ["bread","ekmek"], ["cheese","peynir"], ["egg","yumurta"]] },
-    school: { title: "School (Okul)", data: [["teacher","öğretmen"], ["student","öğrenci"], ["book","kitap"], ["pen","kalem"], ["bag","çanta"]] },
-    verbs: { title: "Verbs (Fiiller)", data: [["eat","yemek yemek"], ["drink","içmek"], ["sleep","uyumak"], ["run","koşmak"], ["play","oynamak"]] },
-    family: { title: "Family (Aile)", data: [["mother","anne"], ["father","baba"], ["sister","kız kardeş"], ["brother","erkek kardeş"], ["baby","bebek"]] },
-    food: { title: "Food (Yiyecek)", data: [["apple","elma"], ["banana","muz"], ["orange","portakal"], ["cake","pasta"], ["chocolate","çikolata"]] },
-    animals: { title: "Animals (Hayvanlar)", data: [["cat","kedi"], ["dog","köpek"], ["bird","kuş"], ["fish","balık"], ["lion","aslan"]] },
-    daily: { title: "Daily (Günlük)", data: [["what","ne"], ["where","nerede"], ["how","nasıl"], ["stop","dur"], ["help","yardım"]] }
+    greetings: { title: "Greetings (Selamlaşma)", data: [["hello","merhaba"], ["good morning","günaydın"], ["thank you","teşekkürler"], ["please","lütfen"]] },
+    numbers: { title: "Numbers (Sayılar)", data: [["one","bir"], ["ten","on"], ["twenty","yirmi"], ["thirty","otuz"]] },
+    home: { title: "Home (Ev)", data: [["house","ev"], ["door","kapı"], ["window","pencere"], ["bed","yatak"]] },
+    verbs: { title: "Verbs (Fiiller)", data: [["eat","yemek"], ["drink","içmek"], ["run","koşmak"], ["walk","yürümek"]] },
+    animals: { title: "Animals (Hayvanlar)", data: [["cat","kedi"], ["dog","köpek"], ["elephant","fil"], ["bird","kuş"]] }
 };
 
-// Cümle Testi Soruları
-const sentenceQuestions = [
-    { q: "How are you?", a: "Nasılsın?", options: ["Nasılsın?", "Adın ne?", "Kaç yaşındasın?"] },
-    { q: "What is this?", a: "Bu nedir?", options: ["Bu nedir?", "Nereye gidiyorsun?", "Kim o?"] },
-    { q: "Where is the cat?", a: "Kedi nerede?", options: ["Kedi nerede?", "Kedi ne yiyor?", "Bu bir kedi mi?"] },
-    { q: "I like apples.", a: "Elmaları severim.", options: ["Elmaları severim.", "Elma yiyorum.", "Elma nerede?"] },
-    { q: "Open the door.", a: "Kapıyı aç.", options: ["Kapıyı aç.", "Pencereyi kapat.", "Eve git."] }
+// Gönderdiğin görsellerden ilham alınan soru seti
+const customQuestions = [
+    { q: "Give me the ruler, please. - ____?", a: "The ruler, please.", options: ["The ruler, please.", "No, thank you.", "I am Japanese."] },
+    { q: "An elephant can ____.", a: "walk", options: ["walk", "fly", "swim"] },
+    { q: "It is rainy today. ____ your umbrella.", a: "Take", options: ["Take", "Wear", "Open"] },
+    { q: "I am a vet. I like ____.", a: "helping animals", options: ["helping animals", "driving cars", "teaching"] },
+    { q: "Where is Sinop?", a: "It is in the north.", options: ["It is in the north.", "It is in the west.", "It is in the south."] },
+    { q: "What is your name?", a: "My name is Cody.", options: ["My name is Cody.", "I am French.", "I am from Britain."] }
 ];
 
 let current = [];
 let index = 0;
-let testStage = 1; // 1: Kelime, 2: Cümle
+let testStage = 1;
 
 function createUnitButtons() {
     const container = document.getElementById("unitButtons");
@@ -181,7 +175,6 @@ function nextWord() { index = (index + 1) % current.length; loadWord(); }
 function prevWord() { index = (index - 1 + current.length) % current.length; loadWord(); }
 
 function openTest() {
-    testStage = 1;
     hideAll();
     document.getElementById("testPage").style.display = "block";
     newQuestion();
@@ -193,43 +186,47 @@ function newQuestion() {
     const optionsDiv = document.getElementById("options");
     optionsDiv.innerHTML = "";
 
+    // %50 şansla kelime veya diyalog sorusu gelsin
+    testStage = Math.random() > 0.5 ? 1 : 2;
+
     if (testStage === 1) {
-        label.innerText = "1. AŞAMA: KELİME BİLGİSİ";
-        let all = Object.values(units).map(u => u.data).flat();
-        let q = all[Math.floor(Math.random() * all.length)];
+        label.innerText = "KELİME BİLGİSİ";
+        let allWords = Object.values(units).map(u => u.data).flat();
+        let q = allWords[Math.floor(Math.random() * allWords.length)];
         questionText.innerText = `"${q[0]}" ne demek?`;
         speak(q[0]);
 
-        let opts = [q];
+        let opts = [q[1]];
         while (opts.length < 3) {
-            let r = all[Math.floor(Math.random() * all.length)];
-            if (!opts.some(o => o[1] === r[1])) opts.push(r);
+            let r = allWords[Math.floor(Math.random() * allWords.length)][1];
+            if (!opts.includes(r)) opts.push(r);
         }
-        opts.sort(() => Math.random() - 0.5);
-        opts.forEach(o => {
-            optionsDiv.innerHTML += `<button class="option" onclick="checkAnswer(this, '${o[1]}', '${q[1]}')">${o[1]}</button>`;
-        });
+        renderOptions(opts, q[1]);
     } else {
-        label.innerText = "2. AŞAMA: CÜMLE KURMA";
-        let q = sentenceQuestions[Math.floor(Math.random() * sentenceQuestions.length)];
-        questionText.innerText = `"${q[q]}" cümlesinin anlamı nedir?`;
+        label.innerText = "DİYALOG & MANTIK";
+        let q = customQuestions[Math.floor(Math.random() * customQuestions.length)];
+        questionText.innerText = q.q;
         speak(q.q);
-
-        let opts = [...q.options].sort(() => Math.random() - 0.5);
-        opts.forEach(o => {
-            optionsDiv.innerHTML += `<button class="option" onclick="checkAnswer(this, '${o}', '${q.a}')">${o}</button>`;
-        });
+        renderOptions(q.options, q.a);
     }
+}
+
+function renderOptions(opts, correct) {
+    const optionsDiv = document.getElementById("options");
+    opts.sort(() => Math.random() - 0.5);
+    opts.forEach(o => {
+        let btn = document.createElement("button");
+        btn.className = "option";
+        btn.innerText = o;
+        btn.onclick = () => checkAnswer(btn, o, correct);
+        optionsDiv.appendChild(btn);
+    });
 }
 
 function checkAnswer(btn, selected, correct) {
     if (selected === correct) {
         btn.style.background = "#c8e6c9";
         playCorrect();
-        // Eğer 1. aşamadaysa rastgele 2. aşamaya geçebilir veya devam eder
-        if (testStage === 1 && Math.random() > 0.7) testStage = 2;
-        else if (testStage === 2) testStage = 1; // Döngüsel geçiş
-        
         setTimeout(newQuestion, 1000);
     } else {
         btn.style.background = "#ffcdd2";
