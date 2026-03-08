@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Çocuk İngilizce</title>
+<title>Çocuk İngilizce Öğren</title>
 
 <style>
 
-*{
-box-sizing:border-box;
-}
-
 body{
 font-family:Arial;
-background:#f2f6ff;
-text-align:center;
+background:#eef3ff;
 margin:0;
+text-align:center;
 overflow-x:hidden;
 }
 
 .container{
 max-width:500px;
 margin:auto;
-padding:10px;
+padding:15px;
 }
 
 h1{
@@ -47,11 +42,12 @@ color:white;
 
 .wordbox{
 
-margin-top:120px;
-font-size:45px;
+margin-top:100px;
 background:white;
+font-size:45px;
 padding:40px;
-border-radius:15px;
+border-radius:20px;
+transition:0.3s;
 
 }
 
@@ -63,6 +59,12 @@ color:#333;
 
 }
 
+.controls{
+
+margin-top:50px;
+
+}
+
 .arrow{
 
 width:40%;
@@ -70,26 +72,27 @@ font-size:25px;
 
 }
 
-.controls{
-
-margin-top:60px;
-
-}
-
 .option{
 
 display:block;
-margin:10px auto;
 width:90%;
+margin:10px auto;
+padding:15px;
 font-size:22px;
-padding:12px;
 background:white;
-border:2px solid #4CAF50;
+border:3px solid #4CAF50;
+border-radius:10px;
+
+}
+
+.score{
+
+font-size:22px;
+margin-top:10px;
 
 }
 
 </style>
-
 </head>
 
 <body>
@@ -126,7 +129,7 @@ border:2px solid #4CAF50;
 
 <div id="wordPage" style="display:none">
 
-<div class="wordbox" onclick="showTranslation()">
+<div class="wordbox" id="wordbox" onclick="showTranslation()">
 
 <div id="english"></div>
 <div id="turkish" class="translate"></div>
@@ -150,6 +153,8 @@ border:2px solid #4CAF50;
 <h2 id="question"></h2>
 
 <div id="options"></div>
+
+<div class="score" id="score"></div>
 
 <button onclick="backMenu()">🏠 Menü</button>
 
@@ -296,6 +301,28 @@ daily:[
 
 let current=[]
 let index=0
+let score=0
+
+function speak(word){
+
+let speech=new SpeechSynthesisUtterance(word)
+speech.lang="en-US"
+speech.rate=0.9
+speechSynthesis.speak(speech)
+
+}
+
+function playCorrect(){
+new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play()
+}
+
+function playWrong(){
+new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg").play()
+}
+
+function playPop(){
+new Audio("https://actions.google.com/sounds/v1/cartoon/pop.ogg").play()
+}
 
 function openUnits(){
 
@@ -320,21 +347,24 @@ function loadWord(){
 
 document.getElementById("english").innerText=current[index][0]
 document.getElementById("turkish").innerText=""
+document.getElementById("wordbox").style.background="white"
 
 }
 
 function showTranslation(){
 
 document.getElementById("turkish").innerText=current[index][1]
+document.getElementById("wordbox").style.background="#8BC34A"
+
+speak(current[index][0])
+playPop()
 
 }
 
 function nextWord(){
 
 index++
-
 if(index>=current.length) index=0
-
 loadWord()
 
 }
@@ -342,9 +372,7 @@ loadWord()
 function prevWord(){
 
 index--
-
 if(index<0) index=current.length-1
-
 loadWord()
 
 }
@@ -388,12 +416,15 @@ html+=`<button class="option" onclick="answer('${o[1]}','${q[1]}')">${o[1]}</but
 
 document.getElementById("options").innerHTML=html
 
+document.getElementById("score").innerText="Puan: "+score
+
 }
 
 function answer(a,b){
 
 if(a==b){
 
+score+=10
 playCorrect()
 
 }else{
@@ -406,22 +437,8 @@ setTimeout(newQuestion,800)
 
 }
 
-function playCorrect(){
-
-new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg").play()
-
-}
-
-function playWrong(){
-
-new Audio("https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg").play()
-
-}
-
 function backMenu(){
-
 location.reload()
-
 }
 
 function hideAll(){
