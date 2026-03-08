@@ -3,180 +3,231 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>İngilizce Öğrenme ve Test Uygulaması</title>
+<title>İngilizce Kelime Macerası</title>
 <style>
-body {font-family: Arial, sans-serif; background: #FFF8E1; margin:0; padding:0; display:flex; justify-content:center; align-items:center; min-height:100vh;}
-#app {width:95%; max-width:700px; background:#FFF; border-radius:20px; padding:20px; box-shadow:0 10px 20px rgba(0,0,0,0.2);}
-h2 {text-align:center; color:#FF5722; margin-bottom:20px;}
-.word-card {font-size:2em; font-weight:bold; padding:20px; border:3px solid #FFAB00; border-radius:15px; text-align:center; cursor:pointer; background:#FFFDE7; display:flex; justify-content:center; align-items:center; gap:10px;}
-.word-meaning {font-size:1.6em; color:#1976D2;}
-.nav-buttons {margin-top:30px; display:flex; justify-content:center; gap:20px;}
-.nav-buttons button {padding:12px 20px; font-size:1.2em; border:none; border-radius:10px; cursor:pointer; background:#FF5722; color:#fff;}
-.nav-buttons button:hover {background:#E64A19;}
-#menu {display:flex; flex-wrap:wrap; justify-content:center; gap:15px;}
-#menu button {padding:15px 25px; font-size:1em; border-radius:12px; background:#2196F3; color:#fff; border:none; cursor:pointer;}
-#menu button:hover {background:#42A5F5;}
-.test-screen {display:none;}
-.test-word {font-size:2em; text-align:center; margin:20px 0;}
-.test-options {display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-.test-options button {padding:12px; font-size:1em; border-radius:8px; border:1px solid #ccc; cursor:pointer; background:#f3f3f3;}
-.test-options button:hover {background:#e0e0e0;}
-.feedback {margin-top:15px; font-weight:bold; text-align:center;}
-#score {text-align:center; font-size:1.5em; margin-top:15px;}
+body {
+    font-family: Arial, sans-serif;
+    background: #FFF8E1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+#app {
+    background: #ffffff;
+    border-radius: 15px;
+    width: 95%;
+    max-width: 700px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+h1 { text-align: center; color: #FF5722; }
+h2 { margin-top: 20px; color: #FF9800; }
+.word-blocks { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.word-card {
+    width: 120px; height: 120px; background: #FFFDE7; border: 2px solid #FFAB00; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
+    transition: transform 0.2s;
+    font-weight: bold; font-size: 1em;
+}
+.word-card:hover { transform: scale(1.05); }
+.word-card img { width: 40px; height: 40px; margin-bottom: 5px; }
+#turkish-meaning { margin-top: 15px; font-size: 1.2em; color: #4CAF50; min-height: 1.5em; text-align:center; }
+.menu-buttons { display: flex; flex-wrap: wrap; gap:10px; justify-content: center; margin-top: 20px; }
+.menu-buttons button { padding: 10px 15px; border-radius: 8px; background:#FF5722; color:white; border:none; cursor:pointer; font-weight:bold; }
+.menu-buttons button:hover { background:#E64A19; }
+#test-section { display:none; }
+.test-question { font-size:1.5em; margin:15px 0; text-align:center; }
+.test-options { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+.test-options button { padding:10px 15px; border-radius:8px; border:1px solid #ccc; cursor:pointer; font-weight:bold; background:#f3f3f3; }
+.test-options button:hover { background:#ddd; }
+.feedback { margin-top:10px; font-weight:bold; text-align:center; min-height:1.2em; }
+#navigation { display:flex; justify-content:space-between; margin-top:20px; }
+#navigation button { padding:8px 15px; border:none; border-radius:6px; background:#2196F3; color:white; cursor:pointer; }
+#navigation button:hover { background:#1976D2; }
 </style>
 </head>
 <body>
 <div id="app">
-<div id="title-screen">
-<h2>İngilizce Öğrenme ve Test</h2>
-<button onclick="showMenu()">Başla 🏠</button>
+<h1>İngilizce Kelime Macerası</h1>
+
+<div id="menu-section">
+    <h2>Konular</h2>
+    <div class="menu-buttons" id="topic-buttons"></div>
 </div>
 
-<div id="menu" style="display:none;"></div>
-
-<div id="learn-screen" style="display:none;">
-<h2 id="block-title"></h2>
-<div class="word-card" id="word-card">
-<img id="word-icon" src="" alt="" width="40" height="40">
-<span id="word-text">Word</span>
-</div>
-<div class="word-meaning" id="word-meaning"></div>
-<div class="nav-buttons">
-<button onclick="previousWord()">⬅️</button>
-<button onclick="goMenu()">🏠</button>
-<button onclick="nextWord()">➡️</button>
-<button onclick="startTest()">📝 Test</button>
-</div>
+<div id="learn-section" style="display:none;">
+    <h2 id="topic-title"></h2>
+    <div class="word-blocks" id="word-blocks"></div>
+    <div id="turkish-meaning"></div>
+    <div id="navigation">
+        <button onclick="showMenu()">🏠 Menü</button>
+    </div>
 </div>
 
-<div id="test-screen" class="test-screen">
-<h2>📝 Test</h2>
-<div class="test-word" id="test-word"></div>
-<div class="test-options" id="test-options"></div>
-<div class="feedback" id="feedback"></div>
-<div id="score"></div>
-<div class="nav-buttons">
-<button onclick="prevTest()">⬅️ Önceki</button>
-<button onclick="nextTest()">➡️ Sonraki</button>
-<button onclick="goMenu()">🏠 Menü</button>
+<div id="test-section">
+    <h2>Kelime Testi</h2>
+    <div class="test-question" id="test-question"></div>
+    <div class="test-options" id="test-options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div id="navigation">
+        <button onclick="prevTest()">⬅ Önceki</button>
+        <button onclick="nextTest()">Sonraki ➡</button>
+    </div>
 </div>
-</div>
+
+<audio id="correct-sound" src="sounds/correct.mp3"></audio>
+<audio id="wrong-sound" src="sounds/wrong.mp3"></audio>
 </div>
 
 <script>
-// Kelime blokları
-const blocks = [
-{title:"Selamlaşma", words:[
-{en:"Good morning", tr:"Günaydın", icon:"https://img.icons8.com/color/48/000000/sun--v1.png"},
-{en:"Hello", tr:"Merhaba", icon:"https://img.icons8.com/color/48/000000/hello.png"},
-{en:"Goodbye", tr:"Güle güle", icon:"https://img.icons8.com/color/48/000000/waving-hand.png"},
-{en:"See you", tr:"Görüşürüz", icon:"https://img.icons8.com/color/48/000000/waving-hand.png"},
-{en:"Good night", tr:"İyi geceler", icon:"https://img.icons8.com/color/48/000000/moon-symbol.png"},
-{en:"How are you?", tr:"Nasılsın?", icon:"https://img.icons8.com/color/48/000000/question-mark.png"},
-{en:"I'm fine", tr:"İyiyim", icon:"https://img.icons8.com/color/48/000000/smiling.png"},
-{en:"Nice to meet you", tr:"Tanıştığımıza memnun oldum", icon:"https://img.icons8.com/color/48/000000/handshake.png"},
-{en:"Bye", tr:"Hoşça kal", icon:"https://img.icons8.com/color/48/000000/waving-hand.png"},
-{en:"Have a nice day", tr:"İyi günler", icon:"https://img.icons8.com/color/48/000000/sun--v1.png"}
-]},
-{title:"Ev ve Okul", words:[
-{en:"House", tr:"Ev", icon:"https://img.icons8.com/color/48/000000/home.png"},
-{en:"Door", tr:"Kapı", icon:"https://img.icons8.com/color/48/000000/door.png"},
-{en:"Chair", tr:"Sandalye", icon:"https://img.icons8.com/color/48/000000/chair.png"},
-{en:"Table", tr:"Masa", icon:"https://img.icons8.com/color/48/000000/table.png"},
-{en:"Book", tr:"Kitap", icon:"https://img.icons8.com/color/48/000000/book.png"},
-{en:"Pen", tr:"Kalem", icon:"https://img.icons8.com/color/48/000000/pen.png"},
-{en:"Notebook", tr:"Defter", icon:"https://img.icons8.com/color/48/000000/notebook.png"},
-{en:"Window", tr:"Pencere", icon:"https://img.icons8.com/color/48/000000/window.png"},
-{en:"School", tr:"Okul", icon:"https://img.icons8.com/color/48/000000/school.png"},
-{en:"Teacher", tr:"Öğretmen", icon:"https://img.icons8.com/color/48/000000/teacher.png"}
-]}];
+// 10 başlık, her başlıkta 10 kelime + ikon ve Türkçesi
+const topics = [
+    {title:"Selamlaşma & Günlük İfadeler", words:[
+        {en:"Hello", tr:"Merhaba", icon:"👋"},
+        {en:"Goodbye", tr:"Güle güle", icon:"👋"},
+        {en:"Good morning", tr:"Günaydın", icon:"🌅"},
+        {en:"Good night", tr:"İyi geceler", icon:"🌙"},
+        {en:"Please", tr:"Lütfen", icon:"🙏"},
+        {en:"Thank you", tr:"Teşekkür ederim", icon:"🙏"},
+        {en:"Yes", tr:"Evet", icon:"✅"},
+        {en:"No", tr:"Hayır", icon:"❌"},
+        {en:"Excuse me", tr:"Afedersiniz", icon:"🙇"},
+        {en:"Sorry", tr:"Üzgünüm", icon:"😔"}
+    ]},
+    {title:"Ev ve Okul Eşyaları", words:[
+        {en:"Book", tr:"Kitap", icon:"📚"},
+        {en:"Pen", tr:"Kalem", icon:"🖊️"},
+        {en:"Table", tr:"Masa", icon:"🪑"},
+        {en:"Chair", tr:"Sandalye", icon:"🪑"},
+        {en:"Bag", tr:"Çanta", icon:"🎒"},
+        {en:"Notebook", tr:"Defter", icon:"📓"},
+        {en:"Laptop", tr:"Bilgisayar", icon:"💻"},
+        {en:"Door", tr:"Kapı", icon:"🚪"},
+        {en:"Window", tr:"Pencere", icon:"🪟"},
+        {en:"Bed", tr:"Yatak", icon:"🛏️"}
+    ]},
+    {title:"Mutfak & Yemekler", words:[
+        {en:"Water", tr:"Su", icon:"💧"},
+        {en:"Bread", tr:"Ekmek", icon:"🍞"},
+        {en:"Milk", tr:"Süt", icon:"🥛"},
+        {en:"Egg", tr:"Yumurta", icon:"🥚"},
+        {en:"Cheese", tr:"Peynir", icon:"🧀"},
+        {en:"Apple", tr:"Elma", icon:"🍎"},
+        {en:"Orange", tr:"Portakal", icon:"🍊"},
+        {en:"Rice", tr:"Pirinç", icon:"🍚"},
+        {en:"Chicken", tr:"Tavuk", icon:"🍗"},
+        {en:"Fish", tr:"Balık", icon:"🐟"}
+    ]},
+    {title:"Sayılar & Tarihler", words:[
+        {en:"One", tr:"Bir", icon:"1️⃣"},
+        {en:"Two", tr:"İki", icon:"2️⃣"},
+        {en:"Three", tr:"Üç", icon:"3️⃣"},
+        {en:"Four", tr:"Dört", icon:"4️⃣"},
+        {en:"Five", tr:"Beş", icon:"5️⃣"},
+        {en:"Monday", tr:"Pazartesi", icon:"📅"},
+        {en:"Tuesday", tr:"Salı", icon:"📅"},
+        {en:"Wednesday", tr:"Çarşamba", icon:"📅"},
+        {en:"Thursday", tr:"Perşembe", icon:"📅"},
+        {en:"Friday", tr:"Cuma", icon:"📅"}
+    ]},
+    {title:"Renkler & Şekiller", words:[
+        {en:"Red", tr:"Kırmızı", icon:"🔴"},
+        {en:"Blue", tr:"Mavi", icon:"🔵"},
+        {en:"Green", tr:"Yeşil", icon:"🟢"},
+        {en:"Yellow", tr:"Sarı", icon:"🟡"},
+        {en:"Circle", tr:"Daire", icon:"⚪"},
+        {en:"Square", tr:"Kare", icon:"⬛"},
+        {en:"Triangle", tr:"Üçgen", icon:"🔺"},
+        {en:"Rectangle", tr:"Dikdörtgen", icon:"▭"},
+        {en:"Black", tr:"Siyah", icon:"⚫"},
+        {en:"White", tr:"Beyaz", icon:"⚪"}
+    ]},
+    {title:"Hava Durumu", words:[
+        {en:"Sunny", tr:"Güneşli", icon:"☀️"},
+        {en:"Rainy", tr:"Yağmurlu", icon:"🌧️"},
+        {en:"Cloudy", tr:"Bulutlu", icon:"☁️"},
+        {en:"Windy", tr:"Rüzgarlı", icon:"🌬️"},
+        {en:"Snowy", tr:"Karlı", icon:"❄️"},
+        {en:"Hot", tr:"Sıcak", icon:"🔥"},
+        {en:"Cold", tr:"Soğuk", icon:"🧊"},
+        {en:"Stormy", tr:"Fırtınalı", icon:"⛈️"},
+        {en:"Foggy", tr:"Sisli", icon:"🌫️"},
+        {en:"Humid", tr:"Nemli", icon:"💧"}
+    ]},
+    {title:"Mevsimler", words:[
+        {en:"Spring", tr:"İlkbahar", icon:"🌸"},
+        {en:"Summer", tr:"Yaz", icon:"☀️"},
+        {en:"Autumn", tr:"Sonbahar", icon:"🍂"},
+        {en:"Winter", tr:"Kış", icon:"❄️"},
+        {en:"Season", tr:"Mevsim", icon:"🌀"},
+        {en:"Month", tr:"Ay", icon:"📅"},
+        {en:"Year", tr:"Yıl", icon:"🗓️"},
+        {en:"Today", tr:"Bugün", icon:"📆"},
+        {en:"Tomorrow", tr:"Yarın", icon:"📆"},
+        {en:"Yesterday", tr:"Dün", icon:"📆"}
+    ]},
+    {title:"Yönler & Yerler", words:[
+        {en:"Left", tr:"Sol", icon:"⬅️"},
+        {en:"Right", tr:"Sağ", icon:"➡️"},
+        {en:"Up", tr:"Yukarı", icon:"⬆️"},
+        {en:"Down", tr:"Aşağı", icon:"⬇️"},
+        {en:"North", tr:"Kuzey", icon:"⬆️"},
+        {en:"South", tr:"Güney", icon:"⬇️"},
+        {en:"East", tr:"Doğu", icon:"➡️"},
+        {en:"West", tr:"Batı", icon:"⬅️"},
+        {en:"Here", tr:"Burada", icon:"📍"},
+        {en:"There", tr:"Orada", icon:"📍"}
+    ]},
+    {title:"Hayvanlar", words:[
+        {en:"Cat", tr:"Kedi", icon:"🐱"},
+        {en:"Dog", tr:"Köpek", icon:"🐶"},
+        {en:"Bird", tr:"Kuş", icon:"🐦"},
+        {en:"Fish", tr:"Balık", icon:"🐟"},
+        {en:"Cow", tr:"İnek", icon:"🐄"},
+        {en:"Horse", tr:"At", icon:"🐎"},
+        {en:"Sheep", tr:"Koyun", icon:"🐑"},
+        {en:"Pig", tr:"Domuz", icon:"🐖"},
+        {en:"Lion", tr:"Aslan", icon:"🦁"},
+        {en:"Tiger", tr:"Kaplan", icon:"🐯"}
+    ]}
+];
 
-// Menü
-function showMenu(){
-  document.getElementById("title-screen").style.display="none";
-  const menu = document.getElementById("menu");
-  menu.innerHTML="";
-  blocks.forEach((b,i)=>{
-    const btn=document.createElement("button");
-    btn.textContent=b.title;
-    btn.onclick=()=>{openBlock(i)};
-    menu.appendChild(btn);
-  });
-  menu.style.display="flex";
-}
+// Menü oluştur
+const topicButtons = document.getElementById('topic-buttons');
+topics.forEach((topic,index)=>{
+    const btn=document.createElement('button');
+    btn.textContent=topic.title;
+    btn.onclick=()=>showTopic(index);
+    topicButtons.appendChild(btn);
+});
 
-let currentBlockIndex=0;
-let currentWordIndex=0;
+const learnSection = document.getElementById('learn-section');
+const menuSection = document.getElementById('menu-section');
+const wordBlocks = document.getElementById('word-blocks');
+const turkishMeaning = document.getElementById('turkish-meaning');
+const topicTitle = document.getElementById('topic-title');
 
-// Kelime ekranı
-function openBlock(idx){
-  currentBlockIndex=idx;
-  currentWordIndex=0;
-  document.getElementById("menu").style.display="none";
-  document.getElementById("learn-screen").style.display="block";
-  showWord();
-}
-
-function showWord(){
-  const w=blocks[currentBlockIndex].words[currentWordIndex];
-  document.getElementById("block-title").textContent=blocks[currentBlockIndex].title;
-  document.getElementById("word-text").textContent=w.en;
-  document.getElementById("word-meaning").textContent=w.tr;
-  document.getElementById("word-icon").src=w.icon;
-}
-
-function nextWord(){currentWordIndex++; if(currentWordIndex>=blocks[currentBlockIndex].words.length) currentWordIndex=0; showWord();}
-function previousWord(){currentWordIndex--; if(currentWordIndex<0) currentWordIndex=blocks[currentBlockIndex].words.length-1; showWord();}
-function goMenu(){document.getElementById("learn-screen").style.display="none"; document.getElementById("menu").style.display="flex";}
-
-// Test bölümü
-let testQuestions=[];
-let currentTestIndex=0;
-function startTest(){
-  document.getElementById("learn-screen").style.display="none";
-  document.getElementById("test-screen").style.display="block";
-  generateTest();
-  showTest();
-}
-function generateTest(){
-  testQuestions=[];
-  blocks.forEach(b=>{
-    b.words.forEach(w=>{
-      const options=[w.tr];
-      while(options.length<4){
-        const randB=blocks[Math.floor(Math.random()*blocks.length)];
-        const randW=randB.words[Math.floor(Math.random()*randB.words.length)];
-        if(!options.includes(randW.tr)) options.push(randW.tr);
-      }
-      options.sort(()=>Math.random()-0.5);
-      testQuestions.push({en:w.en,tr:w.tr,options:options});
+function showTopic(index){
+    menuSection.style.display='none';
+    learnSection.style.display='block';
+    wordBlocks.innerHTML='';
+    topicTitle.textContent = topics[index].title;
+    topics[index].words.forEach(w=>{
+        const card=document.createElement('div');
+        card.className='word-card';
+        card.innerHTML=`<div>${w.icon}</div><div>${w.en}</div>`;
+        card.onclick=()=>turkishMeaning.textContent=w.tr;
+        wordBlocks.appendChild(card);
     });
-  });
-  testQuestions.sort(()=>Math.random()-0.5);
-  currentTestIndex=0;
 }
-function showTest(){
-  const q=testQuestions[currentTestIndex];
-  document.getElementById("test-word").textContent=q.en;
-  const opts=document.getElementById("test-options");
-  opts.innerHTML="";
-  q.options.forEach(opt=>{
-    const btn=document.createElement("button");
-    btn.textContent=opt;
-    btn.onclick=()=>{checkAnswer(opt)};
-    opts.appendChild(btn);
-  });
-  document.getElementById("feedback").textContent="";
-  document.getElementById("score").textContent=`Soru: ${currentTestIndex+1}/${testQuestions.length}`;
+
+function showMenu(){
+    learnSection.style.display='none';
+    menuSection.style.display='block';
 }
-function checkAnswer(selected){
-  const correct=testQuestions[currentTestIndex].tr;
-  const feedback=document.getElementById("feedback");
-  if(selected===correct){feedback.textContent="✅ Doğru!";}
-  else{feedback.textContent=`❌ Yanlış! Doğru: ${correct}`;}
-}
-function nextTest(){currentTestIndex++; if(currentTestIndex>=testQuestions.length) currentTestIndex=0; showTest();}
-function prevTest(){currentTestIndex--; if(currentTestIndex<0) currentTestIndex=testQuestions.length-1; showTest();}
 </script>
 </body>
 </html>
